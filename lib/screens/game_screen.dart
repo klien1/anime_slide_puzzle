@@ -1,4 +1,10 @@
+import 'package:anime_slide_puzzle/components/game_board.dart';
+import 'package:anime_slide_puzzle/models/puzzle_board.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+const double rectHeight = 100;
+const double rectWidth = 100;
 
 class GameScreen extends StatelessWidget {
   const GameScreen({Key? key}) : super(key: key);
@@ -7,9 +13,25 @@ class GameScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: SafeArea(
-        child: Text('Game Screen'),
+        child: Column(
+          children: [
+            GameBoard(),
+            TextButton(
+              onPressed: () {
+                context.read<PuzzleBoard>().swap(0, 7);
+              },
+              child: Text('SWAP'),
+            ),
+            TextButton(
+              onPressed: () {
+                context.read<PuzzleBoard>().moveLeft(7);
+              },
+              child: Text('MOVE LEFT'),
+            )
+          ],
+        ),
       ),
     );
   }
