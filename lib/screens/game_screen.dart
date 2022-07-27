@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'animated_slide_test.dart';
+
+const double rectHeight = 100;
+const double rectWidth = 100;
 
 class GameScreen extends StatelessWidget {
   const GameScreen({Key? key}) : super(key: key);
@@ -9,7 +13,8 @@ class GameScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Scaffold(
       body: SafeArea(
-        child: RectGrid(),
+        // child: RectGrid(),
+        child: SlideTest(),
       ),
     );
   }
@@ -28,7 +33,40 @@ class _RectGridState extends State<RectGrid> {
   int curBox = 0;
   late List<Widget> gridList;
 
+  List<Widget> simpleGridList() {
+    return [
+      AnimatedAlign(
+        alignment: Alignment.center,
+        duration: Duration(seconds: 1),
+        child: CustomRectangle(
+          num: 0,
+          onTap: () {},
+          color: Colors.red,
+        ),
+      ),
+      AnimatedAlign(
+        alignment: Alignment.center,
+        duration: Duration(seconds: 1),
+        child: CustomRectangle(
+          num: 1,
+          onTap: () {},
+          color: Colors.green,
+        ),
+      ),
+      AnimatedAlign(
+        alignment: Alignment.center,
+        duration: Duration(seconds: 1),
+        child: CustomRectangle(
+          num: 2,
+          onTap: () {},
+          color: Colors.blue,
+        ),
+      ),
+    ];
+  }
+
   List<Widget> getGridList() {
+    print('called grid lsit');
     List<Widget> list = [];
 
     for (int i = 0; i < 8; ++i) {
@@ -38,13 +76,14 @@ class _RectGridState extends State<RectGrid> {
             setState(() {
               curBox = i;
             });
-            print(i);
           });
       // align.add(const Alignment(0, 0));
-      list.add(AnimatedAlign(
-          alignment: align[i],
-          duration: const Duration(milliseconds: 500),
-          child: curRec));
+      list.add(
+        AnimatedAlign(
+            alignment: align[i],
+            duration: const Duration(milliseconds: 500),
+            child: curRec),
+      );
     }
 
     return list;
@@ -56,7 +95,11 @@ class _RectGridState extends State<RectGrid> {
           setState(() {
             double curX = align[curBox].x;
             double curY = align[curBox].y;
-            align[curBox] = Alignment(curX + 1 * x, curY + 1 * y);
+
+            // double newX = curX / (rectWidth / 2) + x * rectWidth;
+            double newX = curX + x;
+            double newY = curY / (rectHeight / 2) + y;
+            align[curBox] = Alignment(newX, newY);
             // gridList[curBox] = align[curBox];
           });
         },
@@ -77,16 +120,16 @@ class _RectGridState extends State<RectGrid> {
   @override
   void initState() {
     super.initState();
-    // gridList = getGridList();
+
     for (int i = 0; i < 8; ++i) {
-      align.add(Alignment(0, 0));
+      align.add(const Alignment(0, 0));
     }
+    gridList = simpleGridList();
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         Text(
           'selected box: ${curBox.toString()}',
@@ -94,22 +137,34 @@ class _RectGridState extends State<RectGrid> {
           style: const TextStyle(fontSize: 24),
         ),
         Expanded(
-          flex: 3,
+          // flex: 2,
+
           child: GridView.count(
             shrinkWrap: true,
             crossAxisCount: 3,
-            mainAxisSpacing: 1,
-            crossAxisSpacing: 1,
-            children: getGridList(),
+            // mainAxisSpacing: 1,
+            // crossAxisSpacing: 1,
+            children: gridList,
+            //children: getGridList(),
           ),
         ),
+        TextButton(
+            onPressed: () {
+              setState(() {
+                gridList = [gridList[2], gridList[1], gridList[0]];
+                // var temp = gridList[0];
+                // gridList[0] = gridList[1];
+                // gridList[1] = temp;
+              });
+            },
+            child: Text('Swap 0 and 2')),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            generateButton('left', -1, 0),
-            generateButton('right', 1, 0),
-            generateButton('down', 0, 1),
-            generateButton('up', 0, -1)
+            generateButton('left', -3, 0),
+            generateButton('right', 3, 0),
+            generateButton('down', 0, 3),
+            generateButton('up', 0, -3)
           ],
         )
       ],
@@ -117,33 +172,7 @@ class _RectGridState extends State<RectGrid> {
   }
 }
 
-class AnimatedAlignWrapper extends StatefulWidget {
-  const AnimatedAlignWrapper(
-      {Key? key,
-      required this.alignment,
-      required this.duration,
-      required this.child})
-      : super(key: key);
-
-  final AlignmentGeometry alignment;
-  final Duration duration;
-  final Widget child;
-
-  @override
-  State<AnimatedAlignWrapper> createState() => _AnimatedAlignWrapperState();
-}
-
-class _AnimatedAlignWrapperState extends State<AnimatedAlignWrapper> {
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedAlign(
-        alignment: widget.alignment,
-        duration: widget.duration,
-        child: widget.child);
-  }
-}
-
-class CustomRectangle extends StatelessWidget {
+class CustomRectangle extends StatefulWidget {
   const CustomRectangle({
     Key? key,
     this.color = Colors.lightBlueAccent,
@@ -155,22 +184,46 @@ class CustomRectangle extends StatelessWidget {
   final int num;
   final Function onTap;
 
+  @override
+  State<CustomRectangle> createState() => _CustomRectangleState();
+}
+
+class _CustomRectangleState extends State<CustomRectangle> {
+  bool onHover = false;
+
   get boxIndex {
-    return num;
+    return widget.num;
   }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => onTap(),
-      child: Container(
-        height: 100,
-        width: 100,
-        color: color,
-        child: Center(
-          child: Text(
-            num.toString(),
-            // textAlign: TextAlign.center,
+      onTap: () => widget.onTap(),
+      child: MouseRegion(
+        onEnter: (v) {
+          setState(() {
+            onHover = true;
+          });
+        },
+        onExit: (v) {
+          setState(() {
+            onHover = false;
+          });
+        },
+        child: AnimatedScale(
+          duration: const Duration(milliseconds: 200),
+          scale: onHover ? .85 : 1,
+          child: Container(
+            padding: EdgeInsets.zero,
+            margin: EdgeInsets.zero,
+            height: rectHeight,
+            width: rectWidth,
+            color: widget.color,
+            child: Center(
+              child: Text(
+                widget.num.toString(),
+              ),
+            ),
           ),
         ),
       ),
