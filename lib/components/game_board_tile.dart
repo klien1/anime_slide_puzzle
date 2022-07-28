@@ -50,7 +50,7 @@ class _GameBoardTile extends State<GameBoardTile> {
           onTap: () {
             final PuzzleBoard puzzleBoard = context.read<PuzzleBoard>();
             puzzleBoard.move(
-              correctTilePosition: widget._tile.correctCoordinate,
+              clickedTileCoordinate: widget._tile.correctCoordinate,
             );
           },
           child: AnimatedScale(

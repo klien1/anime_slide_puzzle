@@ -7,9 +7,9 @@ import 'package:provider/provider.dart';
 class GameBoard extends StatefulWidget {
   const GameBoard({
     Key? key,
-    int boardSize = 3,
-    double dimension = 100,
-    double padding = 20,
+    required int boardSize,
+    required double dimension,
+    required double padding,
   })  : _boardSize = boardSize,
         _dimension = dimension,
         _padding = padding,
@@ -35,7 +35,8 @@ class _GameBoard extends State<GameBoard> {
       child: Container(
         color: Colors.blueGrey,
         child: Stack(
-          alignment: Alignment.center,
+          clipBehavior: Clip.hardEdge,
+          // alignment: Alignment.center,
           children: [
             for (List<PuzzleTile> puzzleTileRow
                 in puzzleBoardProvider.puzzleBoard2d)

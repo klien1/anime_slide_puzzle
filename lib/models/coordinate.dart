@@ -1,8 +1,10 @@
-class Coordinate {
+import 'package:equatable/equatable.dart';
+
+class Coordinate extends Equatable {
   final int _x;
   final int _y;
 
-  Coordinate({
+  const Coordinate({
     required int x,
     required int y,
   })  : _x = x,
@@ -15,4 +17,11 @@ class Coordinate {
   int get y {
     return _y;
   }
+
+  Coordinate calculateAdjacent({int x = 0, int y = 0}) {
+    return Coordinate(x: _x + x, y: _y + y);
+  }
+
+  @override
+  List<int> get props => [x, y];
 }

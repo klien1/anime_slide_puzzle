@@ -1,6 +1,5 @@
 import 'package:anime_slide_puzzle/models/coordinate.dart';
 import 'package:flutter/cupertino.dart';
-
 import 'package:anime_slide_puzzle/models/puzzle_tile.dart';
 
 class PuzzleBoard extends ChangeNotifier {
@@ -23,28 +22,45 @@ class PuzzleBoard extends ChangeNotifier {
   }
 
   void move({
-    required Coordinate correctTilePosition,
+    required Coordinate clickedTileCoordinate,
   }) {
-    _swapTwoTiles(correctTilePosition, getBlankTileCoordinate());
+    final clickedTile =
+        _puzzleTiles2d[clickedTileCoordinate.x][clickedTileCoordinate.y];
+
+    final blankTile =
+        _puzzleTiles2d[blankTileCoordinate.x][blankTileCoordinate.y];
+
+    if (_isAdjacentToEmptyTile(clickedTile)) {
+      _swapTileCurrentPosition(clickedTile, blankTile);
+    }
   }
 
-  void _swapTwoTiles(
-    Coordinate firstCorrectTileCoord,
-    Coordinate secondCorrectTileCoord,
+  bool _isAdjacentToEmptyTile(PuzzleTile curTile) {
+    Coordinate currentBlankTileCoordinate =
+        _puzzleTiles2d[blankTileCoordinate.x][blankTileCoordinate.y]
+            .currentCoordinate;
+
+    return curTile.currentCoordinate ==
+            currentBlankTileCoordinate.calculateAdjacent(x: 1) ||
+        curTile.currentCoordinate ==
+            currentBlankTileCoordinate.calculateAdjacent(x: -1) ||
+        curTile.currentCoordinate ==
+            currentBlankTileCoordinate.calculateAdjacent(y: 1) ||
+        curTile.currentCoordinate ==
+            currentBlankTileCoordinate.calculateAdjacent(y: -1);
+  }
+
+  void _swapTileCurrentPosition(
+    PuzzleTile firstTile,
+    PuzzleTile secondTile,
   ) {
-    final firstTile =
-        _puzzleTiles2d[firstCorrectTileCoord.x][firstCorrectTileCoord.y];
-
-    final secondTile =
-        _puzzleTiles2d[secondCorrectTileCoord.x][secondCorrectTileCoord.y];
-
     final temp = firstTile.currentCoordinate;
     firstTile.currentCoordinate = secondTile.currentCoordinate;
     secondTile.currentCoordinate = temp;
     notifyListeners();
   }
 
-  Coordinate getBlankTileCoordinate() {
+  Coordinate get blankTileCoordinate {
     return _puzzleTiles2d[_size - 1][_size - 1].correctCoordinate;
   }
 
