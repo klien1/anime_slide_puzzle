@@ -28,6 +28,7 @@ class PuzzleTile {
 
   // TODO: Remove after testing
   String get tileText {
+    // return _isBlank ? '' : '${_correctCoordinate.x} ${_correctCoordinate.y}';
     return _isBlank ? '' : '${_correctCoordinate.x} ${_correctCoordinate.y}';
   }
 

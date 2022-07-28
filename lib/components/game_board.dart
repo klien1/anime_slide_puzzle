@@ -4,12 +4,20 @@ import 'package:anime_slide_puzzle/models/puzzle_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-const int boardSize = 3;
-const double dimension = 100;
-const double padding = 10;
-
 class GameBoard extends StatefulWidget {
-  const GameBoard({Key? key}) : super(key: key);
+  const GameBoard({
+    Key? key,
+    int boardSize = 3,
+    double dimension = 100,
+    double padding = 20,
+  })  : _boardSize = boardSize,
+        _dimension = dimension,
+        _padding = padding,
+        super(key: key);
+
+  final int _boardSize;
+  final double _dimension;
+  final double _padding;
 
   @override
   State<GameBoard> createState() => _GameBoard();
@@ -21,8 +29,8 @@ class _GameBoard extends State<GameBoard> {
     final PuzzleBoard puzzleBoardProvider = context.watch<PuzzleBoard>();
 
     return Container(
-      width: 500,
-      height: 500,
+      width: widget._boardSize * (widget._dimension + widget._padding),
+      height: widget._boardSize * (widget._dimension + widget._padding),
       color: Colors.grey,
       child: Container(
         color: Colors.blueGrey,
@@ -34,8 +42,8 @@ class _GameBoard extends State<GameBoard> {
               for (PuzzleTile tile in puzzleTileRow)
                 GameBoardTile(
                   tile: tile,
-                  dimension: dimension,
-                  padding: padding,
+                  dimension: widget._dimension,
+                  padding: widget._padding,
                 )
           ],
         ),

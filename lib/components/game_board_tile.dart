@@ -4,12 +4,12 @@ import 'package:anime_slide_puzzle/models/puzzle_board.dart';
 import 'package:flutter/material.dart';
 
 class GameBoardTile extends StatefulWidget {
-  const GameBoardTile(
-      {Key? key,
-      required PuzzleTile tile,
-      required double dimension,
-      required double padding})
-      : _dimension = dimension,
+  const GameBoardTile({
+    Key? key,
+    required PuzzleTile tile,
+    required double dimension,
+    required double padding,
+  })  : _dimension = dimension,
         _padding = padding,
         _tile = tile,
         super(key: key);
@@ -28,10 +28,12 @@ class _GameBoardTile extends State<GameBoardTile> {
   @override
   Widget build(BuildContext context) {
     return AnimatedPositioned(
-      left: (widget._dimension + widget._padding) *
-          widget._tile.currentCoordinate.y,
-      top: (widget._dimension + widget._padding) *
-          widget._tile.currentCoordinate.x,
+      left: widget._padding / 2 +
+          (widget._dimension + widget._padding) *
+              widget._tile.currentCoordinate.y,
+      top: widget._padding / 2 +
+          (widget._dimension + widget._padding) *
+              widget._tile.currentCoordinate.x,
       duration: const Duration(milliseconds: 200),
       child: MouseRegion(
         onEnter: (e) {
@@ -47,12 +49,9 @@ class _GameBoardTile extends State<GameBoardTile> {
         child: GestureDetector(
           onTap: () {
             final PuzzleBoard puzzleBoard = context.read<PuzzleBoard>();
-            // pass x and y for tile that needs to be updated
             puzzleBoard.move(
               correctTilePosition: widget._tile.correctCoordinate,
-              // correctTilePosition: widget._tile.currentCoordinate,
             );
-            //context.read<PuzzleBoard>().moveRight(widget._tile.correctIndex);
           },
           child: AnimatedScale(
             duration: const Duration(milliseconds: 200),
@@ -63,10 +62,22 @@ class _GameBoardTile extends State<GameBoardTile> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 color: widget._tile.isBlankTile
-                    ? Colors.lightBlue.withOpacity(0.2)
+                    ? Colors.lightBlue.withOpacity(0.0)
                     : Colors.lightBlue,
               ),
-              child: Center(child: Text(widget._tile.tileText)),
+              child: Center(
+                child: Text(
+                  (widget._tile.correctCoordinate.x *
+                              context.read<PuzzleBoard>().size +
+                          widget._tile.correctCoordinate.y)
+                      .toString(),
+                  style: TextStyle(
+                    color: widget._tile.isBlankTile
+                        ? Colors.black.withOpacity(0.0)
+                        : Colors.black,
+                  ),
+                ),
+              ),
             ),
           ),
         ),
