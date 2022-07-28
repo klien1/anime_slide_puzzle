@@ -17,19 +17,19 @@ class GameScreen extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            GameBoard(),
-            TextButton(
-              onPressed: () {
-                context.read<PuzzleBoard>().swap(0, 7);
-              },
-              child: Text('SWAP'),
-            ),
-            TextButton(
-              onPressed: () {
-                context.read<PuzzleBoard>().moveLeft(7);
-              },
-              child: Text('MOVE LEFT'),
-            )
+            const GameBoard(),
+            // TextButton(
+            //   onPressed: () {
+            //     context.read<PuzzleBoard>().swap(0, 7);
+            //   },
+            //   child: Text('SWAP'),
+            // ),
+            // TextButton(
+            //   onPressed: () {
+            //     context.read<PuzzleBoard>().moveLeft(7);
+            //   },
+            //   child: Text('MOVE LEFT'),
+            // )
           ],
         ),
       ),

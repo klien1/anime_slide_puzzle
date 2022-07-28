@@ -4,7 +4,6 @@ class PuzzleTile {
   final bool _isBlank;
   final Coordinate _correctCoordinate;
   Coordinate _currentCoordinate;
-  final int _correctIndex;
 
   PuzzleTile({
     required Coordinate correctCoordinate,
@@ -13,13 +12,7 @@ class PuzzleTile {
     bool isBlank = false,
   })  : _correctCoordinate = correctCoordinate,
         _currentCoordinate = currentCoordinate,
-        _correctIndex = index,
         _isBlank = isBlank;
-
-  // correct index for the puzzle tile
-  int get correctIndex {
-    return _correctIndex;
-  }
 
   Coordinate get correctCoordinate {
     return _correctCoordinate;
@@ -35,5 +28,9 @@ class PuzzleTile {
 
   String get tileText {
     return _isBlank ? '' : '${_correctCoordinate.x} ${_correctCoordinate.y}';
+  }
+
+  bool get isBlankTile {
+    return _isBlank;
   }
 }
