@@ -47,8 +47,11 @@ class _GameBoardTile extends State<GameBoardTile> {
         child: GestureDetector(
           onTap: () {
             final PuzzleBoard puzzleBoard = context.read<PuzzleBoard>();
-            // pass index for
-            puzzleBoard.move(widget._tile.correctCoordinate);
+            // pass x and y for tile that needs to be updated
+            puzzleBoard.move(
+              correctTilePosition: widget._tile.correctCoordinate,
+              // correctTilePosition: widget._tile.currentCoordinate,
+            );
             //context.read<PuzzleBoard>().moveRight(widget._tile.correctIndex);
           },
           child: AnimatedScale(
@@ -58,8 +61,11 @@ class _GameBoardTile extends State<GameBoardTile> {
               width: widget._dimension,
               height: widget._dimension,
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.lightBlue),
+                borderRadius: BorderRadius.circular(10),
+                color: widget._tile.isBlankTile
+                    ? Colors.lightBlue.withOpacity(0.2)
+                    : Colors.lightBlue,
+              ),
               child: Center(child: Text(widget._tile.tileText)),
             ),
           ),

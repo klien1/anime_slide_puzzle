@@ -37,12 +37,63 @@ class PuzzleBoard extends ChangeNotifier {
     );
   }
 
-  void move(i) {
-    // check if empty
+  void move({
+    required Coordinate correctTilePosition,
+    // int horizontal = 0,
+    // int vertical = 0,
+  }) {
+    // move
+    // curTile.currentCoordinate = Coordinate(
+    //   x: currentPositionX + vertical,
+    //   y: currentPositionY + horizontal,
+    // );
+    _swapTwoTiles(correctTilePosition, getBlankTileCoordinate());
 
-    // notifyListeners();
+    // check if empty
   }
 
+  void _swapTwoTiles(
+    Coordinate firstCorrectTileCoord,
+    Coordinate secondCurrentTileCoord,
+  ) {
+    final firstTile =
+        _puzzleTiles2d[firstCorrectTileCoord.x][firstCorrectTileCoord.y];
+
+    final secondTile =
+        _puzzleTiles2d[secondCurrentTileCoord.x][secondCurrentTileCoord.y];
+
+    final temp = firstTile.currentCoordinate;
+    firstTile.currentCoordinate = secondTile.currentCoordinate;
+    secondTile.currentCoordinate = temp;
+    notifyListeners();
+    printState('after');
+  }
+
+  Coordinate getBlankTileCoordinate() {
+    // printState('before');
+    return _puzzleTiles2d[_size - 1][_size - 1].correctCoordinate;
+  }
+
+  void printState(String message) {
+    print(message);
+    print('current');
+    for (List<PuzzleTile> puzzleTileList in _puzzleTiles2d) {
+      String s = '';
+      for (PuzzleTile tile in puzzleTileList) {
+        s += '(${tile.currentCoordinate.x}, ${tile.currentCoordinate.y}) ';
+      }
+      print(s);
+    }
+
+    print('correct');
+    for (List<PuzzleTile> puzzleTileList in _puzzleTiles2d) {
+      String s = '';
+      for (PuzzleTile tile in puzzleTileList) {
+        s += '(${tile.correctCoordinate.x}, ${tile.correctCoordinate.y}) ';
+      }
+      print(s);
+    }
+  }
   // void swap(i, j) {
   //   final PuzzleTile temp = _puzzleTiles[i];
   //   _puzzleTiles[i] = _puzzleTiles[j];

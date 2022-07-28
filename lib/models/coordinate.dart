@@ -15,12 +15,4 @@ class Coordinate {
   int get y {
     return _y;
   }
-
-  set x(newX) {
-    x = newX;
-  }
-
-  set y(newY) {
-    y = newY;
-  }
 }
