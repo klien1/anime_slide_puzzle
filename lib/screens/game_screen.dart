@@ -4,7 +4,6 @@ import 'package:anime_slide_puzzle/models/puzzle_image_changer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:anime_slide_puzzle/components/game_image_selector.dart';
-import 'package:anime_slide_puzzle/components/transformTest.dart';
 
 const int boardSize = 10;
 const double boardDimension = 600;
