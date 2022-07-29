@@ -1,28 +1,22 @@
 import 'package:anime_slide_puzzle/models/puzzle_image_changer.dart';
 import 'package:anime_slide_puzzle/models/puzzle_tile.dart';
-import 'package:anime_slide_puzzle/utils/puzzle_tile_clipper.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:anime_slide_puzzle/models/puzzle_board.dart';
 import 'package:flutter/material.dart';
-import 'package:anime_slide_puzzle/models/puzzle_image_changer.dart';
 
 class GameBoardTile extends StatefulWidget {
   const GameBoardTile({
     Key? key,
     required PuzzleTile tile,
-    // required double tileDimension,
     required double boardDimension,
     required double padding,
-  })  :
-        // _tileDimension = tileDimension,
-        _boardDimension = boardDimension,
+  })  : _boardDimension = boardDimension,
         _padding = padding,
         _tile = tile,
         super(key: key);
 
   final PuzzleTile _tile;
-  // final double _tileDimension;
   final double _boardDimension;
   final double _padding;
 
@@ -41,6 +35,7 @@ class _GameBoardTile extends State<GameBoardTile> {
     } catch (error) {
       imageAssetExist = false;
     }
+    setState(() {});
   }
 
   @override
@@ -51,39 +46,21 @@ class _GameBoardTile extends State<GameBoardTile> {
 
   @override
   Widget build(BuildContext context) {
-    // final AssetImage? _assetImage = context.read<AssetImage?>();
-    // final AssetImage? _assetImage = null;
+    // To calculate the dimensions of the tile, we divide the
+    final double tileDimension = (widget._boardDimension) /
+            context.read<PuzzleBoard>().numRowsOrColumns -
+        widget._padding;
 
-    final double tileDimension =
-        (widget._boardDimension) / context.read<PuzzleBoard>().size -
-            widget._padding;
-    // widget._padding * context.read<PuzzleBoard>().size;
+    // To calculate the position of each tile we need to calculate the size of the tile with the padding
+    //
+    final double animatedPositionLeft = widget._padding +
+        (tileDimension + widget._padding) * widget._tile.currentCoordinate.y;
+    final double animatedPositionTop = widget._padding +
+        (tileDimension + widget._padding) * widget._tile.currentCoordinate.x;
 
-    return
-        // AnimatedPositioned(
-        //   left: widget._padding +
-        //       (tileDimension + widget._padding) * widget._tile.currentCoordinate.y,
-        //   top: widget._padding +
-        //       (tileDimension + widget._padding) * widget._tile.currentCoordinate.x,
-        //   duration: const Duration(milliseconds: 200),
-        //   child: backgroundPuzzle(context, widget._tile.correctCoordinate.y,
-        //       widget._tile.correctCoordinate.x, tileDimension),
-        // );
-        // AnimatedPositioned(
-        //   duration: Duration(milliseconds: 200),
-        //   child: AnimatedScale(
-        //     duration: const Duration(milliseconds: 200),
-        //     scale: isHovered ? .85 : 1,
-        //     child: backgroundPuzzle(context, widget._tile.correctCoordinate.y,
-        //         widget._tile.correctCoordinate.x, tileDimension),
-        //   ),
-        // );
-
-        AnimatedPositioned(
-      left: widget._padding +
-          (tileDimension + widget._padding) * widget._tile.currentCoordinate.y,
-      top: widget._padding +
-          (tileDimension + widget._padding) * widget._tile.currentCoordinate.x,
+    return AnimatedPositioned(
+      left: animatedPositionLeft,
+      top: animatedPositionTop,
       duration: const Duration(milliseconds: 200),
       child: MouseRegion(
         onEnter: (e) {
@@ -118,92 +95,61 @@ class _GameBoardTile extends State<GameBoardTile> {
 
   Widget backgroundPuzzle(
       BuildContext context, int curRow, int curCol, double tileDimension) {
-    final numTiles = context.read<PuzzleBoard>().size;
-    print(
-      '$numTiles, $curRow, $curCol, $tileDimension, ${tileDimension / numTiles}',
-    );
-
+    final numTilesPerRowOrColumn = context.read<PuzzleBoard>().numRowsOrColumns;
     PuzzleImageChanger puzzleImageChanger = context.watch<PuzzleImageChanger>();
+
+    // check if numTilesPerRowOrColumn == 1 to avoid divide by zero error
+    // we will return the full image if there is only 1 tile
+    if (numTilesPerRowOrColumn == 1) {
+      return SizedBox(
+        height: tileDimension,
+        width: tileDimension,
+        child: Image(
+          fit: BoxFit.cover,
+          image: AssetImage(puzzleImageChanger.curImagePath),
+        ),
+      );
+    }
+
+    // Offset position starts at center of image Offset(0, 0)
+    // To get topLeft position we need to move half of the container's size left and up
+    // Offset (-halfOfTileSize, halfOfTileSize)
+    final double topLeftPosition = -tileDimension / 2;
+
+    //
+    final sizeOfTile = tileDimension / (numTilesPerRowOrColumn - 1);
+
+    final offset = Offset(
+      topLeftPosition + sizeOfTile * curRow,
+      topLeftPosition + sizeOfTile * curCol,
+    );
 
     return SizedBox(
       height: tileDimension,
       width: tileDimension,
-      child: ClipRect(
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
         child: OverflowBox(
           maxHeight: double.infinity,
           maxWidth: double.infinity,
           child: Transform.scale(
-            scale: numTiles.toDouble(),
-            // origin: Offset(curRow.toDouble(), curCol.toDouble()
-            origin: Offset(
-                // -tileDimension / numTiles, -tileDimension / numTiles + 8),
-                // -tileDimension / numTiles, -tileDimension / numTiles + 8),
-                -tileDimension / numTiles,
-                -44),
-            //double imageTop = -0.5 + (1 * defaultRow / (widget.gridSize -1));
-            //double imageLeft = -0.5 + (1 * defaultColumn / (widget.gridSize - 1));
-            // -0.5 + (1 * curCol / (numTiles)),
-            // -0.5 + (1 * curRow / (numTiles)),
-            // (-1 + 0.5 * curRow) * tileDimension,
-            // (-1 + 0.5 * curCol) * tileDimension,
-            // ),
+            scale: (numTilesPerRowOrColumn).toDouble(),
+            origin: offset,
             child: SizedBox(
               height: double.minPositive,
               width: double.minPositive,
-              child: Image(
-                // fit: BoxFit.cover,
-                image: AssetImage(puzzleImageChanger.curImagePath),
+              child: Opacity(
+                opacity: widget._tile.isBlankTile ? 0 : 1,
+                child: Image(
+                  fit: BoxFit.cover,
+                  image: AssetImage(puzzleImageChanger.curImagePath),
+                ),
               ),
             ),
           ),
         ),
       ),
     );
-
-    // ClipPath(
-    //   clipper: PuzzleTileClipper(
-    //     curCol: curRow,
-    //     curRow: curCol,
-    //     tileDimension: tileDimension,
-    //   ),
-    //   child: SizedBox(
-    //     height: widget._boardDimension,
-    //     width: widget._boardDimension,
-    //     // clipBehavior: Clip.none,
-    //     // clipper: PuzzleTileClipper(
-    //     //   curCol: curRow,
-    //     //   curRow: curCol,
-    //     //   tileDimension: tileDimension,
-    //     // ),
-    //     child: Image(
-    //       fit: BoxFit.cover,
-    //       image: context.read<AssetImage>(),
-    //     ),
-    //   ),
-    // );
-
-    //     SizedBox(
-    //   height: tileDimension,
-    //   width: tileDimension,
-    //   child: ClipRRect(
-    //     borderRadius: BorderRadius.circular(20),
-    //     child: OverflowBox(
-    //       // alignment: Alignment(-1, 1),
-    //       alignment: Alignment(-1 + 0.5 * curRow, -1 + 0.5 * curCol),
-    //       // alignment: Alignment(
-    //       // -1 + (2 / numTiles) * alignX, -1 + (2 / numTiles) * alignY),
-    //       maxWidth: double.infinity,
-    //       maxHeight: double.infinity,
-    //       child: Opacity(
-    //         opacity: widget._tile.isBlankTile ? 0 : 1,
-    //         child: Image(
-    //           fit: BoxFit.cover,
-    //           image: context.read<AssetImage>(),
-    //         ),
-    //       ),
-    //     ),
-    //   ),
-    // );
   }
 
   Container imagelessPuzzle(BuildContext context, tileDimension) {
@@ -218,7 +164,8 @@ class _GameBoardTile extends State<GameBoardTile> {
       ),
       child: Center(
         child: Text(
-          (widget._tile.correctCoordinate.x * context.read<PuzzleBoard>().size +
+          (widget._tile.correctCoordinate.x *
+                      context.read<PuzzleBoard>().numRowsOrColumns +
                   widget._tile.correctCoordinate.y)
               .toString(),
           style: TextStyle(
@@ -232,24 +179,23 @@ class _GameBoardTile extends State<GameBoardTile> {
   }
 }
 
+// 1 8 2 x 4 3 7 6 5
+//   7     1   2
+
+// 1 0 3 2
+// 1   1
+// N is even
 
 /*
 
-defaultIndex == correct index
-grid size is number in row / col
-
-int defaultRow = (thisTile.defaultIndex / widget.gridSize).floor();
-
-int defaultColumn = thisTile.defaultIndex % widget.gridSize;
+1 0
+2 3
 
 
-double imageTop = -0.5 + (1 * defaultRow / (widget.gridSize -1));
+1 0 2 3
+1
 
-double imageLeft = -0.5 + (1 * defaultColumn / (widget.gridSize - 1));
-
-height = size of tile
-
-Offset finalImageOffset = Offset(height * imageLeft, height * imageTop);
-
+N = 2 = EVEN
+Inversion = 1
 
 */

@@ -4,23 +4,33 @@ import 'package:anime_slide_puzzle/models/puzzle_tile.dart';
 import 'dart:math';
 
 class PuzzleBoard extends ChangeNotifier {
-  final int _size;
+  final int _numRowsOrColumns;
   late List<List<PuzzleTile>> _puzzleTiles2d;
 
-  PuzzleBoard(this._size) {
+  PuzzleBoard(this._numRowsOrColumns) {
     _puzzleTiles2d = List.generate(
-      _size,
+      _numRowsOrColumns,
       (row) => List.generate(
-        _size,
+        _numRowsOrColumns,
         (col) => PuzzleTile(
           correctCoordinate: Coordinate(x: row, y: col),
           currentCoordinate: Coordinate(x: row, y: col),
           index: 0,
-          isBlank: (row == _size - 1 && col == _size - 1) ? true : false,
+          tileNumber: row * _numRowsOrColumns + col,
+          isBlank:
+              (row == _numRowsOrColumns - 1 && col == _numRowsOrColumns - 1)
+                  ? true
+                  : false,
         ),
       ),
     );
   }
+
+/*
+widget._tile.correctCoordinate.x *
+                      context.read<PuzzleBoard>().numRowsOrColumns +
+                  widget._tile.correctCoordinate.y
+*/
 
   void move({
     required Coordinate clickedTileCoordinate,
@@ -70,7 +80,8 @@ class PuzzleBoard extends ChangeNotifier {
 
   PuzzleTile _getRandomTile() {
     Random rng = Random();
-    return _puzzleTiles2d[rng.nextInt(_size)][rng.nextInt(_size)];
+    return _puzzleTiles2d[rng.nextInt(_numRowsOrColumns)]
+        [rng.nextInt(_numRowsOrColumns)];
   }
 
   void _swapTileCurrentPosition(
@@ -86,11 +97,12 @@ class PuzzleBoard extends ChangeNotifier {
   }
 
   Coordinate get blankTileCoordinate {
-    return _puzzleTiles2d[_size - 1][_size - 1].correctCoordinate;
+    return _puzzleTiles2d[_numRowsOrColumns - 1][_numRowsOrColumns - 1]
+        .correctCoordinate;
   }
 
-  int get size {
-    return _size;
+  int get numRowsOrColumns {
+    return _numRowsOrColumns;
   }
 
   List<List<PuzzleTile>> get puzzleBoard2d {

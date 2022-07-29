@@ -3,9 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:anime_slide_puzzle/models/puzzle_board.dart';
 import 'package:provider/provider.dart';
 
-import 'dart:ui' as ui;
-import 'dart:async';
-
 class GameImageSelector extends StatelessWidget {
   const GameImageSelector({Key? key}) : super(key: key);
 
