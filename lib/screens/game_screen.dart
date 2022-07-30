@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:anime_slide_puzzle/components/game_image_selector.dart';
 
-const int boardSize = 10;
-const double boardDimension = 600;
+const int numTilesPerRowOrColumn = 4;
+const double gameBoardWidthAndHeight = 600;
 const double padding = 5;
 
 class GameScreen extends StatelessWidget {
@@ -19,7 +19,7 @@ class GameScreen extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<PuzzleBoard>(
-          create: (BuildContext context) => PuzzleBoard(boardSize),
+          create: (BuildContext context) => PuzzleBoard(numTilesPerRowOrColumn),
         ),
         ChangeNotifierProvider<PuzzleImageChanger>(
           create: (BuildContext context) =>
@@ -31,10 +31,9 @@ class GameScreen extends StatelessWidget {
           child: Column(
             children: const [
               GameBoard(
-                boardDimension: boardDimension,
+                gameBoardWidthAndHeight: gameBoardWidthAndHeight,
                 padding: padding,
               ),
-              // TransformTest(),
               GameImageSelector(),
             ],
           ),

@@ -7,19 +7,18 @@ import 'package:provider/provider.dart';
 class GameBoard extends StatelessWidget {
   const GameBoard({
     Key? key,
-    required double boardDimension,
+    required double gameBoardWidthAndHeight,
     required double padding,
-  })  : _boardDimension = boardDimension,
+  })  : _gameBoardWidthAndHeight = gameBoardWidthAndHeight,
         _padding = padding,
         super(key: key);
 
-  final double _boardDimension;
+  final double _gameBoardWidthAndHeight;
   final double _padding;
 
   @override
   Widget build(BuildContext context) {
     final PuzzleBoard puzzleBoardProvider = context.watch<PuzzleBoard>();
-    // final double boardDimension = _boardSize * (_tileDimension + _padding);
 
     return Container(
       decoration: BoxDecoration(
@@ -28,17 +27,17 @@ class GameBoard extends StatelessWidget {
           color: Colors.black,
         ),
       ),
-      width: _boardDimension + _padding,
-      height: _boardDimension + _padding,
+      // adding extra padding for the bottom and right of game board
+      width: _gameBoardWidthAndHeight + _padding,
+      height: _gameBoardWidthAndHeight + _padding,
       child: Stack(
-        // alignment: Alignment.center,
         children: [
           for (List<PuzzleTile> puzzleTileRow
               in puzzleBoardProvider.puzzleBoard2d)
             for (PuzzleTile tile in puzzleTileRow)
               GameBoardTile(
                 tile: tile,
-                boardDimension: _boardDimension,
+                gameBoardWidthAndHeight: _gameBoardWidthAndHeight,
                 padding: _padding,
               )
         ],

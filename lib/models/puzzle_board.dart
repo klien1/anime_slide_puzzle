@@ -26,12 +26,6 @@ class PuzzleBoard extends ChangeNotifier {
     );
   }
 
-/*
-widget._tile.correctCoordinate.x *
-                      context.read<PuzzleBoard>().numRowsOrColumns +
-                  widget._tile.correctCoordinate.y
-*/
-
   void move({
     required Coordinate clickedTileCoordinate,
   }) {
