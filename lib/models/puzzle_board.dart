@@ -1,153 +1,156 @@
 import 'package:anime_slide_puzzle/models/coordinate.dart';
 import 'package:flutter/cupertino.dart';
-
 import 'package:anime_slide_puzzle/models/puzzle_tile.dart';
+import 'dart:math';
 
 class PuzzleBoard extends ChangeNotifier {
-  final int _size;
-  // final List<PuzzleTile> _puzzleTiles = [];
+  final int _numRowsOrColumns;
   late List<List<PuzzleTile>> _puzzleTiles2d;
 
-  PuzzleBoard(this._size) {
-    // final numTiles = _size * _size;
-    // for (int i = 0; i < numTiles - 1; ++i) {
-    //   final Coordinate curCoordinate = Coordinate(x: i ~/ _size, y: i % _size);
-
-    //   _puzzleTiles.add(
-    //     PuzzleTile(
-    //         correctCoordinate: curCoordinate,
-    //         // currentCoordinate: curCoordinate,
-    //         currentCoordinate: curCoordinate,
-    //         index: i,
-    //         isBlank: (numTiles - 1 == i) ? true : false),
-    //   );
-    // }
-
+  PuzzleBoard(this._numRowsOrColumns) {
     _puzzleTiles2d = List.generate(
-      _size,
+      _numRowsOrColumns,
       (row) => List.generate(
-        _size,
+        _numRowsOrColumns,
         (col) => PuzzleTile(
           correctCoordinate: Coordinate(x: row, y: col),
           currentCoordinate: Coordinate(x: row, y: col),
           index: 0,
-          isBlank: (row == _size - 1 && col == _size - 1) ? true : false,
+          tileNumber: row * _numRowsOrColumns + col,
+          isBlank:
+              (row == _numRowsOrColumns - 1 && col == _numRowsOrColumns - 1)
+                  ? true
+                  : false,
         ),
       ),
     );
   }
 
-  void move({
-    required Coordinate correctTilePosition,
-    // int horizontal = 0,
-    // int vertical = 0,
+  void moveTile({
+    required Coordinate clickedTileCoordinate,
   }) {
-    // move
-    // curTile.currentCoordinate = Coordinate(
-    //   x: currentPositionX + vertical,
-    //   y: currentPositionY + horizontal,
-    // );
-    _swapTwoTiles(correctTilePosition, getBlankTileCoordinate());
+    final PuzzleTile clickedTile =
+        _puzzleTiles2d[clickedTileCoordinate.x][clickedTileCoordinate.y];
 
-    // check if empty
+    final PuzzleTile blankTile =
+        _puzzleTiles2d[blankTileCoordinate.x][blankTileCoordinate.y];
+
+    if (_isAdjacentToEmptyTile(clickedTile)) {
+      _swapTileCurrentPosition(clickedTile, blankTile);
+      notifyListeners();
+    }
   }
 
-  void _swapTwoTiles(
-    Coordinate firstCorrectTileCoord,
-    Coordinate secondCurrentTileCoord,
-  ) {
-    final firstTile =
-        _puzzleTiles2d[firstCorrectTileCoord.x][firstCorrectTileCoord.y];
+  bool _isAdjacentToEmptyTile(PuzzleTile curTile) {
+    Coordinate currentBlankTileCoordinate =
+        _puzzleTiles2d[blankTileCoordinate.x][blankTileCoordinate.y]
+            .currentCoordinate;
 
-    final secondTile =
-        _puzzleTiles2d[secondCurrentTileCoord.x][secondCurrentTileCoord.y];
+    return curTile.currentCoordinate ==
+            currentBlankTileCoordinate.calculateAdjacent(x: 1) ||
+        curTile.currentCoordinate ==
+            currentBlankTileCoordinate.calculateAdjacent(x: -1) ||
+        curTile.currentCoordinate ==
+            currentBlankTileCoordinate.calculateAdjacent(y: 1) ||
+        curTile.currentCoordinate ==
+            currentBlankTileCoordinate.calculateAdjacent(y: -1);
+  }
+
+  void shuffleBoard() {
+    do {
+      for (List<PuzzleTile> puzzleList in _puzzleTiles2d) {
+        for (PuzzleTile tile in puzzleList) {
+          _swapTileCurrentPosition(tile, _getRandomTile());
+        }
+      }
+    } while (!_isPuzzleIsSolvable());
+    notifyListeners();
+  }
+
+  void resetBoard() {
+    for (List<PuzzleTile> puzzleList in _puzzleTiles2d) {
+      for (PuzzleTile tile in puzzleList) {
+        tile.currentCoordinate = tile.correctCoordinate;
+      }
+    }
+    notifyListeners();
+  }
+
+  bool _isPuzzleIsSolvable() {
+    // Count # of inversions
+    // An inversion is any pair of tiles i and j where i < j
+    // but i appears after j when considering the board in row-major order
+
+    // create an array with tile values
+    // first initialize array size and blankTileRow
+
+    late int blankTileRow;
+    List<int> tileValues1d =
+        List.generate(_numRowsOrColumns * _numRowsOrColumns, (index) => -1);
+
+    // assign tile numbes to array and get blank tile row #
+    for (int row = 0; row < _numRowsOrColumns; ++row) {
+      for (int col = 0; col < _numRowsOrColumns; ++col) {
+        final curTile = _puzzleTiles2d[row][col];
+        Coordinate curTileCoord = curTile.currentCoordinate;
+
+        tileValues1d[curTileCoord.y + curTileCoord.x * _numRowsOrColumns] =
+            curTile.tileNumber;
+
+        if (curTile.tileNumber == (_numRowsOrColumns * _numRowsOrColumns - 1)) {
+          blankTileRow = curTile.currentCoordinate.x;
+        }
+      }
+    }
+
+    int numInversions = 0;
+    for (int i = 0; i < tileValues1d.length; ++i) {
+      final curVal = tileValues1d[i];
+      for (int j = i + 1; j < tileValues1d.length; ++j) {
+        // skip inversion count if blank tile
+        if (curVal == (_numRowsOrColumns * _numRowsOrColumns - 1)) continue;
+        if (curVal > tileValues1d[j]) ++numInversions;
+      }
+    }
+
+    if ((!_isEven(_numRowsOrColumns) && _isEven(numInversions)) ||
+        _isEven(_numRowsOrColumns) && !_isEven(numInversions + blankTileRow)) {
+      return true;
+    }
+
+    return false;
+  }
+
+  bool _isEven(int num) {
+    return num % 2 == 0;
+  }
+
+  PuzzleTile _getRandomTile() {
+    Random rng = Random();
+    return _puzzleTiles2d[rng.nextInt(_numRowsOrColumns)]
+        [rng.nextInt(_numRowsOrColumns)];
+  }
+
+  void _swapTileCurrentPosition(
+    PuzzleTile firstTile,
+    PuzzleTile secondTile,
+  ) {
+    if (firstTile == secondTile) return;
 
     final temp = firstTile.currentCoordinate;
     firstTile.currentCoordinate = secondTile.currentCoordinate;
     secondTile.currentCoordinate = temp;
-    notifyListeners();
-    printState('after');
+    // notifyListeners();
   }
 
-  Coordinate getBlankTileCoordinate() {
-    // printState('before');
-    return _puzzleTiles2d[_size - 1][_size - 1].correctCoordinate;
+  Coordinate get blankTileCoordinate {
+    return _puzzleTiles2d[_numRowsOrColumns - 1][_numRowsOrColumns - 1]
+        .correctCoordinate;
   }
 
-  void printState(String message) {
-    print(message);
-    print('current');
-    for (List<PuzzleTile> puzzleTileList in _puzzleTiles2d) {
-      String s = '';
-      for (PuzzleTile tile in puzzleTileList) {
-        s += '(${tile.currentCoordinate.x}, ${tile.currentCoordinate.y}) ';
-      }
-      print(s);
-    }
-
-    print('correct');
-    for (List<PuzzleTile> puzzleTileList in _puzzleTiles2d) {
-      String s = '';
-      for (PuzzleTile tile in puzzleTileList) {
-        s += '(${tile.correctCoordinate.x}, ${tile.correctCoordinate.y}) ';
-      }
-      print(s);
-    }
+  int get numRowsOrColumns {
+    return _numRowsOrColumns;
   }
-  // void swap(i, j) {
-  //   final PuzzleTile temp = _puzzleTiles[i];
-  //   _puzzleTiles[i] = _puzzleTiles[j];
-  //   _puzzleTiles[j] = temp;
-  //   notifyListeners();
-  // }
-
-  // void _moveLeft(i) {
-  //   final curPositionX = _puzzleTiles[i].currentCoordinate.x;
-  //   final curPositionY = _puzzleTiles[i].currentCoordinate.y;
-
-  //   _puzzleTiles[i].currentCoordinate = Coordinate(
-  //     x: curPositionX,
-  //     y: curPositionY - 1,
-  //   );
-  // }
-
-  // void _moveRight(i) {
-  //   final curPositionX = _puzzleTiles[i].currentCoordinate.x;
-  //   final curPositionY = _puzzleTiles[i].currentCoordinate.y;
-
-  //   _puzzleTiles[i].currentCoordinate = Coordinate(
-  //     x: curPositionX,
-  //     y: curPositionY + 1,
-  //   );
-  // }
-
-  // void _moveUp(i) {
-  //   final curPositionX = _puzzleTiles[i].currentCoordinate.x;
-  //   final curPositionY = _puzzleTiles[i].currentCoordinate.y;
-
-  //   _puzzleTiles[i].currentCoordinate = Coordinate(
-  //     x: curPositionX - 1,
-  //     y: curPositionY,
-  //   );
-  // }
-
-  // void _moveDown(i) {
-  //   final curPositionX = _puzzleTiles[i].currentCoordinate.x;
-  //   final curPositionY = _puzzleTiles[i].currentCoordinate.y;
-
-  //   _puzzleTiles[i].currentCoordinate = Coordinate(
-  //     x: curPositionX + 1,
-  //     y: curPositionY,
-  //   );
-  // }
-
-  int get size {
-    return _size;
-  }
-
-  // List<PuzzleTile> get puzzleBoard {
-  //   return _puzzleTiles;
-  // }
 
   List<List<PuzzleTile>> get puzzleBoard2d {
     return _puzzleTiles2d;
