@@ -26,7 +26,7 @@ class PuzzleBoard extends ChangeNotifier {
     );
   }
 
-  void move({
+  void moveTile({
     required Coordinate clickedTileCoordinate,
   }) {
     final PuzzleTile clickedTile =
@@ -37,6 +37,7 @@ class PuzzleBoard extends ChangeNotifier {
 
     if (_isAdjacentToEmptyTile(clickedTile)) {
       _swapTileCurrentPosition(clickedTile, blankTile);
+      notifyListeners();
     }
   }
 
@@ -56,11 +57,14 @@ class PuzzleBoard extends ChangeNotifier {
   }
 
   void shuffleBoard() {
-    for (List<PuzzleTile> puzzleList in _puzzleTiles2d) {
-      for (PuzzleTile tile in puzzleList) {
-        _swapTileCurrentPosition(tile, _getRandomTile());
+    do {
+      for (List<PuzzleTile> puzzleList in _puzzleTiles2d) {
+        for (PuzzleTile tile in puzzleList) {
+          _swapTileCurrentPosition(tile, _getRandomTile());
+        }
       }
-    }
+    } while (!_isPuzzleIsSolvable());
+    notifyListeners();
   }
 
   void resetBoard() {
@@ -70,6 +74,55 @@ class PuzzleBoard extends ChangeNotifier {
       }
     }
     notifyListeners();
+  }
+
+  bool _isPuzzleIsSolvable() {
+    // Count # of inversions
+    // An inversion is any pair of tiles i and j where i < j
+    // but i appears after j when considering the board in row-major order
+
+    // create an array with tile values
+    // first initialize array size and blankTileRow
+
+    late int blankTileRow;
+    List<int> tileValues1d =
+        List.generate(_numRowsOrColumns * _numRowsOrColumns, (index) => -1);
+
+    // assign tile numbes to array and get blank tile row #
+    for (int row = 0; row < _numRowsOrColumns; ++row) {
+      for (int col = 0; col < _numRowsOrColumns; ++col) {
+        final curTile = _puzzleTiles2d[row][col];
+        Coordinate curTileCoord = curTile.currentCoordinate;
+
+        tileValues1d[curTileCoord.y + curTileCoord.x * _numRowsOrColumns] =
+            curTile.tileNumber;
+
+        if (curTile.tileNumber == (_numRowsOrColumns * _numRowsOrColumns - 1)) {
+          blankTileRow = curTile.currentCoordinate.x;
+        }
+      }
+    }
+
+    int numInversions = 0;
+    for (int i = 0; i < tileValues1d.length; ++i) {
+      final curVal = tileValues1d[i];
+      for (int j = i + 1; j < tileValues1d.length; ++j) {
+        // skip inversion count if blank tile
+        if (curVal == (_numRowsOrColumns * _numRowsOrColumns - 1)) continue;
+        if (curVal > tileValues1d[j]) ++numInversions;
+      }
+    }
+
+    if ((!_isEven(_numRowsOrColumns) && _isEven(numInversions)) ||
+        _isEven(_numRowsOrColumns) && !_isEven(numInversions + blankTileRow)) {
+      return true;
+    }
+
+    return false;
+  }
+
+  bool _isEven(int num) {
+    return num % 2 == 0;
   }
 
   PuzzleTile _getRandomTile() {
@@ -87,7 +140,7 @@ class PuzzleBoard extends ChangeNotifier {
     final temp = firstTile.currentCoordinate;
     firstTile.currentCoordinate = secondTile.currentCoordinate;
     secondTile.currentCoordinate = temp;
-    notifyListeners();
+    // notifyListeners();
   }
 
   Coordinate get blankTileCoordinate {

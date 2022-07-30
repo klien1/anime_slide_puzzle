@@ -49,11 +49,13 @@ class _GameBoardTile extends State<GameBoardTile> {
 
   @override
   Widget build(BuildContext context) {
+    final PuzzleBoard puzzleBoard = context.read<PuzzleBoard>();
+
     // To calculate the dimensions of the tile, we divide the board width or height
     // we subtract the padding to have padding for right and bottom
-    final double tileWidthOrHeight = (widget._gameBoardWidthAndHeight) /
-            context.read<PuzzleBoard>().numRowsOrColumns -
-        widget._padding;
+    final double tileWidthOrHeight =
+        widget._gameBoardWidthAndHeight / puzzleBoard.numRowsOrColumns -
+            widget._padding;
 
     // To calculate the position of each tile we need to calculate the size of the tile with the padding
     // we also add an additional padding for the top and left
@@ -67,14 +69,13 @@ class _GameBoardTile extends State<GameBoardTile> {
     return AnimatedPositioned(
       left: animatedPositionLeft,
       top: animatedPositionTop,
-      duration: const Duration(milliseconds: 200),
+      duration: const Duration(milliseconds: 100),
       child: MouseRegion(
         onEnter: (e) => setState(() => isHovered = true),
         onExit: (e) => setState(() => isHovered = false),
         child: GestureDetector(
           onTap: () {
-            final PuzzleBoard puzzleBoard = context.read<PuzzleBoard>();
-            puzzleBoard.move(
+            puzzleBoard.moveTile(
               clickedTileCoordinate: widget._tile.correctCoordinate,
             );
           },
