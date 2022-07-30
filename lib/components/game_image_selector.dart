@@ -1,4 +1,4 @@
-import 'package:anime_slide_puzzle/models/puzzle_image_changer.dart';
+import 'package:anime_slide_puzzle/models/puzzle_image_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:anime_slide_puzzle/models/puzzle_board.dart';
 import 'package:provider/provider.dart';
@@ -9,7 +9,7 @@ class GameImageSelector extends StatelessWidget {
   Widget getImage(BuildContext context, String path) {
     return GestureDetector(
       onTap: () {
-        context.read<PuzzleImageChanger>().changeImage(path);
+        context.read<PuzzleImageSelector>().changeImage(path);
       },
       child: FittedBox(
         clipBehavior: Clip.hardEdge,

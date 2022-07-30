@@ -1,4 +1,4 @@
-import 'package:anime_slide_puzzle/models/puzzle_image_changer.dart';
+import 'package:anime_slide_puzzle/models/puzzle_image_selector.dart';
 import 'package:anime_slide_puzzle/models/puzzle_tile.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -44,7 +44,7 @@ class _GameBoardTile extends State<GameBoardTile> {
   @override
   void initState() {
     super.initState();
-    doesImageAssetExist(context.read<PuzzleImageChanger>().curImagePath);
+    doesImageAssetExist(context.read<PuzzleImageSelector>().curImagePath);
   }
 
   @override
@@ -95,7 +95,8 @@ class _GameBoardTile extends State<GameBoardTile> {
   Widget backgroundPuzzle(
       BuildContext context, int curRow, int curCol, double tileWidthOrHeight) {
     final numTilesPerRowOrColumn = context.read<PuzzleBoard>().numRowsOrColumns;
-    PuzzleImageChanger puzzleImageChanger = context.watch<PuzzleImageChanger>();
+    PuzzleImageSelector puzzleImageChanger =
+        context.watch<PuzzleImageSelector>();
 
     // check if numTilesPerRowOrColumn == 1 to avoid divide by zero error
     // we will return the full image if there is only 1 tile

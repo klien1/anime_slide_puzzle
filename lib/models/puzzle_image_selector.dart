@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class PuzzleImageChanger extends ChangeNotifier {
-  PuzzleImageChanger(this.curImagePath);
+class PuzzleImageSelector extends ChangeNotifier {
+  PuzzleImageSelector(this.curImagePath);
 
   String curImagePath;
 
