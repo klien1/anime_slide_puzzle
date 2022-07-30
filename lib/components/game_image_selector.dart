@@ -1,7 +1,12 @@
 import 'package:anime_slide_puzzle/models/puzzle_image_selector.dart';
 import 'package:flutter/material.dart';
-import 'package:anime_slide_puzzle/models/puzzle_board.dart';
 import 'package:provider/provider.dart';
+
+const List<String> imageList = [
+  'images/demon_slayer1.jpg',
+  'images/jujutsu_kaisen.jpg',
+  'images/spy-x-family.webp',
+];
 
 class GameImageSelector extends StatelessWidget {
   const GameImageSelector({Key? key}) : super(key: key);
@@ -26,29 +31,7 @@ class GameImageSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            getImage(context, 'images/demon_slayer1.jpg'),
-            getImage(context, 'images/jujutsu_kaisen.jpg'),
-            getImage(context, 'images/spy-x-family.webp'),
-            getImage(context, 'images/charmy.gif'),
-          ],
-        ),
-        TextButton(
-          onPressed: () {
-            context.read<PuzzleBoard>().shuffleBoard();
-          },
-          child: Text('Random'),
-        ),
-        TextButton(
-          onPressed: () {
-            context.read<PuzzleBoard>().resetBoard();
-          },
-          child: Text('Reset'),
-        ),
-      ],
+      children: [for (String path in imageList) getImage(context, path)],
     );
   }
 }

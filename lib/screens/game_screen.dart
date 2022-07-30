@@ -6,8 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:anime_slide_puzzle/components/game_image_selector.dart';
 import 'package:anime_slide_puzzle/components/select_number_tiles.dart';
+import 'package:anime_slide_puzzle/components/game_button_controls.dart';
 
-const int initialNumTilesPerRowOrColumn = 4;
+// const int initialNumTilesPerRowOrColumn = 4;
 const double gameBoardWidthAndHeight = 600;
 const double padding = 5;
 
@@ -21,29 +22,34 @@ class GameScreen extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<NumberPuzzleTiles>(
-          create: (BuildContext context) =>
-              NumberPuzzleTiles(initialNumTilesPerRowOrColumn),
+          create: (BuildContext context) => NumberPuzzleTiles(),
         ),
         ChangeNotifierProxyProvider<NumberPuzzleTiles, PuzzleBoard>(
-            create: (BuildContext context) =>
-                PuzzleBoard(initialNumTilesPerRowOrColumn),
-            update: ((context, value, previous) =>
-                PuzzleBoard(value.currentNumberOfTiles))),
+          create: (BuildContext context) => PuzzleBoard(4),
+          update: ((context, value, previous) =>
+              PuzzleBoard(value.currentNumberOfTiles)),
+        ),
         ChangeNotifierProvider<PuzzleImageSelector>(
           create: (BuildContext context) =>
-              PuzzleImageSelector('images/spy-x-family.webp'),
+              PuzzleImageSelector('images/demon_slayer1.jpg'),
         ),
       ],
       child: Scaffold(
         body: SafeArea(
-          child: Column(
-            children: const [
-              SelectNumberTiles(),
-              GameBoard(
-                gameBoardWidthAndHeight: gameBoardWidthAndHeight,
-                padding: padding,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              const GameImageSelector(),
+              Column(
+                children: const [
+                  SelectNumberTiles(),
+                  GameBoard(
+                    gameBoardWidthAndHeight: gameBoardWidthAndHeight,
+                    tilePadding: padding,
+                  ),
+                ],
               ),
-              GameImageSelector(),
+              const GameButtonControls()
             ],
           ),
         ),

@@ -10,15 +10,15 @@ class GameBoardTile extends StatefulWidget {
     Key? key,
     required PuzzleTile tile,
     required double gameBoardWidthAndHeight,
-    required double padding,
+    required double tilePadding,
   })  : _gameBoardWidthAndHeight = gameBoardWidthAndHeight,
-        _padding = padding,
+        _tilePadding = tilePadding,
         _tile = tile,
         super(key: key);
 
   final PuzzleTile _tile;
   final double _gameBoardWidthAndHeight;
-  final double _padding;
+  final double _tilePadding;
 
   @override
   State<GameBoardTile> createState() => _GameBoardTile();
@@ -55,15 +55,15 @@ class _GameBoardTile extends State<GameBoardTile> {
     // we subtract the padding to have padding for right and bottom
     final double tileWidthOrHeight =
         widget._gameBoardWidthAndHeight / puzzleBoard.numRowsOrColumns -
-            widget._padding;
+            widget._tilePadding;
 
     // To calculate the position of each tile we need to calculate the size of the tile with the padding
     // we also add an additional padding for the top and left
-    final double animatedPositionLeft = widget._padding +
-        (tileWidthOrHeight + widget._padding) *
+    final double animatedPositionLeft = widget._tilePadding +
+        (tileWidthOrHeight + widget._tilePadding) *
             widget._tile.currentCoordinate.y;
-    final double animatedPositionTop = widget._padding +
-        (tileWidthOrHeight + widget._padding) *
+    final double animatedPositionTop = widget._tilePadding +
+        (tileWidthOrHeight + widget._tilePadding) *
             widget._tile.currentCoordinate.x;
 
     return AnimatedPositioned(
