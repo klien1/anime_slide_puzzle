@@ -1,3 +1,4 @@
+import 'package:anime_slide_puzzle/models/tile_number_opacity.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:anime_slide_puzzle/models/puzzle_board.dart';
@@ -23,7 +24,7 @@ class GameButtonControls extends StatelessWidget {
         ),
         TextButton(
           onPressed: () {
-            context.read<PuzzleBoard>().resetBoard();
+            context.read<TileNumberOpacity>().toggleShowNumber();
           },
           child: Text('Show numbers'),
         ),

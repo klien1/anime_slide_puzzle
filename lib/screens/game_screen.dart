@@ -2,6 +2,7 @@ import 'package:anime_slide_puzzle/components/game_board.dart';
 import 'package:anime_slide_puzzle/models/number_puzzle_tiles.dart';
 import 'package:anime_slide_puzzle/models/puzzle_board.dart';
 import 'package:anime_slide_puzzle/models/puzzle_image_selector.dart';
+import 'package:anime_slide_puzzle/models/tile_number_opacity.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:anime_slide_puzzle/components/game_image_selector.dart';
@@ -19,21 +20,26 @@ class GameScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final myProviders = [
+      ChangeNotifierProvider<NumberPuzzleTiles>(
+        create: (BuildContext context) => NumberPuzzleTiles(),
+      ),
+      ChangeNotifierProxyProvider<NumberPuzzleTiles, PuzzleBoard>(
+        create: (BuildContext context) => PuzzleBoard(4),
+        update: ((context, value, previous) =>
+            PuzzleBoard(value.currentNumberOfTiles)),
+      ),
+      ChangeNotifierProvider<PuzzleImageSelector>(
+        create: (BuildContext context) =>
+            PuzzleImageSelector('images/demon_slayer1.jpg'),
+      ),
+      ChangeNotifierProvider<TileNumberOpacity>(
+        create: (BuildContext context) => TileNumberOpacity(),
+      ),
+    ];
+
     return MultiProvider(
-      providers: [
-        ChangeNotifierProvider<NumberPuzzleTiles>(
-          create: (BuildContext context) => NumberPuzzleTiles(),
-        ),
-        ChangeNotifierProxyProvider<NumberPuzzleTiles, PuzzleBoard>(
-          create: (BuildContext context) => PuzzleBoard(4),
-          update: ((context, value, previous) =>
-              PuzzleBoard(value.currentNumberOfTiles)),
-        ),
-        ChangeNotifierProvider<PuzzleImageSelector>(
-          create: (BuildContext context) =>
-              PuzzleImageSelector('images/demon_slayer1.jpg'),
-        ),
-      ],
+      providers: myProviders,
       child: Scaffold(
         body: SafeArea(
           child: Row(

@@ -1,5 +1,6 @@
 import 'package:anime_slide_puzzle/models/puzzle_image_selector.dart';
 import 'package:anime_slide_puzzle/models/puzzle_tile.dart';
+import 'package:anime_slide_puzzle/models/tile_number_opacity.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:anime_slide_puzzle/models/puzzle_board.dart';
@@ -98,6 +99,8 @@ class _GameBoardTile extends State<GameBoardTile> {
     PuzzleImageSelector puzzleImageChanger =
         context.watch<PuzzleImageSelector>();
 
+    TileNumberOpacity tileNumberOpacity = context.watch<TileNumberOpacity>();
+
     // check if numTilesPerRowOrColumn == 1 to avoid divide by zero error
     // we will return the full image if there is only 1 tile
     if (numTilesPerRowOrColumn == 1) {
@@ -124,30 +127,54 @@ class _GameBoardTile extends State<GameBoardTile> {
       topLeftPosition + offset * curCol,
     );
 
-    return SizedBox(
-      height: tileWidthOrHeight,
-      width: tileWidthOrHeight,
-      child: ClipRect(
-        child: OverflowBox(
-          maxHeight: double.infinity,
-          maxWidth: double.infinity,
-          child: Transform.scale(
-            scale: numTilesPerRowOrColumn.toDouble(),
-            origin: originOffset,
-            child: SizedBox(
-              height: double.minPositive,
-              width: double.minPositive,
-              child: Opacity(
-                opacity: widget._tile.isBlankTile ? 0 : 1,
-                child: Image(
-                  fit: BoxFit.cover,
-                  image: AssetImage(puzzleImageChanger.curImagePath),
+    return Stack(
+      children: [
+        SizedBox(
+          height: tileWidthOrHeight,
+          width: tileWidthOrHeight,
+          child: ClipRect(
+            child: OverflowBox(
+              maxHeight: double.infinity,
+              maxWidth: double.infinity,
+              child: Transform.scale(
+                scale: numTilesPerRowOrColumn.toDouble(),
+                origin: originOffset,
+                child: SizedBox(
+                  height: double.minPositive,
+                  width: double.minPositive,
+                  child: Opacity(
+                    opacity: widget._tile.isBlankTile ? 0 : 1,
+                    child: Image(
+                      fit: BoxFit.cover,
+                      image: AssetImage(puzzleImageChanger.curImagePath),
+                    ),
+                  ),
                 ),
               ),
             ),
           ),
         ),
-      ),
+        Positioned(
+          left: tileWidthOrHeight / 3,
+          top: offset,
+          child: AnimatedOpacity(
+            duration: const Duration(seconds: 1),
+            opacity: (widget._tile.isBlankTile)
+                ? 0
+                : tileNumberOpacity.currentOpacity,
+            child: OutlinedText(
+              widget._tile.tileNumber.toString(),
+              style: const TextStyle(
+                fontSize: 40,
+                fontWeight: FontWeight.bold,
+              ),
+              strokeColor: Colors.black,
+              strokeWidth: 2,
+              textColor: Colors.white,
+            ),
+          ),
+        )
+      ],
     );
   }
 
@@ -171,6 +198,58 @@ class _GameBoardTile extends State<GameBoardTile> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class OutlinedText extends StatelessWidget {
+  /// Text to display
+  final String text;
+
+  /// Original text style (if you weren't outlining)
+  ///
+  /// Do not specify `color` inside this: use [textColor] instead.
+  final TextStyle style;
+
+  /// Text color
+  final Color textColor;
+
+  /// Outline stroke color
+  final Color strokeColor;
+
+  /// Outline stroke width
+  final double strokeWidth;
+
+  /// Places a stroke around text to make it appear outlined
+  ///
+  /// Adapted from https://stackoverflow.com/a/55559435/11846040
+  const OutlinedText(
+    this.text, {
+    Key? key,
+    this.style = const TextStyle(),
+    required this.textColor,
+    required this.strokeColor,
+    required this.strokeWidth,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Text(
+          text,
+          style: style.copyWith(foreground: Paint()..color = textColor),
+        ),
+        Text(
+          text,
+          style: style.copyWith(
+            foreground: Paint()
+              ..strokeWidth = strokeWidth
+              ..color = strokeColor
+              ..style = PaintingStyle.stroke,
+          ),
+        ),
+      ],
     );
   }
 }

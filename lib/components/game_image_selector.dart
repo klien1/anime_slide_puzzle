@@ -2,6 +2,7 @@ import 'package:anime_slide_puzzle/models/puzzle_image_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+const double dimensionOfThumbnail = 150;
 const List<String> imageList = [
   'images/demon_slayer1.jpg',
   'images/jujutsu_kaisen.jpg',
@@ -20,8 +21,8 @@ class GameImageSelector extends StatelessWidget {
         clipBehavior: Clip.hardEdge,
         child: Image(
           image: AssetImage(path),
-          height: 150,
-          width: 150,
+          height: dimensionOfThumbnail,
+          width: dimensionOfThumbnail,
           fit: BoxFit.cover,
         ),
       ),
