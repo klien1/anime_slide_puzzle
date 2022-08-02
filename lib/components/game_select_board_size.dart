@@ -4,8 +4,8 @@ import 'package:anime_slide_puzzle/models/number_puzzle_tiles.dart';
 
 const int maxNumberOfTiles = 8;
 
-class SelectNumberTiles extends StatelessWidget {
-  const SelectNumberTiles({Key? key}) : super(key: key);
+class SelectBoardSize extends StatelessWidget {
+  const SelectBoardSize({Key? key}) : super(key: key);
 
   List<Widget> getNumberSelectorWidget(int numRowsOrCol, BuildContext context) {
     List<Widget> widgetList = [];

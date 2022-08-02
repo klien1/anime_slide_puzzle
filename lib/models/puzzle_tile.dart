@@ -11,7 +11,6 @@ class PuzzleTile extends Equatable {
     required Coordinate correctCoordinate,
     required this.currentCoordinate,
     required int tileNumber,
-    required int index,
     bool isBlank = false,
   })  : _correctCoordinate = correctCoordinate,
         _isBlank = isBlank,

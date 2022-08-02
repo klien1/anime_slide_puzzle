@@ -18,8 +18,10 @@ class GameBoard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final PuzzleBoard puzzleBoardProvider = context.watch<PuzzleBoard>();
-
+    print('rebuilding board');
+    final PuzzleBoard puzzleBoardProvider = context.read<PuzzleBoard>();
+    // final int numRowOrCol = context.watch<PuzzleBoard>().numRowsOrColumns;
+    // print('game board rebuilding');
     return Container(
       decoration: BoxDecoration(
         color: Colors.grey,

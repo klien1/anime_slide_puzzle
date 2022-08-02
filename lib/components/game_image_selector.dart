@@ -1,13 +1,9 @@
 import 'package:anime_slide_puzzle/models/puzzle_image_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:anime_slide_puzzle/constants.dart';
 
 const double dimensionOfThumbnail = 150;
-const List<String> imageList = [
-  'images/demon_slayer1.jpg',
-  'images/jujutsu_kaisen.jpg',
-  'images/spy-x-family.webp',
-];
 
 class GameImageSelector extends StatelessWidget {
   const GameImageSelector({Key? key}) : super(key: key);

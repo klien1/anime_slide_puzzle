@@ -1,27 +1,27 @@
 import 'package:equatable/equatable.dart';
 
 class Coordinate extends Equatable {
-  final int _x;
-  final int _y;
+  final int _row;
+  final int _col;
 
   const Coordinate({
-    required int x,
-    required int y,
-  })  : _x = x,
-        _y = y;
+    required int row,
+    required int col,
+  })  : _row = row,
+        _col = col;
 
-  int get x {
-    return _x;
+  int get row {
+    return _row;
   }
 
-  int get y {
-    return _y;
+  int get col {
+    return _col;
   }
 
-  Coordinate calculateAdjacent({int x = 0, int y = 0}) {
-    return Coordinate(x: _x + x, y: _y + y);
+  Coordinate calculateAdjacent({int row = 0, int col = 0}) {
+    return Coordinate(row: _row + row, col: _col + col);
   }
 
   @override
-  List<int> get props => [x, y];
+  List<int> get props => [row, col];
 }

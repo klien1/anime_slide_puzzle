@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 
 class NumberPuzzleTiles extends ChangeNotifier {
   int _currentNumberOfTiles;
-  NumberPuzzleTiles({int currentNumTiles = 4})
+  NumberPuzzleTiles({int currentNumTiles = 2})
       : _currentNumberOfTiles = currentNumTiles;
 
   int get currentNumberOfTiles {

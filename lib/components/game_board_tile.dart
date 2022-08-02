@@ -1,6 +1,5 @@
 import 'package:anime_slide_puzzle/models/puzzle_image_selector.dart';
 import 'package:anime_slide_puzzle/models/puzzle_tile.dart';
-import 'package:anime_slide_puzzle/models/tile_number_opacity.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:anime_slide_puzzle/models/puzzle_board.dart';
@@ -50,7 +49,8 @@ class _GameBoardTile extends State<GameBoardTile> {
 
   @override
   Widget build(BuildContext context) {
-    final PuzzleBoard puzzleBoard = context.read<PuzzleBoard>();
+    final PuzzleBoard puzzleBoard = context.watch<PuzzleBoard>();
+    print('puzzle tile rebuilding ${widget._tile.tileNumber}');
 
     // To calculate the dimensions of the tile, we divide the board width or height
     // we subtract the padding to have padding for right and bottom
@@ -62,10 +62,10 @@ class _GameBoardTile extends State<GameBoardTile> {
     // we also add an additional padding for the top and left
     final double animatedPositionLeft = widget._tilePadding +
         (tileWidthOrHeight + widget._tilePadding) *
-            widget._tile.currentCoordinate.y;
+            widget._tile.currentCoordinate.col;
     final double animatedPositionTop = widget._tilePadding +
         (tileWidthOrHeight + widget._tilePadding) *
-            widget._tile.currentCoordinate.x;
+            widget._tile.currentCoordinate.row;
 
     return AnimatedPositioned(
       left: animatedPositionLeft,
@@ -85,8 +85,8 @@ class _GameBoardTile extends State<GameBoardTile> {
             scale: isHovered ? .85 : 1,
             child: (!imageAssetExist || isLoadingImage)
                 ? imagelessPuzzle(context, tileWidthOrHeight)
-                : backgroundPuzzle(context, widget._tile.correctCoordinate.y,
-                    widget._tile.correctCoordinate.x, tileWidthOrHeight),
+                : backgroundPuzzle(context, widget._tile.correctCoordinate.col,
+                    widget._tile.correctCoordinate.row, tileWidthOrHeight),
           ),
         ),
       ),
@@ -95,11 +95,13 @@ class _GameBoardTile extends State<GameBoardTile> {
 
   Widget backgroundPuzzle(
       BuildContext context, int curRow, int curCol, double tileWidthOrHeight) {
-    final numTilesPerRowOrColumn = context.read<PuzzleBoard>().numRowsOrColumns;
+    PuzzleBoard currentBoardContext = context.read<PuzzleBoard>();
+
+    final numTilesPerRowOrColumn = currentBoardContext.numRowsOrColumns;
     PuzzleImageSelector puzzleImageChanger =
         context.watch<PuzzleImageSelector>();
 
-    TileNumberOpacity tileNumberOpacity = context.watch<TileNumberOpacity>();
+    // TileNumberOpacity tileNumberOpacity = context.watch<TileNumberOpacity>();
 
     // check if numTilesPerRowOrColumn == 1 to avoid divide by zero error
     // we will return the full image if there is only 1 tile
@@ -128,6 +130,7 @@ class _GameBoardTile extends State<GameBoardTile> {
     );
 
     return Stack(
+      alignment: Alignment.center,
       children: [
         SizedBox(
           height: tileWidthOrHeight,
@@ -154,24 +157,21 @@ class _GameBoardTile extends State<GameBoardTile> {
             ),
           ),
         ),
-        Positioned(
-          left: tileWidthOrHeight / 3,
-          top: offset,
-          child: AnimatedOpacity(
-            duration: const Duration(seconds: 1),
-            opacity: (widget._tile.isBlankTile)
-                ? 0
-                : tileNumberOpacity.currentOpacity,
-            child: OutlinedText(
-              widget._tile.tileNumber.toString(),
-              style: const TextStyle(
-                fontSize: 40,
-                fontWeight: FontWeight.bold,
-              ),
-              strokeColor: Colors.black,
-              strokeWidth: 2,
-              textColor: Colors.white,
+        AnimatedOpacity(
+          duration: const Duration(seconds: 1),
+          opacity: (widget._tile.isBlankTile)
+              ? 0
+              : currentBoardContext.currentTileOpacity,
+          child: OutlinedText(
+            (widget._tile.tileNumber).toString(),
+            // (widget._tile.tileNumber + 1).toString(),
+            style: const TextStyle(
+              fontSize: 40,
+              fontWeight: FontWeight.bold,
             ),
+            strokeColor: Colors.black,
+            strokeWidth: 2,
+            textColor: Colors.white,
           ),
         )
       ],
@@ -221,8 +221,6 @@ class OutlinedText extends StatelessWidget {
   final double strokeWidth;
 
   /// Places a stroke around text to make it appear outlined
-  ///
-  /// Adapted from https://stackoverflow.com/a/55559435/11846040
   const OutlinedText(
     this.text, {
     Key? key,
