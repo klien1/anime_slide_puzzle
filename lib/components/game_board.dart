@@ -8,17 +8,17 @@ class GameBoard extends StatelessWidget {
   const GameBoard({
     Key? key,
     required double gameBoardWidthAndHeight,
-    required double padding,
+    required double tilePadding,
   })  : _gameBoardWidthAndHeight = gameBoardWidthAndHeight,
-        _padding = padding,
+        _tilePadding = tilePadding,
         super(key: key);
 
   final double _gameBoardWidthAndHeight;
-  final double _padding;
+  final double _tilePadding;
 
   @override
   Widget build(BuildContext context) {
-    final PuzzleBoard puzzleBoardProvider = context.watch<PuzzleBoard>();
+    final PuzzleBoard puzzleBoardProvider = context.read<PuzzleBoard>();
 
     return Container(
       decoration: BoxDecoration(
@@ -28,19 +28,23 @@ class GameBoard extends StatelessWidget {
         ),
       ),
       // adding extra padding for the bottom and right of game board
-      width: _gameBoardWidthAndHeight + _padding,
-      height: _gameBoardWidthAndHeight + _padding,
-      child: Stack(
-        children: [
-          for (List<PuzzleTile> puzzleTileRow
-              in puzzleBoardProvider.puzzleBoard2d)
-            for (PuzzleTile tile in puzzleTileRow)
-              GameBoardTile(
-                tile: tile,
-                gameBoardWidthAndHeight: _gameBoardWidthAndHeight,
-                padding: _padding,
-              )
-        ],
+      width: _gameBoardWidthAndHeight + _tilePadding,
+      height: _gameBoardWidthAndHeight + _tilePadding,
+      child: Consumer<PuzzleBoard>(
+        builder: (BuildContext context, PuzzleBoard puzzleBoard, child) {
+          return Stack(
+            children: [
+              for (List<PuzzleTile> puzzleTileRow
+                  in puzzleBoardProvider.puzzleBoard2d)
+                for (PuzzleTile tile in puzzleTileRow)
+                  GameBoardTile(
+                    tile: tile,
+                    gameBoardWidthAndHeight: _gameBoardWidthAndHeight,
+                    tilePadding: _tilePadding,
+                  )
+            ],
+          );
+        },
       ),
     );
   }

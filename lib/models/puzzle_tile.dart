@@ -1,6 +1,7 @@
 import 'package:anime_slide_puzzle/models/coordinate.dart';
 import 'package:equatable/equatable.dart';
 
+// ignore: must_be_immutable
 class PuzzleTile extends Equatable {
   final bool _isBlank;
   final Coordinate _correctCoordinate;
@@ -11,7 +12,6 @@ class PuzzleTile extends Equatable {
     required Coordinate correctCoordinate,
     required this.currentCoordinate,
     required int tileNumber,
-    required int index,
     bool isBlank = false,
   })  : _correctCoordinate = correctCoordinate,
         _isBlank = isBlank,
