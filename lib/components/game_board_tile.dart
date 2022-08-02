@@ -49,8 +49,8 @@ class _GameBoardTile extends State<GameBoardTile> {
 
   @override
   Widget build(BuildContext context) {
-    final PuzzleBoard puzzleBoard = context.watch<PuzzleBoard>();
-    print('puzzle tile rebuilding ${widget._tile.tileNumber}');
+    final PuzzleBoard puzzleBoard = context.read<PuzzleBoard>();
+    // print('puzzle tile rebuilding ${widget._tile.tileNumber}');
 
     // To calculate the dimensions of the tile, we divide the board width or height
     // we subtract the padding to have padding for right and bottom
@@ -135,7 +135,8 @@ class _GameBoardTile extends State<GameBoardTile> {
         SizedBox(
           height: tileWidthOrHeight,
           width: tileWidthOrHeight,
-          child: ClipRect(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
             child: OverflowBox(
               maxHeight: double.infinity,
               maxWidth: double.infinity,

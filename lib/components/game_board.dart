@@ -18,10 +18,8 @@ class GameBoard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('rebuilding board');
     final PuzzleBoard puzzleBoardProvider = context.read<PuzzleBoard>();
-    // final int numRowOrCol = context.watch<PuzzleBoard>().numRowsOrColumns;
-    // print('game board rebuilding');
+
     return Container(
       decoration: BoxDecoration(
         color: Colors.grey,
@@ -32,17 +30,21 @@ class GameBoard extends StatelessWidget {
       // adding extra padding for the bottom and right of game board
       width: _gameBoardWidthAndHeight + _tilePadding,
       height: _gameBoardWidthAndHeight + _tilePadding,
-      child: Stack(
-        children: [
-          for (List<PuzzleTile> puzzleTileRow
-              in puzzleBoardProvider.puzzleBoard2d)
-            for (PuzzleTile tile in puzzleTileRow)
-              GameBoardTile(
-                tile: tile,
-                gameBoardWidthAndHeight: _gameBoardWidthAndHeight,
-                tilePadding: _tilePadding,
-              )
-        ],
+      child: Consumer<PuzzleBoard>(
+        builder: (BuildContext context, PuzzleBoard puzzleBoard, child) {
+          return Stack(
+            children: [
+              for (List<PuzzleTile> puzzleTileRow
+                  in puzzleBoardProvider.puzzleBoard2d)
+                for (PuzzleTile tile in puzzleTileRow)
+                  GameBoardTile(
+                    tile: tile,
+                    gameBoardWidthAndHeight: _gameBoardWidthAndHeight,
+                    tilePadding: _tilePadding,
+                  )
+            ],
+          );
+        },
       ),
     );
   }

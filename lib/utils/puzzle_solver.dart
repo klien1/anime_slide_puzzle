@@ -85,11 +85,11 @@ class PuzzleSolver {
 
     AStarNode? temp = curBoardState;
     while (temp!.prevBoardState != null) {
-      // while (temp != null) {
-      for (var list in temp.boardState) {
-        print(list);
-      }
-      print('');
+      // // while (temp != null) {
+      // for (var list in temp.boardState) {
+      //   print(list);
+      // }
+      // print('');
 
       moveList.addFirst(temp.getBlankTileCoordiante());
       temp = temp.prevBoardState;

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:anime_slide_puzzle/models/number_puzzle_tiles.dart';
 
-const int maxNumberOfTiles = 8;
+const int maxNumberOfTiles = 4;
 
 class SelectBoardSize extends StatelessWidget {
   const SelectBoardSize({Key? key}) : super(key: key);

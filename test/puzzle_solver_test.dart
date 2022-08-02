@@ -1,9 +1,7 @@
 import 'dart:collection';
-
 import 'package:anime_slide_puzzle/models/puzzleSolver/a_star_node.dart';
 import 'package:anime_slide_puzzle/models/coordinate.dart';
 import 'package:anime_slide_puzzle/utils/puzzle_solver.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

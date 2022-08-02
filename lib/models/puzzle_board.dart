@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:collection';
-
 import 'package:anime_slide_puzzle/models/coordinate.dart';
 import 'package:anime_slide_puzzle/utils/puzzle_board_helper.dart';
 import 'package:anime_slide_puzzle/utils/puzzle_solver.dart';
@@ -15,6 +14,7 @@ class PuzzleBoard extends ChangeNotifier {
   int _numberOfMoves = 0;
   double _currentTileOpacity = 0;
   bool _gameInProgress = false;
+  bool _lookingForSolution = false;
 
   PuzzleBoard({required numRowsOrColumns})
       : _numRowsOrColumns = numRowsOrColumns {
@@ -138,48 +138,30 @@ class PuzzleBoard extends ChangeNotifier {
     return totalInversion;
   }
 
-  // void solvePuzzleWithAStar() {
-  //   PuzzleSolver puzzleSolver =
-  //       PuzzleSolver(startingBoardState: _puzzleTileNumberMatrix);
+  void solvePuzzleWithAStar() async {
+    _lookingForSolution = true;
+    PuzzleSolver puzzleSolver =
+        PuzzleSolver(startingBoardState: _puzzleTileNumberMatrix);
 
-  //   Queue<Coordinate> moveList = puzzleSolver.solvePuzzle();
-  //   print('moveList = $moveList');
+    Queue<Coordinate> moveList = puzzleSolver.solvePuzzle();
 
-  //   while (moveList.isNotEmpty) {
-  //     Coordinate nextBlankTileCoord = moveList.removeFirst();
-  //     // check which number is at next Coordinate;
-  //     int tileNum = _puzzleTileNumberMatrix[nextBlankTileCoord.row]
-  //         [nextBlankTileCoord.col];
-  //     // convert to 2d coordinate
-  //     Coordinate adjacentTileCoordinate = convert1dArrayCoordTo2dArrayCoord(
-  //         index: tileNum, numRowOrColCount: _numRowsOrColumns);
-  //     // Get tile
-  //     PuzzleTile adjTile = _puzzleTiles2d[adjacentTileCoordinate.row]
-  //         [adjacentTileCoordinate.col];
+    while (moveList.isNotEmpty) {
+      Coordinate nextBlankTileCoord = moveList.removeFirst();
+      // check which number needs to be swapped
+      int tileNum = _puzzleTileNumberMatrix[nextBlankTileCoord.row]
+          [nextBlankTileCoord.col];
+      // convert to 2d coordinate
+      Coordinate adjacentTileCoordinate = convert1dArrayCoordTo2dArrayCoord(
+          index: tileNum, numRowOrColCount: _numRowsOrColumns);
+      // Get tile
+      PuzzleTile adjTile = _puzzleTiles2d[adjacentTileCoordinate.row]
+          [adjacentTileCoordinate.col];
 
-  //     PuzzleTile blankTile = _puzzleTiles2d[_correctBlankTileCoordinate.row]
-  //         [_correctBlankTileCoordinate.col];
-
-  //     // print('adjTile = $adjTile - ${adjTile.tileNumber}');
-  //     // print('balnkTile coordinate next move = $nextBlankTileCoord');
-  //     // print('blankTile = $blankTile - ${blankTile.tileNumber}');
-
-  //     // 2 3
-  //     // 1 0
-
-  //     // 2 0
-  //     // 1 3
-
-  //     print(_puzzleTileNumberMatrix);
-
-  //     Timer(
-  //       const Duration(seconds: 1),
-  //       (() {
-  //         moveTile(clickedTileCoordinate: adjTile.correctCoordinate);
-  //       }),
-  //     );
-  //   }
-  // }
+      await Future.delayed(const Duration(milliseconds: 200));
+      moveTile(clickedTileCoordinate: adjTile.correctCoordinate);
+    }
+    _lookingForSolution = false;
+  }
 
   void moveTile({
     required Coordinate clickedTileCoordinate,
@@ -195,7 +177,7 @@ class PuzzleBoard extends ChangeNotifier {
       ++_numberOfMoves;
 
       if (_isPuzzleTileInCorrectPosition() && _gameInProgress) {
-        print('completed!');
+        // print('completed!');
       }
 
       notifyListeners();
@@ -305,5 +287,9 @@ class PuzzleBoard extends ChangeNotifier {
 
   List<List<int>> get puzzleTileNumberMatrix {
     return _puzzleTileNumberMatrix;
+  }
+
+  bool get isLookingForSolution {
+    return _lookingForSolution;
   }
 }

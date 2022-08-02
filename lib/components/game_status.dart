@@ -7,7 +7,17 @@ class GameStatus extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-        'Number of Moves: ${context.watch<PuzzleBoard>().numberOfMoves}');
+    return Column(
+      children: [
+        Text('Number of Moves: ${context.watch<PuzzleBoard>().numberOfMoves}'),
+        Text(
+          'Solving puzzle...',
+          style: TextStyle(
+            color: Colors.black.withOpacity(
+                (context.watch<PuzzleBoard>().isLookingForSolution) ? 1 : 0),
+          ),
+        )
+      ],
+    );
   }
 }
