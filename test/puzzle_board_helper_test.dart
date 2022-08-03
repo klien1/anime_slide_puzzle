@@ -14,4 +14,12 @@ void main() {
         convert2dArrayCoordTo1dArrayCoord(row: 2, col: 3, numRowOrColCount: 4);
     expect(val, 11);
   });
+
+  test('isEven(8) should return true', () {
+    expect(isEven(8), true);
+  });
+
+  test('isEven(41) should return false', () {
+    expect(isEven(41), false);
+  });
 }

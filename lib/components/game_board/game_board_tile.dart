@@ -50,7 +50,6 @@ class _GameBoardTile extends State<GameBoardTile> {
   @override
   Widget build(BuildContext context) {
     final PuzzleBoard puzzleBoard = context.read<PuzzleBoard>();
-    // print('puzzle tile rebuilding ${widget._tile.tileNumber}');
 
     // To calculate the dimensions of the tile, we divide the board width or height
     // we subtract the padding to have padding for right and bottom
@@ -76,9 +75,11 @@ class _GameBoardTile extends State<GameBoardTile> {
         onExit: (e) => setState(() => isHovered = false),
         child: GestureDetector(
           onTap: () {
-            puzzleBoard.moveTile(
-              clickedTileCoordinate: widget._tile.correctCoordinate,
-            );
+            if (!puzzleBoard.isLookingForSolution) {
+              puzzleBoard.moveTile(
+                clickedTileCoordinate: widget._tile.correctCoordinate,
+              );
+            }
           },
           child: AnimatedScale(
             duration: const Duration(milliseconds: 100),
@@ -100,8 +101,6 @@ class _GameBoardTile extends State<GameBoardTile> {
     final numTilesPerRowOrColumn = currentBoardContext.numRowsOrColumns;
     PuzzleImageSelector puzzleImageChanger =
         context.watch<PuzzleImageSelector>();
-
-    // TileNumberOpacity tileNumberOpacity = context.watch<TileNumberOpacity>();
 
     // check if numTilesPerRowOrColumn == 1 to avoid divide by zero error
     // we will return the full image if there is only 1 tile
@@ -165,13 +164,12 @@ class _GameBoardTile extends State<GameBoardTile> {
               : currentBoardContext.currentTileOpacity,
           child: OutlinedText(
             (widget._tile.tileNumber).toString(),
-            // (widget._tile.tileNumber + 1).toString(),
             style: const TextStyle(
               fontSize: 40,
               fontWeight: FontWeight.bold,
             ),
             strokeColor: Colors.black,
-            strokeWidth: 2,
+            strokeWidth: 1,
             textColor: Colors.white,
           ),
         )

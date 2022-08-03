@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:anime_slide_puzzle/components/game_board.dart';
+import 'package:anime_slide_puzzle/components/game_board/game_board.dart';
 import 'package:anime_slide_puzzle/models/number_puzzle_tiles.dart';
 import 'package:anime_slide_puzzle/models/puzzle_board.dart';
 import 'package:anime_slide_puzzle/models/puzzle_image_selector.dart';

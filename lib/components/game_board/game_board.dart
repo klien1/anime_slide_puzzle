@@ -1,4 +1,4 @@
-import 'package:anime_slide_puzzle/components/game_board_tile.dart';
+import 'package:anime_slide_puzzle/components/game_board/game_board_tile.dart';
 import 'package:anime_slide_puzzle/models/puzzle_board.dart';
 import 'package:anime_slide_puzzle/models/puzzle_tile.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +18,7 @@ class GameBoard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final PuzzleBoard puzzleBoardProvider = context.read<PuzzleBoard>();
+    final PuzzleBoard puzzleBoardProvider = context.watch<PuzzleBoard>();
 
     return Container(
       decoration: BoxDecoration(

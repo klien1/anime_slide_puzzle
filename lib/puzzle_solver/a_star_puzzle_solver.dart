@@ -1,41 +1,33 @@
 import 'package:anime_slide_puzzle/models/puzzle_board.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:anime_slide_puzzle/models/puzzleSolver/a_star_node.dart';
+import 'package:anime_slide_puzzle/puzzle_solver/a_star_node.dart';
 import 'package:anime_slide_puzzle/models/coordinate.dart';
 import 'package:collection/collection.dart';
+import 'package:anime_slide_puzzle/puzzle_solver/puzzle_solver_helper.dart';
 import 'dart:collection';
 
-class PuzzleSolver {
+class AStarPuzzleSolver {
   final List<List<int>> _startingBoardState;
   late final AStarNode _goalState;
-  // late final int _rowOrColCount;
-  // late final int _blankTileValueNumber;
 
-  PuzzleSolver({required startingBoardState})
-      : _startingBoardState = startingBoardState
-  // _rowOrColCount = sqrt(startingBoardState.length).toInt(),
-  // _blankTileValueNumber =
-  // startingBoardState.length * startingBoardState.length - 1
-  {
-    _goalState = AStarNode(boardState: generateGoalState());
+  AStarPuzzleSolver({
+    required List<List<int>> startingBoardState,
+    required Coordinate currentBlankTileCoordiante,
+  }) : _startingBoardState = startingBoardState {
+    _goalState = AStarNode(
+        initialBoardState: generateGoalState(startingBoardState.length),
+        blankTileCoordinate: currentBlankTileCoordiante);
   }
 
-  @visibleForTesting
-  List<List<int>> generateGoalState() {
-    return List.generate(
-      _startingBoardState.length,
-      (row) => List.generate(_startingBoardState.length,
-          (col) => row * _startingBoardState.length + col),
+  Queue<Coordinate> solvePuzzle(Coordinate blankTileCoordinate) {
+    AStarNode curBoardState = AStarNode(
+      initialBoardState: _startingBoardState,
+      blankTileCoordinate: blankTileCoordinate,
     );
-  }
-
-  Queue<Coordinate> solvePuzzle() {
-    AStarNode curBoardState = AStarNode(boardState: _startingBoardState);
     Queue<Coordinate> moveList = Queue();
     // checks to see if puzzle is solvable
     if (!PuzzleBoard.isPuzzleIsSolvable(
         matrix: curBoardState.boardState,
-        blankTileRow: curBoardState.getBlankTileCoordiante().row)) {
+        blankTileRow: curBoardState.getBlankTileCoordinate.row)) {
       return moveList;
     }
 
@@ -51,7 +43,7 @@ class PuzzleSolver {
       if (curBoardState == _goalState) break; // found solution
 
       // down
-      addNextBoardState(
+      _addNextBoardState(
         curBoardState: curBoardState,
         heapPriorityQueue: heapPriorityQueue,
         visited: visited,
@@ -59,7 +51,7 @@ class PuzzleSolver {
       );
 
       // up
-      addNextBoardState(
+      _addNextBoardState(
         curBoardState: curBoardState,
         heapPriorityQueue: heapPriorityQueue,
         visited: visited,
@@ -67,7 +59,7 @@ class PuzzleSolver {
       );
 
       // right
-      addNextBoardState(
+      _addNextBoardState(
         curBoardState: curBoardState,
         heapPriorityQueue: heapPriorityQueue,
         visited: visited,
@@ -75,7 +67,7 @@ class PuzzleSolver {
       );
 
       //left
-      addNextBoardState(
+      _addNextBoardState(
         curBoardState: curBoardState,
         heapPriorityQueue: heapPriorityQueue,
         visited: visited,
@@ -85,24 +77,13 @@ class PuzzleSolver {
 
     AStarNode? temp = curBoardState;
     while (temp!.prevBoardState != null) {
-      // // while (temp != null) {
-      // for (var list in temp.boardState) {
-      //   print(list);
-      // }
-      // print('');
-
-      moveList.addFirst(temp.getBlankTileCoordiante());
+      moveList.addFirst(temp.getBlankTileCoordinate);
       temp = temp.prevBoardState;
     }
-
-    // while (moveList.isNotEmpty) {
-    //   print(moveList.removeFirst());
-    // }
-
     return moveList;
   }
 
-  void addNextBoardState({
+  void _addNextBoardState({
     required AStarNode curBoardState,
     required HeapPriorityQueue<AStarNode> heapPriorityQueue,
     required HashSet<AStarNode> visited,
@@ -110,26 +91,35 @@ class PuzzleSolver {
     int col = 0,
   }) {
     // create new board state, so we don't use the same reference
-    List<List<int>> newBoardState = [
-      for (List<int> row in curBoardState.boardState) [...row]
-    ];
+    List<List<int>> newBoardState = copyBoardState(curBoardState.boardState);
 
     // swap poistions and returns true if successful
-    Coordinate curBlankCoordinate = curBoardState.getBlankTileCoordiante();
+    Coordinate curBlankCoordinate = curBoardState.getBlankTileCoordinate;
+    Coordinate newBlankCoordiantePosition =
+        curBlankCoordinate.calculateAdjacent(row: row, col: col);
     bool successfulSwap = PuzzleBoard.swapTileNumbers(
       matrix: newBoardState,
       first: curBlankCoordinate,
-      second: curBlankCoordinate.calculateAdjacent(row: row, col: col),
+      second: newBlankCoordiantePosition,
     );
 
+    // if swap wasn't successful exit method
+    if (!successfulSwap) return;
+
+    // exit method if new board state is the same as previous state
+    if (isSameMatrix(curBoardState.boardState, newBoardState)) {
+      return;
+    }
+
     AStarNode newNode = AStarNode(
-      boardState: newBoardState,
+      initialBoardState: newBoardState,
+      blankTileCoordinate: newBlankCoordiantePosition,
       curMove: curBoardState.curMove + 1,
       prevBoardState: curBoardState,
     );
 
-    // if swap was successful and node has not been visited, then add to queue
-    if (successfulSwap && !visited.contains(newNode)) {
+    // if node has not been visited, then add to queue
+    if (!visited.contains(newNode)) {
       visited.add(newNode);
       heapPriorityQueue.add(newNode);
     }

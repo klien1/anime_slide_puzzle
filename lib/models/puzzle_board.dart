@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'dart:collection';
 import 'package:anime_slide_puzzle/models/coordinate.dart';
+import 'package:anime_slide_puzzle/puzzle_solver/ida_star_puzzle_solver.dart';
 import 'package:anime_slide_puzzle/utils/puzzle_board_helper.dart';
-import 'package:anime_slide_puzzle/utils/puzzle_solver.dart';
+import 'package:anime_slide_puzzle/puzzle_solver/a_star_puzzle_solver.dart';
 import 'package:flutter/material.dart';
 import 'package:anime_slide_puzzle/models/puzzle_tile.dart';
 import 'dart:math';
@@ -14,7 +15,7 @@ class PuzzleBoard extends ChangeNotifier {
   int _numberOfMoves = 0;
   double _currentTileOpacity = 0;
   bool _gameInProgress = false;
-  bool _lookingForSolution = false;
+  bool _solutionInProgress = false;
 
   PuzzleBoard({required numRowsOrColumns})
       : _numRowsOrColumns = numRowsOrColumns {
@@ -119,7 +120,6 @@ class PuzzleBoard extends ChangeNotifier {
   // An inversion is any pair of tiles i and j where i < j
   // but i appears after j when considering the board in row-major order
   static int countTotalInversion({required List<List<int>> matrix}) {
-    int totalInversion = 0;
     int numRowsOrColumns = matrix.length;
 
     List<int> currentTilePosition1d = [];
@@ -127,40 +127,95 @@ class PuzzleBoard extends ChangeNotifier {
       currentTilePosition1d.addAll(element);
     }
 
-    for (int i = 0; i < currentTilePosition1d.length; ++i) {
-      final curVal = currentTilePosition1d[i];
-      for (int j = i + 1; j < currentTilePosition1d.length; ++j) {
+    return countInversion(
+      currentTilePosition1d,
+      numRowsOrColumns * numRowsOrColumns - 1,
+    );
+  }
+
+  static int countInversion(List<int> tileNumberList, int blankTileNum) {
+    int numInversions = 0;
+
+    for (int i = 0; i < tileNumberList.length; ++i) {
+      final curVal = tileNumberList[i];
+      for (int j = i + 1; j < tileNumberList.length; ++j) {
         // skip inversion count if blank tile
-        if (curVal == (numRowsOrColumns * numRowsOrColumns - 1)) continue;
-        if (curVal > currentTilePosition1d[j]) ++totalInversion;
+        if (curVal == blankTileNum) continue;
+
+        if (curVal > tileNumberList[j]) ++numInversions;
       }
     }
-    return totalInversion;
+    return numInversions;
+  }
+
+  void _toggleSolutionInProgress(bool status) {
+    _solutionInProgress = status;
+    notifyListeners();
+  }
+
+  void _toggleGameInProgress(bool status) {
+    _gameInProgress = status;
+    notifyListeners();
+  }
+
+  void solvePuzzleWithIDAStar() async {
+    _toggleSolutionInProgress(true);
+    IDAStarPuzzleSolver solver = IDAStarPuzzleSolver(
+      initialBoardState: _puzzleTileNumberMatrix,
+      blankTileCoordinate: currentBlankTileCoordiante,
+    );
+
+    Queue<Coordinate> moveList = solver.solvePuzzle();
+    while (moveList.isNotEmpty) {
+      Coordinate nextBlankTileCoord = moveList.removeFirst();
+      await _aiMoveTile(nextBlankTileCoord);
+    }
+    _toggleSolutionInProgress(false);
   }
 
   void solvePuzzleWithAStar() async {
-    _lookingForSolution = true;
-    PuzzleSolver puzzleSolver =
-        PuzzleSolver(startingBoardState: _puzzleTileNumberMatrix);
+    _toggleSolutionInProgress(true);
+    AStarPuzzleSolver puzzleSolver = AStarPuzzleSolver(
+      startingBoardState: _puzzleTileNumberMatrix,
+      currentBlankTileCoordiante: currentBlankTileCoordiante,
+    );
 
-    Queue<Coordinate> moveList = puzzleSolver.solvePuzzle();
+    Queue<Coordinate> moveList =
+        puzzleSolver.solvePuzzle(currentBlankTileCoordiante);
 
     while (moveList.isNotEmpty) {
       Coordinate nextBlankTileCoord = moveList.removeFirst();
-      // check which number needs to be swapped
-      int tileNum = _puzzleTileNumberMatrix[nextBlankTileCoord.row]
-          [nextBlankTileCoord.col];
-      // convert to 2d coordinate
-      Coordinate adjacentTileCoordinate = convert1dArrayCoordTo2dArrayCoord(
-          index: tileNum, numRowOrColCount: _numRowsOrColumns);
-      // Get tile
-      PuzzleTile adjTile = _puzzleTiles2d[adjacentTileCoordinate.row]
-          [adjacentTileCoordinate.col];
+      await _aiMoveTile(nextBlankTileCoord);
 
-      await Future.delayed(const Duration(milliseconds: 200));
-      moveTile(clickedTileCoordinate: adjTile.correctCoordinate);
+      // // check which number needs to be swapped
+      // int tileNum = _puzzleTileNumberMatrix[nextBlankTileCoord.row]
+      //     [nextBlankTileCoord.col];
+      // // convert to 2d coordinate
+      // Coordinate adjacentTileCoordinate = convert1dArrayCoordTo2dArrayCoord(
+      //     index: tileNum, numRowOrColCount: _numRowsOrColumns);
+      // // Get tile
+      // PuzzleTile adjTile = _puzzleTiles2d[adjacentTileCoordinate.row]
+      //     [adjacentTileCoordinate.col];
+
+      // await Future.delayed(const Duration(milliseconds: 200));
+      // moveTile(clickedTileCoordinate: adjTile.correctCoordinate);
     }
-    _lookingForSolution = false;
+    _toggleSolutionInProgress(false);
+  }
+
+  Future<void> _aiMoveTile(Coordinate nextBlankTileCoord) async {
+    // check which number needs to be swapped
+    int tileNum =
+        _puzzleTileNumberMatrix[nextBlankTileCoord.row][nextBlankTileCoord.col];
+    // convert to 2d coordinate
+    Coordinate adjacentTileCoordinate = convert1dArrayCoordTo2dArrayCoord(
+        index: tileNum, numRowOrColCount: _numRowsOrColumns);
+    // Get tile
+    PuzzleTile adjTile =
+        _puzzleTiles2d[adjacentTileCoordinate.row][adjacentTileCoordinate.col];
+
+    await Future.delayed(const Duration(milliseconds: 200));
+    moveTile(clickedTileCoordinate: adjTile.correctCoordinate);
   }
 
   void moveTile({
@@ -178,6 +233,7 @@ class PuzzleBoard extends ChangeNotifier {
 
       if (_isPuzzleTileInCorrectPosition() && _gameInProgress) {
         // print('completed!');
+        _toggleGameInProgress(false);
       }
 
       notifyListeners();
@@ -290,6 +346,6 @@ class PuzzleBoard extends ChangeNotifier {
   }
 
   bool get isLookingForSolution {
-    return _lookingForSolution;
+    return _solutionInProgress;
   }
 }
