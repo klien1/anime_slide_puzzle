@@ -1,3 +1,5 @@
+import 'package:anime_slide_puzzle/components/game_board/Imageless_puzzle_piece.dart';
+import 'package:anime_slide_puzzle/components/game_board/background_puzzle_piece.dart';
 import 'package:anime_slide_puzzle/models/puzzle_image_selector.dart';
 import 'package:anime_slide_puzzle/models/puzzle_tile.dart';
 import 'package:flutter/services.dart';
@@ -8,17 +10,24 @@ import 'package:flutter/material.dart';
 class GameBoardTile extends StatefulWidget {
   const GameBoardTile({
     Key? key,
-    required PuzzleTile tile,
-    required double gameBoardWidthAndHeight,
-    required double tilePadding,
-  })  : _gameBoardWidthAndHeight = gameBoardWidthAndHeight,
-        _tilePadding = tilePadding,
-        _tile = tile,
-        super(key: key);
+    required this.tile,
+    required this.width,
+    required this.height,
+    required this.tilePadding,
+    this.tileBorderRadius = 10,
+    this.positionDuration = const Duration(milliseconds: 100),
+    this.scaleDuration = const Duration(milliseconds: 100),
+    this.textOpacityDuration = const Duration(milliseconds: 100),
+  }) : super(key: key);
 
-  final PuzzleTile _tile;
-  final double _gameBoardWidthAndHeight;
-  final double _tilePadding;
+  final PuzzleTile tile;
+  final double width;
+  final double height;
+  final double tilePadding;
+  final double tileBorderRadius;
+  final Duration positionDuration;
+  final Duration scaleDuration;
+  final Duration textOpacityDuration;
 
   @override
   State<GameBoardTile> createState() => _GameBoardTile();
@@ -50,203 +59,58 @@ class _GameBoardTile extends State<GameBoardTile> {
   @override
   Widget build(BuildContext context) {
     final PuzzleBoard puzzleBoard = context.read<PuzzleBoard>();
+    final PuzzleImageSelector imageSelector =
+        context.watch<PuzzleImageSelector>();
 
     // To calculate the dimensions of the tile, we divide the board width or height
     // we subtract the padding to have padding for right and bottom
-    final double tileWidthOrHeight =
-        widget._gameBoardWidthAndHeight / puzzleBoard.numRowsOrColumns -
-            widget._tilePadding;
+    final double tileWidth =
+        widget.width / puzzleBoard.numRowsOrColumns - widget.tilePadding;
+    final double tileHeight =
+        widget.height / puzzleBoard.numRowsOrColumns - widget.tilePadding;
 
     // To calculate the position of each tile we need to calculate the size of the tile with the padding
     // we also add an additional padding for the top and left
-    final double animatedPositionLeft = widget._tilePadding +
-        (tileWidthOrHeight + widget._tilePadding) *
-            widget._tile.currentCoordinate.col;
-    final double animatedPositionTop = widget._tilePadding +
-        (tileWidthOrHeight + widget._tilePadding) *
-            widget._tile.currentCoordinate.row;
+    final double animatedPositionLeft = widget.tilePadding +
+        (tileWidth + widget.tilePadding) * widget.tile.currentCoordinate.col;
+    final double animatedPositionTop = widget.tilePadding +
+        (tileHeight + widget.tilePadding) * widget.tile.currentCoordinate.row;
 
     return AnimatedPositioned(
       left: animatedPositionLeft,
       top: animatedPositionTop,
-      duration: const Duration(milliseconds: 100),
+      duration: widget.positionDuration,
       child: MouseRegion(
         onEnter: (e) => setState(() => isHovered = true),
         onExit: (e) => setState(() => isHovered = false),
         child: GestureDetector(
-          onTap: () {
-            if (!puzzleBoard.isLookingForSolution) {
-              puzzleBoard.moveTile(
-                clickedTileCoordinate: widget._tile.correctCoordinate,
-              );
-            }
-          },
+          onTap: (puzzleBoard.isLookingForSolution)
+              ? null
+              : () {
+                  puzzleBoard.moveTile(
+                      clickedTileCoordinate: widget.tile.correctCoordinate);
+                },
           child: AnimatedScale(
-            duration: const Duration(milliseconds: 100),
+            duration: widget.scaleDuration,
             scale: isHovered ? .85 : 1,
             child: (!imageAssetExist || isLoadingImage)
-                ? imagelessPuzzle(context, tileWidthOrHeight)
-                : backgroundPuzzle(context, widget._tile.correctCoordinate.col,
-                    widget._tile.correctCoordinate.row, tileWidthOrHeight),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget backgroundPuzzle(
-      BuildContext context, int curRow, int curCol, double tileWidthOrHeight) {
-    PuzzleBoard currentBoardContext = context.read<PuzzleBoard>();
-
-    final numTilesPerRowOrColumn = currentBoardContext.numRowsOrColumns;
-    PuzzleImageSelector puzzleImageChanger =
-        context.watch<PuzzleImageSelector>();
-
-    // check if numTilesPerRowOrColumn == 1 to avoid divide by zero error
-    // we will return the full image if there is only 1 tile
-    if (numTilesPerRowOrColumn == 1) {
-      return SizedBox(
-        height: tileWidthOrHeight,
-        width: tileWidthOrHeight,
-        child: Image(
-          fit: BoxFit.cover,
-          image: AssetImage(puzzleImageChanger.curImagePath),
-        ),
-      );
-    }
-
-    // Offset position starts at center of image Offset(0, 0)
-    // To get topLeft position we need to move half of the container's size up and left
-    final double topLeftPosition = -tileWidthOrHeight / 2;
-
-    // we divide tileWidthOrHeight by (numTilesPerRowOrColumn - 1) to calcutate
-    // offset for the remaining points since we already have the starting point
-    final offset = tileWidthOrHeight / (numTilesPerRowOrColumn - 1);
-
-    final originOffset = Offset(
-      topLeftPosition + offset * curRow,
-      topLeftPosition + offset * curCol,
-    );
-
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        SizedBox(
-          height: tileWidthOrHeight,
-          width: tileWidthOrHeight,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: OverflowBox(
-              maxHeight: double.infinity,
-              maxWidth: double.infinity,
-              child: Transform.scale(
-                scale: numTilesPerRowOrColumn.toDouble(),
-                origin: originOffset,
-                child: SizedBox(
-                  height: double.minPositive,
-                  width: double.minPositive,
-                  child: Opacity(
-                    opacity: widget._tile.isBlankTile ? 0 : 1,
-                    child: Image(
-                      fit: BoxFit.cover,
-                      image: AssetImage(puzzleImageChanger.curImagePath),
-                    ),
+                ? ImagelessPuzzle(
+                    height: tileHeight,
+                    width: tileWidth,
+                    tileNumber: widget.tile.tileNumber,
+                    isBlankTile: widget.tile.isBlankTile,
+                  )
+                : BackgroundPuzzlePiece(
+                    tile: widget.tile,
+                    tileHeight: tileHeight,
+                    tileWidth: tileWidth,
+                    curImagePath: imageSelector.curImagePath,
+                    numRowsOrColumn: puzzleBoard.numRowsOrColumns,
+                    tileNumberOpacity: puzzleBoard.currentTileOpacity,
                   ),
-                ),
-              ),
-            ),
-          ),
-        ),
-        AnimatedOpacity(
-          duration: const Duration(seconds: 1),
-          opacity: (widget._tile.isBlankTile)
-              ? 0
-              : currentBoardContext.currentTileOpacity,
-          child: OutlinedText(
-            (widget._tile.tileNumber).toString(),
-            style: const TextStyle(
-              fontSize: 40,
-              fontWeight: FontWeight.bold,
-            ),
-            strokeColor: Colors.black,
-            strokeWidth: 1,
-            textColor: Colors.white,
-          ),
-        )
-      ],
-    );
-  }
-
-  Container imagelessPuzzle(BuildContext context, double tileWidthOrHeight) {
-    return Container(
-      width: tileWidthOrHeight,
-      height: tileWidthOrHeight,
-      decoration: BoxDecoration(
-        color: widget._tile.isBlankTile
-            ? Colors.lightBlue.withOpacity(0.0)
-            : Colors.lightBlue,
-      ),
-      child: Center(
-        child: Text(
-          widget._tile.tileNumber.toString(),
-          style: TextStyle(
-            color: widget._tile.isBlankTile
-                ? Colors.black.withOpacity(0.0)
-                : Colors.black,
-            fontSize: 20,
           ),
         ),
       ),
-    );
-  }
-}
-
-class OutlinedText extends StatelessWidget {
-  /// Text to display
-  final String text;
-
-  /// Original text style (if you weren't outlining)
-  ///
-  /// Do not specify `color` inside this: use [textColor] instead.
-  final TextStyle style;
-
-  /// Text color
-  final Color textColor;
-
-  /// Outline stroke color
-  final Color strokeColor;
-
-  /// Outline stroke width
-  final double strokeWidth;
-
-  /// Places a stroke around text to make it appear outlined
-  const OutlinedText(
-    this.text, {
-    Key? key,
-    this.style = const TextStyle(),
-    required this.textColor,
-    required this.strokeColor,
-    required this.strokeWidth,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Text(
-          text,
-          style: style.copyWith(foreground: Paint()..color = textColor),
-        ),
-        Text(
-          text,
-          style: style.copyWith(
-            foreground: Paint()
-              ..strokeWidth = strokeWidth
-              ..color = strokeColor
-              ..style = PaintingStyle.stroke,
-          ),
-        ),
-      ],
     );
   }
 }

@@ -160,8 +160,23 @@ class PuzzleBoard extends ChangeNotifier {
 
   void solvePuzzleWithIDAStar() async {
     _toggleSolutionInProgress(true);
+
+    // convert matrix to 1d array to solver
+    List<int> flattenedTileNumbers = List.generate(
+      _puzzleTileNumberMatrix.length * _puzzleTileNumberMatrix.length,
+      (index) => 0,
+      growable: false,
+    );
+
+    for (int row = 0; row < _puzzleTileNumberMatrix.length; ++row) {
+      for (int col = 0; col < _puzzleTileNumberMatrix[row].length; ++col) {
+        flattenedTileNumbers[row * _puzzleTileNumberMatrix.length + col] =
+            _puzzleTileNumberMatrix[row][col];
+      }
+    }
     IDAStarPuzzleSolver solver = IDAStarPuzzleSolver(
-      initialBoardState: _puzzleTileNumberMatrix,
+      initialBoardState: flattenedTileNumbers,
+      numRowsOrColumns: _numRowsOrColumns,
       blankTileCoordinate: currentBlankTileCoordiante,
     );
 
@@ -186,19 +201,6 @@ class PuzzleBoard extends ChangeNotifier {
     while (moveList.isNotEmpty) {
       Coordinate nextBlankTileCoord = moveList.removeFirst();
       await _aiMoveTile(nextBlankTileCoord);
-
-      // // check which number needs to be swapped
-      // int tileNum = _puzzleTileNumberMatrix[nextBlankTileCoord.row]
-      //     [nextBlankTileCoord.col];
-      // // convert to 2d coordinate
-      // Coordinate adjacentTileCoordinate = convert1dArrayCoordTo2dArrayCoord(
-      //     index: tileNum, numRowOrColCount: _numRowsOrColumns);
-      // // Get tile
-      // PuzzleTile adjTile = _puzzleTiles2d[adjacentTileCoordinate.row]
-      //     [adjacentTileCoordinate.col];
-
-      // await Future.delayed(const Duration(milliseconds: 200));
-      // moveTile(clickedTileCoordinate: adjTile.correctCoordinate);
     }
     _toggleSolutionInProgress(false);
   }

@@ -13,14 +13,11 @@ class GameImageSelector extends StatelessWidget {
       onTap: () {
         context.read<PuzzleImageSelector>().changeImage(path);
       },
-      child: FittedBox(
-        clipBehavior: Clip.hardEdge,
-        child: Image(
-          image: AssetImage(path),
-          height: dimensionOfThumbnail,
-          width: dimensionOfThumbnail,
-          fit: BoxFit.cover,
-        ),
+      child: Image(
+        image: AssetImage(path),
+        height: dimensionOfThumbnail,
+        width: dimensionOfThumbnail,
+        fit: BoxFit.cover,
       ),
     );
   }

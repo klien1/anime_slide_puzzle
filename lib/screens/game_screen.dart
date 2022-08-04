@@ -8,7 +8,8 @@ import 'package:anime_slide_puzzle/components/game_image_selector.dart';
 import 'package:anime_slide_puzzle/components/game_select_board_size.dart';
 import 'package:anime_slide_puzzle/components/game_button_controls.dart';
 
-const double gameBoardWidthAndHeight = 600;
+const double gameWidth = 800;
+const double gameHeight = 500;
 const double padding = 5;
 
 class GameScreen extends StatelessWidget {
@@ -48,7 +49,8 @@ class GameScreen extends StatelessWidget {
                 children: const [
                   SelectBoardSize(),
                   GameBoard(
-                    gameBoardWidthAndHeight: gameBoardWidthAndHeight,
+                    width: gameWidth,
+                    height: gameHeight,
                     tilePadding: padding,
                   ),
                 ],

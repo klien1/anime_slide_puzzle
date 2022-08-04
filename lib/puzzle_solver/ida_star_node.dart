@@ -1,26 +1,24 @@
 import 'package:anime_slide_puzzle/models/coordinate.dart';
-import 'package:anime_slide_puzzle/puzzle_solver/puzzle_solver_helper.dart';
 import 'package:equatable/equatable.dart';
 
 class IDAStarNode extends Equatable {
-  final List<List<int>> _boardState;
+  final List<int> _boardState;
   final int _numMoves;
   final Coordinate _blankTileCoordinate;
-  late final double _fScore;
+  final int _manhattanDistance;
+  final double _fScore;
 
-  IDAStarNode({
-    required List<List<int>> boardState,
+  const IDAStarNode({
+    required List<int> boardState,
     required Coordinate blankTileCoordinate,
     required int numMoves,
-    IDAStarNode? prevNode,
+    required int manhattanDistance,
+    required double fScore,
   })  : _boardState = boardState,
         _blankTileCoordinate = blankTileCoordinate,
-        _numMoves = numMoves {
-    _fScore = (numMoves +
-            getTotalManhattanDistance(_boardState) +
-            countTotalLinearConflicts(_boardState))
-        .toDouble();
-  }
+        _numMoves = numMoves,
+        _manhattanDistance = manhattanDistance,
+        _fScore = fScore;
 
   double get fScore {
     return _fScore;
@@ -34,10 +32,14 @@ class IDAStarNode extends Equatable {
     return _blankTileCoordinate;
   }
 
-  List<List<int>> get boardState {
+  List<int> get boardState {
     return _boardState;
   }
 
+  int get manhattanDistance {
+    return _manhattanDistance;
+  }
+
   @override
-  List<List<int>> get props => _boardState;
+  List<int> get props => _boardState;
 }

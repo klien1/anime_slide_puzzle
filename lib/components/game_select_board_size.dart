@@ -13,14 +13,16 @@ class SelectBoardSize extends StatelessWidget {
     NumberPuzzleTiles selector = context.watch<NumberPuzzleTiles>();
 
     for (int numTiles = 2; numTiles <= numRowsOrCol; ++numTiles) {
-      widgetList.add(ElevatedButton(
-        onPressed: (context.read<PuzzleBoard>().isLookingForSolution)
-            ? null
-            : (selector.currentNumberOfTiles == numTiles)
-                ? null
-                : () => selector.changeNumberOfTiles(numTiles),
-        child: Text(numTiles.toString()),
-      ));
+      widgetList.add(
+        ElevatedButton(
+          onPressed: (context.read<PuzzleBoard>().isLookingForSolution)
+              ? null
+              : (selector.currentNumberOfTiles == numTiles)
+                  ? null
+                  : () => selector.changeNumberOfTiles(numTiles),
+          child: Text(numTiles.toString()),
+        ),
+      );
     }
 
     return widgetList;

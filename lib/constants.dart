@@ -1,4 +1,5 @@
 const List<String> imageList = [
+  'images/hero_academia_3.jpg',
   'images/demon_slayer1.jpg',
   'images/jujutsu_kaisen.jpg',
   'images/spy-x-family.webp',

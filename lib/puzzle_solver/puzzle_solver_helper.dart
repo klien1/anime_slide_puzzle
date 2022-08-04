@@ -22,6 +22,28 @@ int countTotalLinearConflicts(List<List<int>> matrix) {
   return totalLinearConflicts * 2;
 }
 
+int countTotalLinearConflicts1d(List<int> matrix, int numRowOrColumn) {
+  // for each row
+  int totalLinearConflicts = 0;
+  for (int row = 0; row < numRowOrColumn; ++row) {
+    List<int> rowList = List.filled(numRowOrColumn, 0);
+    for (int col = 0; col < numRowOrColumn; ++col) {
+      rowList[col] = matrix[row * numRowOrColumn + col];
+    }
+    totalLinearConflicts += countLinearConflicts(rowList, row, Axis.row);
+  }
+
+  // for each col
+  for (int row = 0; row < numRowOrColumn; ++row) {
+    List<int> colList = List.filled(numRowOrColumn, 0);
+    for (int col = 0; col < numRowOrColumn; ++col) {
+      colList[col] = matrix[col * numRowOrColumn + row];
+    }
+    totalLinearConflicts += countLinearConflicts(colList, row, Axis.col);
+  }
+  return totalLinearConflicts * 2;
+}
+
 int countLinearConflicts(List<int> tileNumList, int index, Axis axis) {
   int numLinearConflicts = 0;
   int emptyTileNum = tileNumList.length * tileNumList.length - 1;
@@ -84,6 +106,49 @@ int getTotalManhattanDistance(List<List<int>> boardState) {
   return totalManhattanValue;
 }
 
+int getTotalManhattanDistance1d(List<int> boardState, int numRowOrColumns) {
+  int totalManhattanValue = 0;
+  final blankTileNum = boardState.length - 1;
+
+  for (int row = 0; row < numRowOrColumns; ++row) {
+    for (int col = 0; col < numRowOrColumns; ++col) {
+      final curTileNum = boardState[row * numRowOrColumns + col];
+      // skip blank tile
+      if (curTileNum == blankTileNum) continue;
+
+      Coordinate curCoord = Coordinate(
+        row: row,
+        col: col,
+      );
+
+      totalManhattanValue += getManhattanDistance1d(
+        tileNum: curTileNum,
+        numRowOrColumn: numRowOrColumns,
+        currentCoordinate: curCoord,
+      );
+    }
+  }
+  return totalManhattanValue;
+}
+
+int getManhattanDistance1d({
+  required int tileNum,
+  required int numRowOrColumn,
+  required Coordinate currentCoordinate,
+}) {
+  Coordinate correctCoord = convert1dArrayCoordTo2dArrayCoord(
+    index: tileNum,
+    numRowOrColCount: numRowOrColumn,
+  );
+
+  Coordinate curCoord = Coordinate(
+    row: currentCoordinate.row,
+    col: currentCoordinate.col,
+  );
+
+  return getManhattanDistance(correctCoord, curCoord);
+}
+
 int getManhattanDistance(Coordinate first, Coordinate second) {
   return (first.col - second.col).abs() + (first.row - second.row).abs();
 }
@@ -93,6 +158,15 @@ List<List<int>> generateGoalState(int numRowsOrColumns) {
     numRowsOrColumns,
     (row) =>
         List.generate(numRowsOrColumns, (col) => row * numRowsOrColumns + col),
+    growable: false,
+  );
+}
+
+List<int> generateGoalState1d(int numRowsOrColumns) {
+  return List.generate(
+    numRowsOrColumns * numRowsOrColumns,
+    (index) => index,
+    growable: false,
   );
 }
 
@@ -105,4 +179,40 @@ List<List<int>> copyBoardState(List<List<int>> boardState) {
     for (List<int> row in boardState) [...row]
   ];
   return newBoardState;
+}
+
+bool swap1dMatrix(
+  List<int> matrix1d,
+  int numRowOrColumn,
+  Coordinate first,
+  Coordinate second,
+) {
+  if (isOutOfBounds(numRowOrColumn, first) ||
+      isOutOfBounds(numRowOrColumn, second)) return false;
+  // both points are within boundary
+
+  int firstPoint = convert2dArrayCoordTo1dArrayCoord(
+    row: first.row,
+    col: first.col,
+    numRowOrColCount: numRowOrColumn,
+  );
+  int secondPoint = convert2dArrayCoordTo1dArrayCoord(
+    row: second.row,
+    col: second.col,
+    numRowOrColCount: numRowOrColumn,
+  );
+
+  int temp = matrix1d[firstPoint];
+  matrix1d[firstPoint] = matrix1d[secondPoint];
+  matrix1d[secondPoint] = temp;
+
+  return true;
+}
+
+bool isOutOfBounds(int length, Coordinate curPoint) {
+  if (curPoint.row < 0 ||
+      curPoint.col < 0 ||
+      curPoint.row >= length ||
+      curPoint.col >= length) return true;
+  return false;
 }
