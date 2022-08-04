@@ -3,20 +3,23 @@ import 'dart:async';
 import 'dart:ui' as ui;
 
 class ImageWrapper {
-  final int _width;
-  final int _height;
-  final Image _image;
-
   ImageWrapper._createDimension({
-    required int height,
-    required int width,
-    required image,
-  })  : _image = image,
+    required double height,
+    required double width,
+    required AssetImage assetImage,
+    required String imagePath,
+  })  : _assetImage = assetImage,
         _height = height,
-        _width = width;
+        _width = width,
+        _imagePath = imagePath;
 
-  static Future<void> getImageInfo(Image curImage) async {
-    final Image image = curImage;
+  final double _width;
+  final double _height;
+  final AssetImage _assetImage;
+  late final String _imagePath;
+
+  static Future<ImageWrapper> getImageInfo(String imagePath) async {
+    final Image image = Image.asset(imagePath);
 
     Completer<ui.Image> completer = Completer<ui.Image>();
     image.image.resolve(const ImageConfiguration()).addListener(
@@ -29,24 +32,31 @@ class ImageWrapper {
 
     ui.Image info = await completer.future;
 
-    ImageWrapper._createDimension(
-      image: curImage,
-      height: info.height,
-      width: info.width,
+    ImageWrapper newImageWrapper = ImageWrapper._createDimension(
+      assetImage: AssetImage(imagePath),
+      height: info.height.toDouble(),
+      width: info.width.toDouble(),
+      imagePath: imagePath,
     );
 
     info.dispose();
+
+    return newImageWrapper;
   }
 
-  int get width {
+  double get width {
     return _width;
   }
 
-  int get height {
+  double get height {
     return _height;
   }
 
-  Image get image {
-    return _image;
+  AssetImage get assetImage {
+    return _assetImage;
+  }
+
+  String get imagePath {
+    return _imagePath;
   }
 }

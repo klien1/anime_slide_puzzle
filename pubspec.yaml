@@ -78,6 +78,9 @@ flutter:
     - family: Bangers
       fonts:
         - asset: fonts/Bangers-Regular.ttf
+    - family: JosefinSans
+      fonts:
+        - asset: fonts/JosefinSans-Regular.ttf
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf

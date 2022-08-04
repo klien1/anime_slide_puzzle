@@ -1,3 +1,5 @@
+import 'package:anime_slide_puzzle/components/game_board/game_board_tile_number.dart';
+import 'package:anime_slide_puzzle/models/puzzle_tile.dart';
 import 'package:flutter/material.dart';
 
 class ImagelessPuzzle extends StatelessWidget {
@@ -5,14 +7,12 @@ class ImagelessPuzzle extends StatelessWidget {
     Key? key,
     required this.width,
     required this.height,
-    required this.isBlankTile,
-    required this.tileNumber,
+    required this.tile,
   }) : super(key: key);
 
   final double width;
   final double height;
-  final bool isBlankTile;
-  final int tileNumber;
+  final PuzzleTile tile;
 
   @override
   Widget build(BuildContext context) {
@@ -20,18 +20,14 @@ class ImagelessPuzzle extends StatelessWidget {
       width: width,
       height: height,
       decoration: BoxDecoration(
-        color:
-            isBlankTile ? Colors.lightBlue.withOpacity(0.0) : Colors.lightBlue,
+        color: tile.isBlankTile
+            ? Colors.lightBlue.withOpacity(0.0)
+            : Colors.lightBlue,
       ),
-      child: Center(
-        child: Text(
-          (tileNumber + 1).toString(),
-          style: TextStyle(
-            fontFamily: 'Bangers',
-            color: isBlankTile ? Colors.black.withOpacity(0.0) : Colors.black,
-            fontSize: 20,
-          ),
-        ),
+      child: GameBoardTileNumber(
+        tile: tile,
+        tileHeight: height,
+        tileWidth: width,
       ),
     );
   }

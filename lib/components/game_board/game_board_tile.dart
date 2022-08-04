@@ -1,8 +1,7 @@
-import 'package:anime_slide_puzzle/components/game_board/Imageless_puzzle_piece.dart';
+import 'package:anime_slide_puzzle/components/game_board/imageless_puzzle_piece.dart';
 import 'package:anime_slide_puzzle/components/game_board/background_puzzle_piece.dart';
 import 'package:anime_slide_puzzle/models/puzzle_image_selector.dart';
 import 'package:anime_slide_puzzle/models/puzzle_tile.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:anime_slide_puzzle/models/puzzle_board.dart';
 import 'package:flutter/material.dart';
@@ -36,24 +35,13 @@ class GameBoardTile extends StatefulWidget {
 class _GameBoardTile extends State<GameBoardTile> {
   bool isLoadingImage = true;
   bool isHovered = false;
-  bool imageAssetExist = false;
-
-  void doesImageAssetExist(String path) async {
-    try {
-      await rootBundle.load(path);
-      imageAssetExist = true;
-    } catch (error) {
-      imageAssetExist = false;
-    }
-    setState(() {
-      isLoadingImage = false;
-    });
-  }
 
   @override
-  void initState() {
-    super.initState();
-    doesImageAssetExist(context.read<PuzzleImageSelector>().curImagePath);
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    setState(() {
+      isLoadingImage = context.read<PuzzleImageSelector>().isLoadingImage;
+    });
   }
 
   @override
@@ -93,18 +81,17 @@ class _GameBoardTile extends State<GameBoardTile> {
           child: AnimatedScale(
             duration: widget.scaleDuration,
             scale: isHovered ? .85 : 1,
-            child: (!imageAssetExist || isLoadingImage)
+            child: (isLoadingImage)
                 ? ImagelessPuzzle(
                     height: tileHeight,
                     width: tileWidth,
-                    tileNumber: widget.tile.tileNumber,
-                    isBlankTile: widget.tile.isBlankTile,
+                    tile: widget.tile,
                   )
                 : BackgroundPuzzlePiece(
                     tile: widget.tile,
                     tileHeight: tileHeight,
                     tileWidth: tileWidth,
-                    curImagePath: imageSelector.curImagePath,
+                    curImagePath: imageSelector.currentImage.imagePath,
                     numRowsOrColumn: puzzleBoard.numRowsOrColumns,
                     tileNumberOpacity: puzzleBoard.currentTileOpacity,
                   ),

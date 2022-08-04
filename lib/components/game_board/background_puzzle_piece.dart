@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:anime_slide_puzzle/components/game_board/bordered_text.dart';
 import 'package:anime_slide_puzzle/models/puzzle_tile.dart';
+import 'package:anime_slide_puzzle/components/game_board/game_board_tile_number.dart';
 
 class BackgroundPuzzlePiece extends StatelessWidget {
   const BackgroundPuzzlePiece({
@@ -12,7 +12,6 @@ class BackgroundPuzzlePiece extends StatelessWidget {
     required this.numRowsOrColumn,
     this.tileNumberOpacity = 1,
     this.tileBorderRadius = 10,
-    this.textOpacityDuration = const Duration(milliseconds: 200),
   }) : super(key: key);
 
   final PuzzleTile tile;
@@ -21,7 +20,6 @@ class BackgroundPuzzlePiece extends StatelessWidget {
   final double tileBorderRadius;
   final double tileNumberOpacity;
   final int numRowsOrColumn;
-  final Duration textOpacityDuration;
   final String curImagePath;
 
   Widget fullImage() {
@@ -83,23 +81,11 @@ class BackgroundPuzzlePiece extends StatelessWidget {
             ),
           ),
         ),
-        SizedBox(
-          height: tileHeight / 2,
-          width: tileWidth / 2,
-          child: FittedBox(
-            fit: BoxFit.contain,
-            child: AnimatedOpacity(
-              duration: textOpacityDuration, //const Duration(seconds: 1),
-              opacity: (tile.isBlankTile) ? 0 : tileNumberOpacity,
-              child: BorderedText(
-                text: (tile.tileNumber + 1).toString(),
-                style: const TextStyle(fontFamily: 'Bangers'),
-                textColor: Colors.black,
-                strokeColor: Colors.white,
-                strokeWidth: 2,
-              ),
-            ),
-          ),
+        GameBoardTileNumber(
+          tileHeight: tileHeight,
+          tileWidth: tileWidth,
+          tile: tile,
+          tileNumberOpacity: tileNumberOpacity,
         )
       ],
     );

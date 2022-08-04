@@ -1,4 +1,4 @@
-const List<String> imageList = [
+const List<String> imagePathList = [
   'images/hero_academia_3.jpg',
   'images/demon_slayer1.jpg',
   'images/jujutsu_kaisen.jpg',

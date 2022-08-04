@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:anime_slide_puzzle/components/game_board/game_board.dart';
@@ -8,14 +10,52 @@ import 'package:anime_slide_puzzle/components/game_image_selector.dart';
 import 'package:anime_slide_puzzle/components/game_select_board_size.dart';
 import 'package:anime_slide_puzzle/components/game_button_controls.dart';
 
-const double gameWidth = 800;
+const double gameWidth = 500;
 const double gameHeight = 500;
 const double padding = 5;
 
-class GameScreen extends StatelessWidget {
+class GameScreen extends StatefulWidget {
   const GameScreen({Key? key}) : super(key: key);
 
   static const String id = 'game_screen_id';
+
+  @override
+  State<GameScreen> createState() => _GameScreenState();
+}
+
+class _GameScreenState extends State<GameScreen> {
+  late PuzzleImageSelector _puzzleImageSelector;
+  bool isLoadingImages = true;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _puzzleImageSelector = context.watch<PuzzleImageSelector>();
+    _puzzleImageSelector.loadImages();
+    setState(() {
+      isLoadingImages = _puzzleImageSelector.isLoadingImage;
+    });
+  }
+
+  void calculateRatio() {
+    final double imageW = _puzzleImageSelector.currentImage.width;
+    final double imageH = _puzzleImageSelector.currentImage.height;
+    final double maxW = MediaQuery.of(context).size.width * .7;
+    final double maxH = MediaQuery.of(context).size.height * .7;
+
+    final double wRatio = maxW / imageW;
+    final double hRatio = maxH / imageH;
+
+    final double best = min(wRatio, hRatio);
+
+    final double width = imageW * best;
+    final double height = imageH * best;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,9 +72,6 @@ class GameScreen extends StatelessWidget {
         update: ((context, value, previous) =>
             PuzzleBoard(numRowsOrColumns: value.currentNumberOfTiles)),
       ),
-      ChangeNotifierProvider<PuzzleImageSelector>(
-        create: (BuildContext context) => PuzzleImageSelector(),
-      ),
     ];
 
     return MultiProvider(
@@ -46,11 +83,13 @@ class GameScreen extends StatelessWidget {
             children: [
               const GameImageSelector(),
               Column(
-                children: const [
-                  SelectBoardSize(),
+                children: [
+                  const SelectBoardSize(),
                   GameBoard(
                     width: gameWidth,
                     height: gameHeight,
+                    // width: (!isLoadingImages) ? width : gameWidth,
+                    // height: (!isLoadingImages) ? height : gameHeight,
                     tilePadding: padding,
                   ),
                 ],

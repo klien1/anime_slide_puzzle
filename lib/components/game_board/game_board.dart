@@ -41,7 +41,6 @@ class GameBoard extends StatelessWidget {
                     tile: tile,
                     width: width,
                     height: height,
-                    // gameBoardWidthAndHeight: _gameBoardWidthAndHeight,
                     tilePadding: tilePadding,
                   )
             ],
