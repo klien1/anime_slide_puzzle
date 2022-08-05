@@ -187,8 +187,8 @@ bool swap1dMatrix(
   Coordinate first,
   Coordinate second,
 ) {
-  if (isOutOfBounds(numRowOrColumn, first) ||
-      isOutOfBounds(numRowOrColumn, second)) return false;
+  if (isOutOfBounds1d(numRowOrColumn, first) ||
+      isOutOfBounds1d(numRowOrColumn, second)) return false;
   // both points are within boundary
 
   int firstPoint = convert2dArrayCoordTo1dArrayCoord(
@@ -209,7 +209,7 @@ bool swap1dMatrix(
   return true;
 }
 
-bool isOutOfBounds(int length, Coordinate curPoint) {
+bool isOutOfBounds1d(int length, Coordinate curPoint) {
   if (curPoint.row < 0 ||
       curPoint.col < 0 ||
       curPoint.row >= length ||

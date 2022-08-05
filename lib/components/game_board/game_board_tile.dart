@@ -33,16 +33,7 @@ class GameBoardTile extends StatefulWidget {
 }
 
 class _GameBoardTile extends State<GameBoardTile> {
-  bool isLoadingImage = true;
   bool isHovered = false;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    setState(() {
-      isLoadingImage = context.read<PuzzleImageSelector>().isLoadingImage;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,12 +67,12 @@ class _GameBoardTile extends State<GameBoardTile> {
               ? null
               : () {
                   puzzleBoard.moveTile(
-                      clickedTileCoordinate: widget.tile.correctCoordinate);
+                      correctTileCoordinate: widget.tile.correctCoordinate);
                 },
           child: AnimatedScale(
             duration: widget.scaleDuration,
-            scale: isHovered ? .85 : 1,
-            child: (isLoadingImage)
+            scale: isHovered ? .90 : 1,
+            child: (imageSelector.isLoadingImage)
                 ? ImagelessPuzzle(
                     height: tileHeight,
                     width: tileWidth,

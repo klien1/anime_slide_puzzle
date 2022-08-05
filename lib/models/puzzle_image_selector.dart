@@ -46,6 +46,10 @@ class PuzzleImageSelector extends ChangeNotifier {
     return _curImage;
   }
 
+  int get length {
+    return _imageList.length;
+  }
+
   void changeImage(int index) {
     _curImage = _imageList[index];
     notifyListeners();

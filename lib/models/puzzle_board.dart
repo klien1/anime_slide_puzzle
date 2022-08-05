@@ -87,20 +87,21 @@ class PuzzleBoard extends ChangeNotifier {
   }
 
   // checks is coordinate is out of bounds in matrix
-  static bool isOutOfBounds(
-    List<List<int>> matrix,
-    Coordinate curPoint,
-  ) {
-    if (curPoint.row < 0 ||
-        curPoint.col < 0 ||
-        curPoint.row >= matrix.length ||
-        curPoint.col >= matrix[curPoint.row].length) {
-      return true;
-    }
+  // static bool isOutOfBounds(
+  //   List<List<int>> matrix,
+  //   Coordinate curPoint,
+  // ) {
+  //   if (curPoint.row < 0 ||
+  //       curPoint.col < 0 ||
+  //       curPoint.row >= matrix.length ||
+  //       curPoint.col >= matrix[curPoint.row].length) {
+  //     return true;
+  //   }
 
-    return false;
-  }
+  //   return false;
+  // }
 
+  @visibleForTesting
   static bool isPuzzleIsSolvable({
     required List<List<int>> matrix,
     required int blankTileRow,
@@ -114,38 +115,6 @@ class PuzzleBoard extends ChangeNotifier {
     }
 
     return false;
-  }
-
-  // Count # of inversions
-  // An inversion is any pair of tiles i and j where i < j
-  // but i appears after j when considering the board in row-major order
-  static int countTotalInversion({required List<List<int>> matrix}) {
-    int numRowsOrColumns = matrix.length;
-
-    List<int> currentTilePosition1d = [];
-    for (var element in matrix) {
-      currentTilePosition1d.addAll(element);
-    }
-
-    return countInversion(
-      currentTilePosition1d,
-      numRowsOrColumns * numRowsOrColumns - 1,
-    );
-  }
-
-  static int countInversion(List<int> tileNumberList, int blankTileNum) {
-    int numInversions = 0;
-
-    for (int i = 0; i < tileNumberList.length; ++i) {
-      final curVal = tileNumberList[i];
-      for (int j = i + 1; j < tileNumberList.length; ++j) {
-        // skip inversion count if blank tile
-        if (curVal == blankTileNum) continue;
-
-        if (curVal > tileNumberList[j]) ++numInversions;
-      }
-    }
-    return numInversions;
   }
 
   void _toggleSolutionInProgress(bool status) {
@@ -217,19 +186,21 @@ class PuzzleBoard extends ChangeNotifier {
         _puzzleTiles2d[adjacentTileCoordinate.row][adjacentTileCoordinate.col];
 
     await Future.delayed(const Duration(milliseconds: 200));
-    moveTile(clickedTileCoordinate: adjTile.correctCoordinate);
+    moveTile(correctTileCoordinate: adjTile.correctCoordinate);
   }
 
+  // moves tiles using tile correct coordinate and NOT current coordinate
   void moveTile({
-    required Coordinate clickedTileCoordinate,
+    required Coordinate correctTileCoordinate,
   }) {
+    if (isOutOfBounds(_puzzleTileNumberMatrix, correctTileCoordinate)) return;
     final PuzzleTile clickedTile =
-        _puzzleTiles2d[clickedTileCoordinate.row][clickedTileCoordinate.col];
+        _puzzleTiles2d[correctTileCoordinate.row][correctTileCoordinate.col];
 
     final PuzzleTile blankTile = _puzzleTiles2d[_correctBlankTileCoordinate.row]
         [_correctBlankTileCoordinate.col];
 
-    if (_isAdjacentToEmptyTile(clickedTile)) {
+    if (isAdjacentToEmptyTile(clickedTile.currentCoordinate)) {
       _swapTiles(clickedTile, blankTile);
       ++_numberOfMoves;
 
@@ -242,17 +213,32 @@ class PuzzleBoard extends ChangeNotifier {
     }
   }
 
-  bool _isAdjacentToEmptyTile(PuzzleTile curTile) {
-    Coordinate currentBlankTileCoordinate = currentBlankTileCoordiante;
+/**
+ * returns current position of tileNum
+ */
+  Coordinate findCurrentTileNumberCoordiante(int tileNum) {
+    Coordinate correctTileCoordiante = convert1dArrayCoordTo2dArrayCoord(
+      index: tileNum,
+      numRowOrColCount: _numRowsOrColumns,
+    );
+    Coordinate curTileCoordinate = _puzzleTiles2d[correctTileCoordiante.row]
+            [correctTileCoordiante.col]
+        .currentCoordinate;
 
-    return curTile.currentCoordinate ==
-            currentBlankTileCoordinate.calculateAdjacent(row: 1) ||
-        curTile.currentCoordinate ==
-            currentBlankTileCoordinate.calculateAdjacent(row: -1) ||
-        curTile.currentCoordinate ==
-            currentBlankTileCoordinate.calculateAdjacent(col: 1) ||
-        curTile.currentCoordinate ==
-            currentBlankTileCoordinate.calculateAdjacent(col: -1);
+    return curTileCoordinate;
+  }
+
+  bool isAdjacentToEmptyTile(Coordinate curTileCoordinate) {
+    Coordinate curBlankPos = currentBlankTileCoordiante;
+
+    return curTileCoordinate ==
+            curBlankPos.calculateAdjacent(direction: Direction.right) ||
+        curTileCoordinate ==
+            curBlankPos.calculateAdjacent(direction: Direction.left) ||
+        curTileCoordinate ==
+            curBlankPos.calculateAdjacent(direction: Direction.bottom) ||
+        curTileCoordinate ==
+            curBlankPos.calculateAdjacent(direction: Direction.top);
   }
 
   void startGame() {
@@ -300,7 +286,11 @@ class PuzzleBoard extends ChangeNotifier {
     PuzzleTile firstTile,
     PuzzleTile secondTile,
   ) {
-    if (firstTile == secondTile) return;
+    if (firstTile == secondTile ||
+        isOutOfBounds(_puzzleTileNumberMatrix, firstTile.currentCoordinate) ||
+        isOutOfBounds(_puzzleTileNumberMatrix, secondTile.currentCoordinate)) {
+      return;
+    }
 
     final Coordinate temp = firstTile.currentCoordinate;
     firstTile.currentCoordinate = secondTile.currentCoordinate;

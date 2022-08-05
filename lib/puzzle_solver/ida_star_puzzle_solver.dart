@@ -101,25 +101,25 @@ class IDAStarPuzzleSolver {
     // down
     _addNextBoardState(
       curNode,
-      curBlankTile.calculateAdjacent(row: 1),
+      curBlankTile.calculateAdjacent(direction: Direction.bottom),
       adjList,
     );
     // up
     _addNextBoardState(
       curNode,
-      curBlankTile.calculateAdjacent(row: -1),
+      curBlankTile.calculateAdjacent(direction: Direction.top),
       adjList,
     );
     // right
     _addNextBoardState(
       curNode,
-      curBlankTile.calculateAdjacent(col: 1),
+      curBlankTile.calculateAdjacent(direction: Direction.right),
       adjList,
     );
     // left
     _addNextBoardState(
       curNode,
-      curBlankTile.calculateAdjacent(col: -1),
+      curBlankTile.calculateAdjacent(direction: Direction.left),
       adjList,
     );
 
@@ -132,7 +132,7 @@ class IDAStarPuzzleSolver {
     List<IDAStarNode> adjList,
   ) {
     // check if coordinates are within boundary
-    if (isOutOfBounds(_numRowsOrColumns, adjacentTileCoordinate)) return;
+    if (isOutOfBounds1d(_numRowsOrColumns, adjacentTileCoordinate)) return;
 
     // copy board
     final List<int> newBoardState =

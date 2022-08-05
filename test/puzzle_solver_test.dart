@@ -1,7 +1,9 @@
 import 'dart:collection';
+import 'package:anime_slide_puzzle/models/puzzle_board.dart';
 import 'package:anime_slide_puzzle/puzzle_solver/a_star_node.dart';
 import 'package:anime_slide_puzzle/models/coordinate.dart';
 import 'package:anime_slide_puzzle/puzzle_solver/a_star_puzzle_solver.dart';
+import 'package:anime_slide_puzzle/puzzle_solver/blank_tile_controller.dart';
 import 'package:anime_slide_puzzle/puzzle_solver/ida_star_puzzle_solver.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:anime_slide_puzzle/puzzle_solver/puzzle_solver_helper.dart';
@@ -344,4 +346,25 @@ void main() {
 
     expect(solver.solvePuzzle(), moveList);
   });
+
+  // test('Blank tile controller should move 3 one space right', () {
+  //   List<List<int>> matrix = [
+  //     [0, 1, 2],
+  //     [3, 4, 5],
+  //     [6, 7, 8]
+  //   ];
+
+  //   const List<List<int>> resultMatrix = [
+  //     [0, 1, 2],
+  //     [4, 3, 5],
+  //     [6, 7, 8]
+  //   ];
+
+  //   PuzzleBoard puzzleBoard = PuzzleBoard.intBoard(board: matrix);
+  //   BlankTileController blankTileController =
+  //       BlankTileController(puzzleBoard: puzzleBoard);
+  //   blankTileController.moveNumberTileDirection(3, Direction.right);
+
+  //   expect(puzzleBoard.puzzleTileNumberMatrix, resultMatrix);
+  // });
 }

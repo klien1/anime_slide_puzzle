@@ -25,11 +25,11 @@ class AStarPuzzleSolver {
     );
     Queue<Coordinate> moveList = Queue();
     // checks to see if puzzle is solvable
-    if (!PuzzleBoard.isPuzzleIsSolvable(
-        matrix: curBoardState.boardState,
-        blankTileRow: curBoardState.getBlankTileCoordinate.row)) {
-      return moveList;
-    }
+    // if (!PuzzleBoard.isPuzzleIsSolvable(
+    //     matrix: curBoardState.boardState,
+    //     blankTileRow: curBoardState.getBlankTileCoordinate.row)) {
+    //   return moveList;
+    // }
 
     HashSet<AStarNode> visited = HashSet();
 
@@ -44,18 +44,20 @@ class AStarPuzzleSolver {
 
       // down
       _addNextBoardState(
-        curBoardState: curBoardState,
-        heapPriorityQueue: heapPriorityQueue,
-        visited: visited,
-        row: 1,
-      );
+          curBoardState: curBoardState,
+          heapPriorityQueue: heapPriorityQueue,
+          visited: visited,
+          direction: Direction.bottom
+          // row: 1,
+          );
 
       // up
       _addNextBoardState(
         curBoardState: curBoardState,
         heapPriorityQueue: heapPriorityQueue,
         visited: visited,
-        row: -1,
+        direction: Direction.top,
+        // row: -1,
       );
 
       // right
@@ -63,7 +65,8 @@ class AStarPuzzleSolver {
         curBoardState: curBoardState,
         heapPriorityQueue: heapPriorityQueue,
         visited: visited,
-        col: 1,
+        direction: Direction.right,
+        // col: 1,
       );
 
       //left
@@ -71,7 +74,8 @@ class AStarPuzzleSolver {
         curBoardState: curBoardState,
         heapPriorityQueue: heapPriorityQueue,
         visited: visited,
-        col: -1,
+        direction: Direction.left,
+        // col: -1,
       );
     }
 
@@ -87,8 +91,9 @@ class AStarPuzzleSolver {
     required AStarNode curBoardState,
     required HeapPriorityQueue<AStarNode> heapPriorityQueue,
     required HashSet<AStarNode> visited,
-    int row = 0,
-    int col = 0,
+    required Direction direction,
+    // int row = 0,
+    // int col = 0,
   }) {
     // create new board state, so we don't use the same reference
     List<List<int>> newBoardState = copyBoardState(curBoardState.boardState);
@@ -96,7 +101,7 @@ class AStarPuzzleSolver {
     // swap poistions and returns true if successful
     Coordinate curBlankCoordinate = curBoardState.getBlankTileCoordinate;
     Coordinate newBlankCoordiantePosition =
-        curBlankCoordinate.calculateAdjacent(row: row, col: col);
+        curBlankCoordinate.calculateAdjacent(direction: direction);
     bool successfulSwap = PuzzleBoard.swapTileNumbers(
       matrix: newBoardState,
       first: curBlankCoordinate,
