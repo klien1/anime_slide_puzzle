@@ -1,34 +1,55 @@
 import 'package:anime_slide_puzzle/models/puzzle_image_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:anime_slide_puzzle/constants.dart';
+import 'package:anime_slide_puzzle/components/game_image_animation.dart';
 
-const double dimensionOfThumbnail = 150;
+class GameImageSelector extends StatefulWidget {
+  const GameImageSelector({
+    Key? key,
+    this.width = 150,
+    this.height = 150,
+  }) : super(key: key);
 
-class GameImageSelector extends StatelessWidget {
-  const GameImageSelector({Key? key}) : super(key: key);
+  final double width;
+  final double height;
 
-  Widget getImage(BuildContext context, String path) {
-    return GestureDetector(
-      onTap: () {
-        context.read<PuzzleImageSelector>().changeImage(path);
-      },
-      child: FittedBox(
-        clipBehavior: Clip.hardEdge,
-        child: Image(
-          image: AssetImage(path),
-          height: dimensionOfThumbnail,
-          width: dimensionOfThumbnail,
-          fit: BoxFit.cover,
-        ),
-      ),
-    );
+  @override
+  State<GameImageSelector> createState() => _GameImageSelectorState();
+}
+
+class _GameImageSelectorState extends State<GameImageSelector>
+    with SingleTickerProviderStateMixin {
+  late AnimationController animationController;
+  bool clicked = true;
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<PuzzleImageSelector>().loadImages();
+    animationController = AnimationController(vsync: this);
+  }
+
+  @override
+  void dispose() {
+    animationController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [for (String path in imageList) getImage(context, path)],
-    );
+    PuzzleImageSelector puzzleImageSelector =
+        context.watch<PuzzleImageSelector>();
+
+    return (puzzleImageSelector.isLoadingImage)
+        ? const Text('Loading........')
+        : Row(
+            children: [
+              for (int index = 0; index < puzzleImageSelector.length; ++index)
+                GameImageAnimation(
+                  imageWrapper: puzzleImageSelector.imageList[index],
+                  index: index,
+                )
+            ],
+          );
   }
 }
