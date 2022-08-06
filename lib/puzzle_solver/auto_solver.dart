@@ -8,8 +8,6 @@ import 'package:anime_slide_puzzle/utils/puzzle_board_helper.dart';
 import 'dart:collection';
 import 'package:anime_slide_puzzle/constants.dart';
 
-// const Duration tileSpeed = Duration(milliseconds: 100);
-
 enum CornerCase { topRight, bottomLeft }
 
 class AutoSolver {

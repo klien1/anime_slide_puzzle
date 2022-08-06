@@ -8,7 +8,7 @@ import 'package:anime_slide_puzzle/components/game_button_controls.dart';
 
 const double gameWidth = 500;
 const double gameHeight = 500;
-const double padding = 5;
+const double padding = 3;
 
 class GameScreen extends StatefulWidget {
   const GameScreen({Key? key}) : super(key: key);

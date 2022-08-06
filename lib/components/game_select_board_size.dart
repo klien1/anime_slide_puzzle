@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:anime_slide_puzzle/models/number_puzzle_tiles.dart';
 
-const int maxNumberOfTiles = 8;
+const int maxNumberOfTiles = 10;
 
 class SelectBoardSize extends StatelessWidget {
   const SelectBoardSize({Key? key}) : super(key: key);
@@ -20,7 +20,7 @@ class SelectBoardSize extends StatelessWidget {
               : (selector.currentNumberOfTiles == numTiles)
                   ? null
                   : () => selector.changeNumberOfTiles(numTiles),
-          child: Text(numTiles.toString()),
+          child: Text('${numTiles}x${numTiles}'),
         ),
       );
     }
@@ -30,7 +30,7 @@ class SelectBoardSize extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: getNumberSelectorWidget(maxNumberOfTiles, context));
   }
