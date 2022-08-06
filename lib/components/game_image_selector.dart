@@ -1,7 +1,6 @@
 import 'package:anime_slide_puzzle/models/puzzle_image_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:anime_slide_puzzle/models/image_wrapper.dart';
 import 'package:anime_slide_puzzle/components/game_image_animation.dart';
 
 class GameImageSelector extends StatefulWidget {
@@ -21,7 +20,6 @@ class GameImageSelector extends StatefulWidget {
 class _GameImageSelectorState extends State<GameImageSelector>
     with SingleTickerProviderStateMixin {
   late AnimationController animationController;
-  // Alignment test = Alignment.topRight;
   bool clicked = true;
 
   @override
@@ -45,7 +43,6 @@ class _GameImageSelectorState extends State<GameImageSelector>
     return (puzzleImageSelector.isLoadingImage)
         ? const Text('Loading........')
         : Row(
-            // mainAxisAlignment: MainAxisAlignment.center,
             children: [
               for (int index = 0; index < puzzleImageSelector.length; ++index)
                 GameImageAnimation(

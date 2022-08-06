@@ -5,6 +5,9 @@ import 'package:anime_slide_puzzle/models/puzzle_tile.dart';
 import 'package:provider/provider.dart';
 import 'package:anime_slide_puzzle/models/puzzle_board.dart';
 import 'package:flutter/material.dart';
+import 'package:anime_slide_puzzle/constants.dart';
+
+// TODO: extract stateful components to parent component
 
 class GameBoardTile extends StatefulWidget {
   const GameBoardTile({
@@ -14,9 +17,9 @@ class GameBoardTile extends StatefulWidget {
     required this.height,
     required this.tilePadding,
     this.tileBorderRadius = 10,
-    this.positionDuration = const Duration(milliseconds: 100),
-    this.scaleDuration = const Duration(milliseconds: 100),
-    this.textOpacityDuration = const Duration(milliseconds: 100),
+    this.positionDuration = defaultTileSpeed,
+    this.scaleDuration = defaultTileSpeed,
+    this.textOpacityDuration = defaultTileSpeed,
   }) : super(key: key);
 
   final PuzzleTile tile;

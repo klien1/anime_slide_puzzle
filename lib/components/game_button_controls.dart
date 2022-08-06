@@ -1,4 +1,5 @@
 import 'package:anime_slide_puzzle/components/game_status.dart';
+import 'package:anime_slide_puzzle/puzzle_solver/auto_solver.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:anime_slide_puzzle/models/puzzle_board.dart';
@@ -8,42 +9,45 @@ class GameButtonControls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    PuzzleBoard curPuzzleBoardContext = context.watch<PuzzleBoard>();
+    PuzzleBoard puzzleBoard = context.watch<PuzzleBoard>();
 
     return Column(
       children: [
         const GameStatus(),
         TextButton(
-          onPressed: (curPuzzleBoardContext.isLookingForSolution)
+          onPressed: (puzzleBoard.isLookingForSolution)
               ? null
-              : () => curPuzzleBoardContext.startGame(),
-          child: (curPuzzleBoardContext.isGameInProgress)
+              : () => puzzleBoard.startGame(),
+          child: (puzzleBoard.isGameInProgress)
               ? const Text('Restart Game')
               : const Text('Start Game'),
         ),
+        // TextButton(
+        //   onPressed: (curPuzzleBoardContext.isLookingForSolution)
+        //       ? null
+        //       : () {
+        //           context.read<PuzzleBoard>().solvePuzzleWithAStar();
+        //         },
+        //   child: const Text('Solve with A Star'),
+        // ),
         TextButton(
-          onPressed: (curPuzzleBoardContext.isLookingForSolution)
+          onPressed: (puzzleBoard.isLookingForSolution)
               ? null
               : () {
-                  context.read<PuzzleBoard>().solvePuzzleWithAStar();
+                  puzzleBoard.autoSolve();
+                  // context.read<PuzzleBoard>().solvePuzzleWithIDAStar();
                 },
-          child: const Text('Solve with A Star'),
-        ),
-        TextButton(
-          onPressed: (curPuzzleBoardContext.isLookingForSolution)
-              ? null
-              : () {
-                  context.read<PuzzleBoard>().solvePuzzleWithIDAStar();
-                },
-          child: const Text('Solve with IDA star'),
+          child: const Text('Auto-Solve'),
         ),
         TextButton(
           onPressed: () {
-            curPuzzleBoardContext.toggleTileNumberVisibility();
+            // puzzleBoard.autoSolve();
+            // AutoSolver(puzzleBoard: puzzleBoard).solve();
+            puzzleBoard.toggleTileNumberVisibility();
           },
-          child: (curPuzzleBoardContext.currentTileOpacity == 0)
-              ? const Text('Show Puzzle Number')
-              : const Text('Hide Puzzle Number'),
+          child: (puzzleBoard.currentTileOpacity == 0)
+              ? const Text('Show Hints')
+              : const Text('Hide Hints'),
         ),
       ],
     );

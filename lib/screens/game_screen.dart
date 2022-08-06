@@ -1,16 +1,10 @@
-// import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:anime_slide_puzzle/components/game_board/game_board.dart';
 import 'package:anime_slide_puzzle/models/number_puzzle_tiles.dart';
 import 'package:anime_slide_puzzle/models/puzzle_board.dart';
-// import 'package:anime_slide_puzzle/models/puzzle_image_selector.dart';
-// import 'package:anime_slide_puzzle/components/game_image_selector.dart';
 import 'package:anime_slide_puzzle/components/game_select_board_size.dart';
 import 'package:anime_slide_puzzle/components/game_button_controls.dart';
-
-import 'blank_tile_move_test.dart';
 
 const double gameWidth = 500;
 const double gameHeight = 500;
@@ -26,8 +20,6 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
-  // late PuzzleImageSelector _puzzleImageSelector;
-
   @override
   Widget build(BuildContext context) {
     final myProviders = [
@@ -68,7 +60,6 @@ class _GameScreenState extends State<GameScreen> {
                   GameButtonControls(),
                 ],
               ),
-              BlankTileTest()
             ],
           ),
         ),

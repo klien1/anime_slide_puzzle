@@ -6,15 +6,14 @@ import 'package:anime_slide_puzzle/puzzle_solver/ida_star_puzzle_solver.dart';
 import 'package:anime_slide_puzzle/puzzle_solver/puzzle_solver_helper.dart';
 import 'package:anime_slide_puzzle/utils/puzzle_board_helper.dart';
 import 'dart:collection';
+import 'package:anime_slide_puzzle/constants.dart';
 
-import 'package:flutter/cupertino.dart';
-
-const Duration tileSpeed = Duration(milliseconds: 100);
+// const Duration tileSpeed = Duration(milliseconds: 100);
 
 enum CornerCase { topRight, bottomLeft }
 
-class BlankTileController {
-  BlankTileController({
+class AutoSolver {
+  AutoSolver({
     required this.puzzleBoard,
   });
   final PuzzleBoard puzzleBoard;
@@ -47,32 +46,60 @@ class BlankTileController {
   ];
   final HashSet<int> _doNotMoveTiles = HashSet();
 
-  @visibleForTesting
-  void moveBlankTile(Direction direction) {
-    Coordinate blankTileCoordinate = puzzleBoard.currentBlankTileCoordiante;
-    // get correct coordinate
-    Coordinate adjCoordiante =
-        blankTileCoordinate.calculateAdjacent(direction: direction);
+  Future<void> solve() async {
+    List<int> solutionOrder = _getSolutionOrder();
 
-    if (isOutOfBounds1d(puzzleBoard.numRowsOrColumns, adjCoordiante)) return;
+    for (int element in solutionOrder) {
+      final Coordinate correctPosition = convert1dArrayCoordTo2dArrayCoord(
+        index: element,
+        numRowOrColCount: puzzleBoard.numRowsOrColumns,
+      );
+      final Coordinate curElementCoordainte =
+          puzzleBoard.findCurrentTileNumberCoordiante(element);
 
-    moveTileWithCurrentCoordinate(adjCoordiante);
+      if (correctPosition == curElementCoordainte) {
+        _doNotMoveTiles.add(element);
+      } else if (puzzleBoard.numRowsOrColumns - correctPosition.row < 4 &&
+          puzzleBoard.numRowsOrColumns - correctPosition.col < 4) {
+        await _runIDAStar();
+
+        break;
+      } else if (correctPosition.col == puzzleBoard.numRowsOrColumns - 1) {
+        final int previousElement = element - 1;
+        await _moveTileToCorner(
+          element,
+          correctPosition,
+          previousElement,
+          CornerCase.topRight,
+        );
+      } else if (correctPosition.row == puzzleBoard.numRowsOrColumns - 1) {
+        final int previousElement = element - puzzleBoard.numRowsOrColumns;
+        await _moveTileToCorner(
+          element,
+          correctPosition,
+          previousElement,
+          CornerCase.bottomLeft,
+        );
+      } else {
+        await _moveTileToTargetPosition(element, correctPosition);
+        _doNotMoveTiles.add(element);
+      }
+    }
   }
 
-  @visibleForTesting
-  Future<void> moveBlankTileNextToTarget(Coordinate target) async {
+  Future<void> _moveBlankTileNextToTarget(Coordinate target) async {
     Coordinate blankCoord = puzzleBoard.currentBlankTileCoordiante;
 
-    while (getManhattanDistance(target, blankCoord) > 1) {
+    while (_getEuclindianDistance(target, blankCoord) > 1) {
       // find the best valid path that puts the blank tile closer to target
       double minDistance = double.infinity;
       late Direction correctDirection;
       for (var direction in _directionList) {
         final Coordinate adjTile =
             blankCoord.calculateAdjacent(direction: direction);
-        final double curDistance = getEuclindianDistance(target, adjTile);
+        final double curDistance = _getEuclindianDistance(target, adjTile);
 
-        if (curDistance < minDistance && isValidPath(adjTile)) {
+        if (curDistance < minDistance && _isValidPath(adjTile)) {
           minDistance = curDistance;
           correctDirection = direction;
         }
@@ -80,13 +107,15 @@ class BlankTileController {
 
       assert(correctDirection != null);
 
-      moveBlankTile(correctDirection);
+      _swapTileUsingCurrentCoordinate(
+          blankCoord.calculateAdjacent(direction: correctDirection));
+      // _moveBlankTile(correctDirection);
       blankCoord = puzzleBoard.currentBlankTileCoordiante;
-      await Future.delayed(tileSpeed);
+      await Future.delayed(defaultTileSpeed);
     }
   }
 
-  Future<void> moveNumberTileDirection(
+  Future<void> _moveNumberTileDirection(
       int tileNum, Direction moveDirection) async {
     assert(moveDirection != Direction.topLeft);
     assert(moveDirection != Direction.topRight);
@@ -107,11 +136,11 @@ class BlankTileController {
 
     // check if it is adjacent to blank tile, if not move blank tile adjacent
     if (!puzzleBoard.isAdjacentToEmptyTile(targetTileCurrentCoordinate)) {
-      await moveBlankTileNextToTarget(targetTileCurrentCoordinate);
+      await _moveBlankTileNextToTarget(targetTileCurrentCoordinate);
     }
 
     // check clockwise path starting from target direction to blank tile
-    Queue<Coordinate> clockwiseMoveList = getPathToTargetLocation(
+    Queue<Coordinate> clockwiseMoveList = _getPathToTargetLocation(
       directionList: _clockwise,
       moveDirection: moveDirection,
       targetTilePos: targetTileCurrentCoordinate,
@@ -119,7 +148,7 @@ class BlankTileController {
     );
 
     // check counter clockwise path starting from target direction to blank tile
-    Queue<Coordinate> counterClockwiseMoveList = getPathToTargetLocation(
+    Queue<Coordinate> counterClockwiseMoveList = _getPathToTargetLocation(
       directionList: _counterclockwise,
       moveDirection: moveDirection,
       targetTilePos: targetTileCurrentCoordinate,
@@ -127,20 +156,20 @@ class BlankTileController {
     );
 
     // compare which takes less moves to blank tile without touch correctly placed tiles
-    Queue<Coordinate> bestPath = getBestPath(
+    Queue<Coordinate> shortestPath = _getShortestPath(
       clockwiseMoveList,
       counterClockwiseMoveList,
     );
 
     // move blank tile to target spot
-    while (bestPath.isNotEmpty) {
-      Coordinate curCoordinate = bestPath.removeFirst();
-      moveTileWithCurrentCoordinate(curCoordinate);
-      await Future.delayed(tileSpeed);
+    while (shortestPath.isNotEmpty) {
+      Coordinate curCoordinate = shortestPath.removeFirst();
+      _swapTileUsingCurrentCoordinate(curCoordinate);
+      await Future.delayed(defaultTileSpeed);
     }
   }
 
-  void moveTileWithCurrentCoordinate(Coordinate curCoordinate) {
+  void _swapTileUsingCurrentCoordinate(Coordinate curCoordinate) {
     int tileNum = puzzleBoard.puzzleTileNumberMatrix[curCoordinate.row]
         [curCoordinate.col];
 
@@ -152,8 +181,7 @@ class BlankTileController {
   }
 
   // gets the shortest path
-  @visibleForTesting
-  Queue<Coordinate> getBestPath(
+  Queue<Coordinate> _getShortestPath(
       Queue<Coordinate> path1, Queue<Coordinate> path2) {
     if (path1.isEmpty) {
       return path2;
@@ -164,22 +192,22 @@ class BlankTileController {
     return (path1.length < path2.length) ? path1 : path2;
   }
 
-  void setQueueStartingDirection(
+  // sets the queue to start at target direction
+  void _setQueueStartingDirection(
       Queue<Direction> directionList, Direction targetDirection) {
     while (directionList.first != targetDirection) {
       directionList.add(directionList.removeFirst());
     }
   }
 
-  @visibleForTesting
-  Queue<Coordinate> getPathToTargetLocation({
+  Queue<Coordinate> _getPathToTargetLocation({
     required Queue<Direction> directionList,
     required Direction moveDirection,
     required Coordinate targetTilePos,
     required int targetTileNum,
   }) {
     // set directList to correct starting direction
-    setQueueStartingDirection(directionList, moveDirection);
+    _setQueueStartingDirection(directionList, moveDirection);
 
     // get correct blank tile
     Coordinate curBlankCoord = puzzleBoard.currentBlankTileCoordiante;
@@ -193,10 +221,9 @@ class BlankTileController {
       directionList.add(directionList.removeFirst());
 
       // check if tile is valid
-      if (!isValidPath(tilesSurroundingTarget)) {
+      if (!_isValidPath(tilesSurroundingTarget)) {
         moveList.clear();
         return moveList;
-        // return Queue();
       }
       // add moveList to queue
       moveList.addFirst(tilesSurroundingTarget);
@@ -210,58 +237,25 @@ class BlankTileController {
     return moveList;
   }
 
-  List<int> getSolutionOrder() {
+  List<int> _getSolutionOrder() {
     List<int> solutionOrder = [];
 
     int length = puzzleBoard.numRowsOrColumns;
 
+    // iterates diagonally (0,0), (1,1), (2,2)...
     for (int initalRowAndCol = 0; initalRowAndCol < length; ++initalRowAndCol) {
-      for (int row = initalRowAndCol; row < length; ++row) {
-        solutionOrder.add(initalRowAndCol * length + row);
+      for (int col = initalRowAndCol; col < length; ++col) {
+        solutionOrder.add(initalRowAndCol * length + col);
       }
 
-      for (int col = initalRowAndCol + 1; col < length; ++col) {
-        solutionOrder.add(col * length + initalRowAndCol);
+      for (int row = initalRowAndCol + 1; row < length; ++row) {
+        solutionOrder.add(row * length + initalRowAndCol);
       }
     }
     return solutionOrder;
   }
 
-  Future<void> solve() async {
-    List<int> solutionOrder = getSolutionOrder();
-
-    for (int element in solutionOrder) {
-      final Coordinate correctPosition = convert1dArrayCoordTo2dArrayCoord(
-        index: element,
-        numRowOrColCount: puzzleBoard.numRowsOrColumns,
-      );
-      final Coordinate curElementCoordainte =
-          puzzleBoard.findCurrentTileNumberCoordiante(element);
-
-      if (correctPosition == curElementCoordainte) {
-        _doNotMoveTiles.add(element);
-      } else if (puzzleBoard.numRowsOrColumns - correctPosition.row < 4 &&
-          puzzleBoard.numRowsOrColumns - correctPosition.col < 4) {
-        // print('running IDA STAR');
-        await runIDAStar();
-
-        break;
-      } else if (correctPosition.col == puzzleBoard.numRowsOrColumns - 1) {
-        final int previousElement = element - 1;
-        await moveTileToCorner(
-            element, correctPosition, previousElement, CornerCase.topRight);
-      } else if (correctPosition.row == puzzleBoard.numRowsOrColumns - 1) {
-        final int previousElement = element - puzzleBoard.numRowsOrColumns;
-        await moveTileToCorner(
-            element, correctPosition, previousElement, CornerCase.bottomLeft);
-      } else {
-        await moveTileToTargetPosition(element, correctPosition);
-        _doNotMoveTiles.add(element);
-      }
-    }
-  }
-
-  bool isValidPath(Coordinate node) {
+  bool _isValidPath(Coordinate node) {
     return !isOutOfBounds1d(
           puzzleBoard.numRowsOrColumns,
           node,
@@ -271,14 +265,14 @@ class BlankTileController {
         );
   }
 
-  Future<void> moveTileToTargetPosition(
+  Future<void> _moveTileToTargetPosition(
     int target,
     Coordinate targetPosition,
   ) async {
     Coordinate currentPosition =
         puzzleBoard.findCurrentTileNumberCoordiante(target);
     // while tile is not in correct position
-    while (getEuclindianDistance(targetPosition, currentPosition) > 0) {
+    while (_getEuclindianDistance(targetPosition, currentPosition) > 0) {
       // get the direction that moves closest to target position
       late Direction correctDirection;
       double minDistance = double.infinity;
@@ -286,27 +280,28 @@ class BlankTileController {
       for (Direction direction in _directionList) {
         Coordinate adjPosition =
             currentPosition.calculateAdjacent(direction: direction);
-        double curDistance = getEuclindianDistance(targetPosition, adjPosition);
+        double curDistance =
+            _getEuclindianDistance(targetPosition, adjPosition);
 
-        if (curDistance < minDistance && isValidPath(adjPosition)) {
+        if (curDistance < minDistance && _isValidPath(adjPosition)) {
           minDistance = curDistance;
           correctDirection = direction;
         }
       }
-      await moveNumberTileDirection(target, correctDirection);
+      await _moveNumberTileDirection(target, correctDirection);
       currentPosition =
           currentPosition.calculateAdjacent(direction: correctDirection);
-      await Future.delayed(tileSpeed);
+      await Future.delayed(defaultTileSpeed);
     }
   }
 
-  double getEuclindianDistance(Coordinate first, Coordinate second) {
+  double _getEuclindianDistance(Coordinate first, Coordinate second) {
     return sqrt(
       pow(first.col - second.col, 2) + pow(first.row - second.row, 2),
     );
   }
 
-  Future<void> runIDAStar() async {
+  Future<void> _runIDAStar() async {
     List<int> flatten = [];
     for (List<int> element in puzzleBoard.puzzleTileNumberMatrix) {
       flatten.addAll(element);
@@ -320,12 +315,12 @@ class BlankTileController {
     Queue<Coordinate> moveList = puzzleSolver.solvePuzzle();
     while (moveList.isNotEmpty) {
       final Coordinate curCoordinate = moveList.removeFirst();
-      moveTileWithCurrentCoordinate(curCoordinate);
-      await Future.delayed(tileSpeed);
+      _swapTileUsingCurrentCoordinate(curCoordinate);
+      await Future.delayed(defaultTileSpeed);
     }
   }
 
-  Future<void> moveTileToCorner(
+  Future<void> _moveTileToCorner(
     int element,
     Coordinate correctPosition,
     int previousElement,
@@ -335,7 +330,7 @@ class BlankTileController {
         (corner == CornerCase.bottomLeft) ? Direction.right : Direction.bottom;
 
     // move correct tile two spaces away from correct position
-    await moveTileToTargetPosition(
+    await _moveTileToTargetPosition(
       element,
       correctPosition
           .calculateAdjacent(direction: curElementDirection)
@@ -346,13 +341,13 @@ class BlankTileController {
 
     // unlock previous element
     _doNotMoveTiles.remove(previousElement);
-    await moveTileToTargetPosition(previousElement, correctPosition);
+    await _moveTileToTargetPosition(previousElement, correctPosition);
 
     // lock previous element after moving
     _doNotMoveTiles.add(previousElement);
 
     // move target element next to previous element
-    await moveTileToTargetPosition(
+    await _moveTileToTargetPosition(
       element,
       correctPosition.calculateAdjacent(direction: curElementDirection),
     );
@@ -361,7 +356,7 @@ class BlankTileController {
     _doNotMoveTiles.remove(previousElement);
     _doNotMoveTiles.remove(element);
 
-    await moveTileToTargetPosition(
+    await _moveTileToTargetPosition(
       element,
       correctPosition,
     );

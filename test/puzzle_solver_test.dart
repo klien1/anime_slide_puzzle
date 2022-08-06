@@ -1,9 +1,5 @@
 import 'dart:collection';
-import 'package:anime_slide_puzzle/models/puzzle_board.dart';
-import 'package:anime_slide_puzzle/puzzle_solver/a_star_node.dart';
 import 'package:anime_slide_puzzle/models/coordinate.dart';
-import 'package:anime_slide_puzzle/puzzle_solver/a_star_puzzle_solver.dart';
-import 'package:anime_slide_puzzle/puzzle_solver/blank_tile_controller.dart';
 import 'package:anime_slide_puzzle/puzzle_solver/ida_star_puzzle_solver.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:anime_slide_puzzle/puzzle_solver/puzzle_solver_helper.dart';
@@ -106,117 +102,117 @@ void main() {
     ]);
   });
 
-  test('AStarNodes should be the same(==)', () {
-    const boardState = [
-      [0, 1, 2],
-      [3, 4, 5],
-      [6, 7, 8]
-    ];
+  // test('AStarNodes should be the same(==)', () {
+  //   const boardState = [
+  //     [0, 1, 2],
+  //     [3, 4, 5],
+  //     [6, 7, 8]
+  //   ];
 
-    const boardState2 = [
-      [0, 1, 2],
-      [3, 4, 5],
-      [6, 7, 8]
-    ];
-    AStarNode first = AStarNode(
-      initialBoardState: boardState,
-      blankTileCoordinate: const Coordinate(
-        row: 2,
-        col: 2,
-      ),
-    );
-    AStarNode second = AStarNode(
-      initialBoardState: boardState2,
-      blankTileCoordinate: const Coordinate(
-        row: 2,
-        col: 2,
-      ),
-    );
-    expect(first == second, true);
-  });
+  //   const boardState2 = [
+  //     [0, 1, 2],
+  //     [3, 4, 5],
+  //     [6, 7, 8]
+  //   ];
+  //   AStarNode first = AStarNode(
+  //     initialBoardState: boardState,
+  //     blankTileCoordinate: const Coordinate(
+  //       row: 2,
+  //       col: 2,
+  //     ),
+  //   );
+  //   AStarNode second = AStarNode(
+  //     initialBoardState: boardState2,
+  //     blankTileCoordinate: const Coordinate(
+  //       row: 2,
+  //       col: 2,
+  //     ),
+  //   );
+  //   expect(first == second, true);
+  // });
 
-  test('AStarNodes should be different(!=)', () {
-    const boardState = [
-      [3, 0, 2],
-      [8, 1, 5],
-      [6, 4, 7]
-    ];
+  // test('AStarNodes should be different(!=)', () {
+  //   const boardState = [
+  //     [3, 0, 2],
+  //     [8, 1, 5],
+  //     [6, 4, 7]
+  //   ];
 
-    const boardState2 = [
-      [0, 1, 2],
-      [3, 4, 5],
-      [6, 7, 8]
-    ];
+  //   const boardState2 = [
+  //     [0, 1, 2],
+  //     [3, 4, 5],
+  //     [6, 7, 8]
+  //   ];
 
-    AStarNode first = AStarNode(
-      initialBoardState: boardState,
-      blankTileCoordinate: const Coordinate(
-        row: 1,
-        col: 0,
-      ),
-    );
-    AStarNode second = AStarNode(
-      initialBoardState: boardState2,
-      blankTileCoordinate: const Coordinate(
-        row: 2,
-        col: 2,
-      ),
-    );
-    expect(first == second, false);
-  });
+  //   AStarNode first = AStarNode(
+  //     initialBoardState: boardState,
+  //     blankTileCoordinate: const Coordinate(
+  //       row: 1,
+  //       col: 0,
+  //     ),
+  //   );
+  //   AStarNode second = AStarNode(
+  //     initialBoardState: boardState2,
+  //     blankTileCoordinate: const Coordinate(
+  //       row: 2,
+  //       col: 2,
+  //     ),
+  //   );
+  //   expect(first == second, false);
+  // });
 
-  test('AStarPuzzlerSolver should solve with 0 moves', () {
-    const boardState = [
-      [0, 1, 2],
-      [3, 4, 5],
-      [6, 7, 8]
-    ];
-    Queue<Coordinate> moveList = Queue();
-    final AStarPuzzleSolver solver = AStarPuzzleSolver(
-      startingBoardState: boardState,
-      currentBlankTileCoordiante: const Coordinate(row: 2, col: 2),
-    );
-    expect(solver.solvePuzzle(const Coordinate(row: 2, col: 2)), moveList);
-  });
+  // test('AStarPuzzlerSolver should solve with 0 moves', () {
+  //   const boardState = [
+  //     [0, 1, 2],
+  //     [3, 4, 5],
+  //     [6, 7, 8]
+  //   ];
+  //   Queue<Coordinate> moveList = Queue();
+  //   final AStarPuzzleSolver solver = AStarPuzzleSolver(
+  //     startingBoardState: boardState,
+  //     currentBlankTileCoordiante: const Coordinate(row: 2, col: 2),
+  //   );
+  //   expect(solver.solvePuzzle(const Coordinate(row: 2, col: 2)), moveList);
+  // });
 
-  test('AStarPuzzleSolver should take 1 step to reach goal state', () {
-    const boardState = [
-      [0, 1, 2],
-      [3, 4, 5],
-      [6, 8, 7]
-    ];
+  // test('AStarPuzzleSolver should take 1 step to reach goal state', () {
+  //   const boardState = [
+  //     [0, 1, 2],
+  //     [3, 4, 5],
+  //     [6, 8, 7]
+  //   ];
 
-    Queue<Coordinate> moveList = Queue();
-    moveList.addFirst(const Coordinate(row: 2, col: 2));
+  //   Queue<Coordinate> moveList = Queue();
+  //   moveList.addFirst(const Coordinate(row: 2, col: 2));
 
-    final AStarPuzzleSolver solver = AStarPuzzleSolver(
-      startingBoardState: boardState,
-      currentBlankTileCoordiante: const Coordinate(row: 2, col: 1),
-    );
+  //   final AStarPuzzleSolver solver = AStarPuzzleSolver(
+  //     startingBoardState: boardState,
+  //     currentBlankTileCoordiante: const Coordinate(row: 2, col: 1),
+  //   );
 
-    expect(solver.solvePuzzle(const Coordinate(row: 2, col: 1)), moveList);
-  });
+  //   expect(solver.solvePuzzle(const Coordinate(row: 2, col: 1)), moveList);
+  // });
 
-  test('AStarPuzzleSolver should take 4 steps to reach goal state', () {
-    const boardState = [
-      [8, 0, 2],
-      [3, 1, 5],
-      [6, 4, 7]
-    ];
+  // test('AStarPuzzleSolver should take 4 steps to reach goal state', () {
+  //   const boardState = [
+  //     [8, 0, 2],
+  //     [3, 1, 5],
+  //     [6, 4, 7]
+  //   ];
 
-    Queue<Coordinate> moveList = Queue();
-    moveList.addFirst(const Coordinate(row: 2, col: 2));
-    moveList.addFirst(const Coordinate(row: 2, col: 1));
-    moveList.addFirst(const Coordinate(row: 1, col: 1));
-    moveList.addFirst(const Coordinate(row: 0, col: 1));
+  //   Queue<Coordinate> moveList = Queue();
+  //   moveList.addFirst(const Coordinate(row: 2, col: 2));
+  //   moveList.addFirst(const Coordinate(row: 2, col: 1));
+  //   moveList.addFirst(const Coordinate(row: 1, col: 1));
+  //   moveList.addFirst(const Coordinate(row: 0, col: 1));
 
-    final AStarPuzzleSolver solver = AStarPuzzleSolver(
-      startingBoardState: boardState,
-      currentBlankTileCoordiante: const Coordinate(row: 0, col: 0),
-    );
+  //   final AStarPuzzleSolver solver = AStarPuzzleSolver(
+  //     startingBoardState: boardState,
+  //     currentBlankTileCoordiante: const Coordinate(row: 0, col: 0),
+  //   );
 
-    expect(solver.solvePuzzle(const Coordinate(row: 0, col: 0)), moveList);
-  });
+  //   expect(solver.solvePuzzle(const Coordinate(row: 0, col: 0)), moveList);
+  // });
 
   test('isSameMatrix should return true', () {
     const boardState = [
@@ -346,25 +342,4 @@ void main() {
 
     expect(solver.solvePuzzle(), moveList);
   });
-
-  // test('Blank tile controller should move 3 one space right', () {
-  //   List<List<int>> matrix = [
-  //     [0, 1, 2],
-  //     [3, 4, 5],
-  //     [6, 7, 8]
-  //   ];
-
-  //   const List<List<int>> resultMatrix = [
-  //     [0, 1, 2],
-  //     [4, 3, 5],
-  //     [6, 7, 8]
-  //   ];
-
-  //   PuzzleBoard puzzleBoard = PuzzleBoard.intBoard(board: matrix);
-  //   BlankTileController blankTileController =
-  //       BlankTileController(puzzleBoard: puzzleBoard);
-  //   blankTileController.moveNumberTileDirection(3, Direction.right);
-
-  //   expect(puzzleBoard.puzzleTileNumberMatrix, resultMatrix);
-  // });
 }

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:collection';
 import 'package:anime_slide_puzzle/models/coordinate.dart';
+import 'package:anime_slide_puzzle/puzzle_solver/auto_solver.dart';
 import 'package:anime_slide_puzzle/puzzle_solver/ida_star_puzzle_solver.dart';
 import 'package:anime_slide_puzzle/utils/puzzle_board_helper.dart';
 import 'package:anime_slide_puzzle/puzzle_solver/a_star_puzzle_solver.dart';
@@ -15,7 +16,7 @@ class PuzzleBoard extends ChangeNotifier {
   int _numberOfMoves = 0;
   double _currentTileOpacity = 0;
   bool _gameInProgress = false;
-  bool _solutionInProgress = false;
+  bool solutionInProgress = false;
 
   PuzzleBoard({required numRowsOrColumns})
       : _numRowsOrColumns = numRowsOrColumns {
@@ -38,7 +39,6 @@ class PuzzleBoard extends ChangeNotifier {
     _puzzleTiles2d = _generatePuzzleMatrix(numRowsOrColumns);
     for (int row = 0; row < board.length; ++row) {
       for (int col = 0; col < board.length; ++col) {
-        board[row][col]; // value
         Coordinate correctCoordinate = convert1dArrayCoordTo2dArrayCoord(
             index: board[row][col], numRowOrColCount: numRowsOrColumns);
 
@@ -48,6 +48,15 @@ class PuzzleBoard extends ChangeNotifier {
     }
 
     _puzzleTileNumberMatrix = board;
+  }
+
+  void autoSolve() {
+    solutionInProgress = true;
+
+    AutoSolver autoSolve = AutoSolver(puzzleBoard: this);
+    autoSolve.solve();
+
+    solutionInProgress = false;
   }
 
   List<List<PuzzleTile>> _generatePuzzleMatrix(int numRowsOrCols) {
@@ -86,21 +95,6 @@ class PuzzleBoard extends ChangeNotifier {
     return true;
   }
 
-  // checks is coordinate is out of bounds in matrix
-  // static bool isOutOfBounds(
-  //   List<List<int>> matrix,
-  //   Coordinate curPoint,
-  // ) {
-  //   if (curPoint.row < 0 ||
-  //       curPoint.col < 0 ||
-  //       curPoint.row >= matrix.length ||
-  //       curPoint.col >= matrix[curPoint.row].length) {
-  //     return true;
-  //   }
-
-  //   return false;
-  // }
-
   @visibleForTesting
   static bool isPuzzleIsSolvable({
     required List<List<int>> matrix,
@@ -118,7 +112,7 @@ class PuzzleBoard extends ChangeNotifier {
   }
 
   void _toggleSolutionInProgress(bool status) {
-    _solutionInProgress = status;
+    solutionInProgress = status;
     notifyListeners();
   }
 
@@ -338,6 +332,6 @@ class PuzzleBoard extends ChangeNotifier {
   }
 
   bool get isLookingForSolution {
-    return _solutionInProgress;
+    return solutionInProgress;
   }
 }

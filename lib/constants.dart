@@ -4,3 +4,5 @@ const List<String> imagePathList = [
   'images/jujutsu_kaisen.jpg',
   'images/spy-x-family.webp',
 ];
+
+const Duration defaultTileSpeed = Duration(milliseconds: 100);
