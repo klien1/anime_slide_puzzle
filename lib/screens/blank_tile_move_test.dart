@@ -40,7 +40,9 @@ class BlankTileTest extends StatelessWidget {
         ),
         TextButton(
           onPressed: () {
-            blankTileController.moveList();
+            blankTileController.solve();
+            // blankTileController.getSolutionOrder();
+            // blankTileController.moveList();
             // blankTileController.moveTileToCorrectPosition();
             // blankTileController.moveNumberTileDirection(0, Direction.left);
           },
