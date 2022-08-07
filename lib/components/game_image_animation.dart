@@ -68,7 +68,7 @@ class _GameImageAnimationState extends State<GameImageAnimation>
       flex: 1,
       child: GestureDetector(
         onTap: () {
-          context.read<PuzzleImageSelector>().changeImage(widget.index);
+          // context.read<PuzzleImageSelector>().changeImage(widget.index);
           Navigator.pushNamed(context, GameScreen.id);
         },
         child: MouseRegion(

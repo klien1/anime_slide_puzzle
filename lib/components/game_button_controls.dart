@@ -1,5 +1,4 @@
 import 'package:anime_slide_puzzle/components/game_status.dart';
-import 'package:anime_slide_puzzle/puzzle_solver/auto_solver.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:anime_slide_puzzle/models/puzzle_board.dart';

@@ -85,6 +85,7 @@ class AutoSolver {
     }
   }
 
+  /// this method moves the blank tile to given position
   Future<void> _moveBlankTileNextToTarget(Coordinate target) async {
     Coordinate blankCoord = puzzleBoard.currentBlankTileCoordiante;
 
@@ -103,11 +104,8 @@ class AutoSolver {
         }
       }
 
-      assert(correctDirection != null);
-
       _swapTileUsingCurrentCoordinate(
           blankCoord.calculateAdjacent(direction: correctDirection));
-      // _moveBlankTile(correctDirection);
       blankCoord = puzzleBoard.currentBlankTileCoordiante;
       await Future.delayed(defaultTileSpeed);
     }

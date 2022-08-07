@@ -207,9 +207,7 @@ class PuzzleBoard extends ChangeNotifier {
     }
   }
 
-/**
- * returns current position of tileNum
- */
+  /// returns current position of given tile number
   Coordinate findCurrentTileNumberCoordiante(int tileNum) {
     Coordinate correctTileCoordiante = convert1dArrayCoordTo2dArrayCoord(
       index: tileNum,
