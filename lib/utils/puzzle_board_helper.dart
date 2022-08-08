@@ -17,14 +17,16 @@ int convert2dArrayCoordTo1dArrayCoord({
   return row * numRowOrColCount + col;
 }
 
-bool isEven(int num) {
+bool isEven({required int num}) {
   return num % 2 == 0;
 }
 
 // Count # of inversions
 // An inversion is any pair of tiles i and j where i < j
 // but i appears after j when considering the board in row-major order
-int countTotalInversion({required List<List<int>> matrix}) {
+int countTotalInversion({
+  required List<List<int>> matrix,
+}) {
   int numRowsOrColumns = matrix.length;
 
   List<int> currentTilePosition1d = [];
@@ -33,12 +35,15 @@ int countTotalInversion({required List<List<int>> matrix}) {
   }
 
   return countInversion(
-    currentTilePosition1d,
-    numRowsOrColumns * numRowsOrColumns - 1,
+    tileNumberList: currentTilePosition1d,
+    blankTileNum: numRowsOrColumns * numRowsOrColumns - 1,
   );
 }
 
-int countInversion(List<int> tileNumberList, int blankTileNum) {
+int countInversion({
+  required List<int> tileNumberList,
+  required int blankTileNum,
+}) {
   int numInversions = 0;
 
   for (int i = 0; i < tileNumberList.length; ++i) {
@@ -53,10 +58,10 @@ int countInversion(List<int> tileNumberList, int blankTileNum) {
   return numInversions;
 }
 
-bool isOutOfBounds(
-  List<List<int>> matrix,
-  Coordinate curPoint,
-) {
+bool isOutOfBounds({
+  required List<List<int>> matrix,
+  required Coordinate curPoint,
+}) {
   if (curPoint.row < 0 ||
       curPoint.col < 0 ||
       curPoint.row >= matrix.length ||

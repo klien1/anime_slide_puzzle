@@ -23,7 +23,7 @@ class IDAStarPuzzleSolver {
   })  : _initialBoardState = initialBoardState,
         _numRowsOrColumns = numRowsOrColumns,
         _initialBlankTileCoordinate = blankTileCoordinate {
-    _goalState = generateGoalState(numRowsOrColumns);
+    _goalState = generateGoalState(numRowsOrColumns: numRowsOrColumns);
     _initialManhattanDistance = getTotalManhattanDistance(
       boardState: _initialBoardState,
       numRowsOrColumns: numRowsOrColumns,
@@ -54,7 +54,7 @@ class IDAStarPuzzleSolver {
     pathToCurrentNode.addFirst(curNode);
 
     while (!_didFindSolution) {
-      _threshold = _search(pathToCurrentNode);
+      _threshold = _search(path: pathToCurrentNode);
     }
 
     // found solution. adding move list to stack
@@ -65,7 +65,7 @@ class IDAStarPuzzleSolver {
     return moveList;
   }
 
-  double _search(Queue<IDAStarNode> path) {
+  double _search({required Queue<IDAStarNode> path}) {
     final IDAStarNode curNode = path.first;
     final double fScore = curNode.fScore;
 
@@ -89,7 +89,7 @@ class IDAStarPuzzleSolver {
       if (adjNode != null && !path.contains(adjNode)) {
         path.addFirst(adjNode);
 
-        double currentThreshold = _search(path);
+        double currentThreshold = _search(path: path);
         if (_didFindSolution) return fScore;
         if (currentThreshold < minThreshold) minThreshold = currentThreshold;
 
@@ -105,7 +105,10 @@ class IDAStarPuzzleSolver {
     required Coordinate adjacentTileCoordinate,
   }) {
     // check if coordinates are within boundary
-    if (isOutOfBounds1d(_numRowsOrColumns, adjacentTileCoordinate)) return null;
+    if (isOutOfBounds1d(
+      length: _numRowsOrColumns,
+      curPoint: adjacentTileCoordinate,
+    )) return null;
 
     // copy board
     final List<int> newBoardState =
@@ -122,10 +125,10 @@ class IDAStarPuzzleSolver {
     );
 
     final bool didSwapPosition = swap1dMatrix(
-      newBoardState,
-      _numRowsOrColumns,
-      curNode.blankTileCoordiante,
-      adjacentTileCoordinate,
+      matrix1d: newBoardState,
+      numRowOrColumn: _numRowsOrColumns,
+      first: curNode.blankTileCoordiante,
+      second: adjacentTileCoordinate,
     );
     if (!didSwapPosition) return null;
 

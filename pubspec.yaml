@@ -81,6 +81,9 @@ flutter:
     - family: JosefinSans
       fonts:
         - asset: fonts/JosefinSans-Regular.ttf
+    - family: Yokelvision
+      fonts:
+        - asset: fonts/Yokelvision.ttf
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf

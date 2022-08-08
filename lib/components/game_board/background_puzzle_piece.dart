@@ -58,8 +58,8 @@ class BackgroundPuzzlePiece extends StatelessWidget {
         SizedBox(
           height: tileHeight,
           width: tileWidth,
-          child: ClipRect(
-            // borderRadius: BorderRadius.circular(tileBorderRadius),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(tileBorderRadius),
             child: OverflowBox(
               maxHeight: double.infinity,
               maxWidth: double.infinity,

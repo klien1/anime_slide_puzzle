@@ -22,7 +22,7 @@ class GameBoard extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.grey,
+        color: Colors.grey.withOpacity(0.25),
         border: Border.all(
           color: Colors.black,
         ),

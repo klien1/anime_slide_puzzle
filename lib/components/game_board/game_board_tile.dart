@@ -1,14 +1,11 @@
-import 'package:anime_slide_puzzle/components/game_board/imageless_puzzle_piece.dart';
+import 'package:anime_slide_puzzle/components/game_board/no_image_puzzle_piece.dart';
 import 'package:anime_slide_puzzle/components/game_board/background_puzzle_piece.dart';
 import 'package:anime_slide_puzzle/models/anime_theme_list.dart';
-import 'package:anime_slide_puzzle/models/puzzle_image_selector.dart';
 import 'package:anime_slide_puzzle/models/puzzle_tile.dart';
 import 'package:provider/provider.dart';
 import 'package:anime_slide_puzzle/models/puzzle_board.dart';
 import 'package:flutter/material.dart';
 import 'package:anime_slide_puzzle/constants.dart';
-
-// TODO: extract stateful components to parent component
 
 class GameBoardTile extends StatefulWidget {
   const GameBoardTile({
@@ -39,23 +36,10 @@ class GameBoardTile extends StatefulWidget {
 class _GameBoardTile extends State<GameBoardTile> {
   bool isHovered = false;
 
-  // late final PuzzleBoard puzzleBoard;
-  // late final PuzzleImageSelector imageSelector;
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   // puzzleBoard = context.read<PuzzleBoard>();
-  //   // imageSelector = context.watch<PuzzleImageSelector>();
-  // }
-
   @override
   Widget build(BuildContext context) {
     final PuzzleBoard puzzleBoard = context.read<PuzzleBoard>();
-    // final PuzzleImageSelector imageSelector =
-    //     context.watch<PuzzleImageSelector>();
     final AnimeThemeList animeThemeList = context.read<AnimeThemeList>();
-    print('${animeThemeList.curPuzzle}');
 
     // To calculate the dimensions of the tile, we divide the board width or height
     // we subtract the padding to have padding for right and bottom
@@ -90,7 +74,7 @@ class _GameBoardTile extends State<GameBoardTile> {
             duration: widget.scaleDuration,
             scale: isHovered ? .90 : 1,
             child: (animeThemeList.isLoadingImage)
-                ? ImagelessPuzzle(
+                ? NoImagePuzzlePiece(
                     height: tileHeight,
                     width: tileWidth,
                     tile: widget.tile,

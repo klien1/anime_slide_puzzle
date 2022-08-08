@@ -1,6 +1,5 @@
 import 'package:anime_slide_puzzle/models/coordinate.dart';
 import 'package:anime_slide_puzzle/utils/puzzle_board_helper.dart';
-import 'package:collection/collection.dart';
 
 int getTotalManhattanDistance({
   required List<int> boardState,
@@ -45,14 +44,17 @@ int findManhattanDistanceWithTileNumber({
     col: currentCoordinate.col,
   );
 
-  return getManhattanDistance(correctCoord, curCoord);
+  return getManhattanDistance(first: correctCoord, second: curCoord);
 }
 
-int getManhattanDistance(Coordinate first, Coordinate second) {
+int getManhattanDistance({
+  required Coordinate first,
+  required Coordinate second,
+}) {
   return (first.col - second.col).abs() + (first.row - second.row).abs();
 }
 
-List<int> generateGoalState(int numRowsOrColumns) {
+List<int> generateGoalState({required int numRowsOrColumns}) {
   return List.generate(
     numRowsOrColumns * numRowsOrColumns,
     (index) => index,
@@ -60,18 +62,14 @@ List<int> generateGoalState(int numRowsOrColumns) {
   );
 }
 
-bool isSameMatrix(List<List<int>> first, List<List<int>> second) {
-  return const DeepCollectionEquality().equals(first, second);
-}
-
-bool swap1dMatrix(
-  List<int> matrix1d,
-  int numRowOrColumn,
-  Coordinate first,
-  Coordinate second,
-) {
-  if (isOutOfBounds1d(numRowOrColumn, first) ||
-      isOutOfBounds1d(numRowOrColumn, second)) return false;
+bool swap1dMatrix({
+  required List<int> matrix1d,
+  required int numRowOrColumn,
+  required Coordinate first,
+  required Coordinate second,
+}) {
+  if (isOutOfBounds1d(length: numRowOrColumn, curPoint: first) ||
+      isOutOfBounds1d(length: numRowOrColumn, curPoint: second)) return false;
   // both points are within boundary
 
   int firstPoint = convert2dArrayCoordTo1dArrayCoord(
@@ -92,7 +90,10 @@ bool swap1dMatrix(
   return true;
 }
 
-bool isOutOfBounds1d(int length, Coordinate curPoint) {
+bool isOutOfBounds1d({
+  required int length,
+  required Coordinate curPoint,
+}) {
   if (curPoint.row < 0 ||
       curPoint.col < 0 ||
       curPoint.row >= length ||

@@ -38,7 +38,7 @@ class _AnimatedChildState extends State<AnimatedChild> {
 
     double start = getRandomRange(.40, .60) - (widget.index / 5 * .25);
     double end = getRandomRange(.70, .90) - ((widget.index / 5) * .25);
-    print('index: ${widget.index} start: $start end: $end');
+    // print('index: ${widget.index} start: $start end: $end');
     // print(end);
 
     animatedPosition =

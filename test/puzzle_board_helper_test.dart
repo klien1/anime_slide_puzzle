@@ -16,11 +16,11 @@ void main() {
   });
 
   test('isEven(8) should return true', () {
-    expect(isEven(8), true);
+    expect(isEven(num: 8), true);
   });
 
   test('isEven(41) should return false', () {
-    expect(isEven(41), false);
+    expect(isEven(num: 41), false);
   });
 
   test(
@@ -69,8 +69,8 @@ void main() {
     ];
     expect(
         isOutOfBounds(
-          matrix,
-          const Coordinate(row: 0, col: -1),
+          matrix: matrix,
+          curPoint: const Coordinate(row: 0, col: -1),
         ),
         true);
   });
@@ -83,8 +83,8 @@ void main() {
     ];
     expect(
         isOutOfBounds(
-          matrix,
-          const Coordinate(row: 0, col: 4),
+          matrix: matrix,
+          curPoint: const Coordinate(row: 0, col: 4),
         ),
         true);
   });
@@ -97,8 +97,8 @@ void main() {
     ];
     expect(
         isOutOfBounds(
-          matrix,
-          const Coordinate(row: -1, col: 0),
+          matrix: matrix,
+          curPoint: const Coordinate(row: -1, col: 0),
         ),
         true);
   });
@@ -111,8 +111,8 @@ void main() {
     ];
     expect(
         isOutOfBounds(
-          matrix,
-          const Coordinate(row: 4, col: 0),
+          matrix: matrix,
+          curPoint: const Coordinate(row: 4, col: 0),
         ),
         true);
   });
@@ -125,8 +125,8 @@ void main() {
     ];
     expect(
         isOutOfBounds(
-          matrix,
-          const Coordinate(row: 2, col: 2),
+          matrix: matrix,
+          curPoint: const Coordinate(row: 2, col: 2),
         ),
         false);
   });
@@ -139,8 +139,8 @@ void main() {
     ];
     expect(
         isOutOfBounds(
-          matrix,
-          Coordinate(row: matrix.length - 1, col: matrix.length - 1),
+          matrix: matrix,
+          curPoint: Coordinate(row: matrix.length - 1, col: matrix.length - 1),
         ),
         false);
   });

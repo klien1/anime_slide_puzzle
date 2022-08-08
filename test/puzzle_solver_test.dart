@@ -49,42 +49,13 @@ void main() {
   test('getManhattanDistance should be 0 for (2,2) and (2,2)', () {
     const coord = Coordinate(row: 2, col: 2);
 
-    expect(getManhattanDistance(coord, coord), 0);
+    expect(getManhattanDistance(first: coord, second: coord), 0);
   });
 
   test('getManhattanDistance should be 4 for (0,0) and (2,2)', () {
     const startCoord = Coordinate(row: 0, col: 0);
     const endCoord = Coordinate(row: 2, col: 2);
-    expect(getManhattanDistance(startCoord, endCoord), 4);
-  });
-
-  test('isSameMatrix should return true', () {
-    const boardState = [
-      [8, 0, 2],
-      [3, 1, 5],
-      [6, 4, 7]
-    ];
-
-    const boardState2 = [
-      [8, 0, 2],
-      [3, 1, 5],
-      [6, 4, 7]
-    ];
-
-    expect(isSameMatrix(boardState, boardState2), true);
-  });
-  test('isSameMatrix should return false', () {
-    const boardState = [
-      [0, 1, 2],
-      [3, 4, 5],
-      [6, 7, 8]
-    ];
-    const boardState2 = [
-      [8, 0, 2],
-      [3, 1, 5],
-      [6, 4, 7]
-    ];
-    expect(isSameMatrix(boardState, boardState2), false);
+    expect(getManhattanDistance(first: startCoord, second: endCoord), 4);
   });
 
   test('IDAStarPuzzlerSolver should solve with 0 moves', () {

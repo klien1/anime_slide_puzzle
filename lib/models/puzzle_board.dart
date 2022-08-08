@@ -4,7 +4,6 @@ import 'package:anime_slide_puzzle/models/coordinate.dart';
 import 'package:anime_slide_puzzle/puzzle_solver/auto_solver.dart';
 import 'package:anime_slide_puzzle/puzzle_solver/ida_star_puzzle_solver.dart';
 import 'package:anime_slide_puzzle/utils/puzzle_board_helper.dart';
-// import 'package:anime_slide_puzzle/puzzle_solver/a_star_puzzle_solver.dart';
 import 'package:flutter/material.dart';
 import 'package:anime_slide_puzzle/models/puzzle_tile.dart';
 import 'dart:math';
@@ -29,10 +28,6 @@ class PuzzleBoard extends ChangeNotifier {
             growable: false),
         growable: false);
   }
-
-  PuzzleBoard.board({required List<List<PuzzleTile>> board})
-      : _puzzleTiles2d = board,
-        _numRowsOrColumns = board.length;
 
   PuzzleBoard.intBoard({required List<List<int>> board})
       : _numRowsOrColumns = board.length {
@@ -85,7 +80,8 @@ class PuzzleBoard extends ChangeNotifier {
     required Coordinate second,
   }) {
     // check if coordinates are within boundary
-    if (isOutOfBounds(matrix, first) || isOutOfBounds(matrix, second)) {
+    if (isOutOfBounds(matrix: matrix, curPoint: first) ||
+        isOutOfBounds(matrix: matrix, curPoint: second)) {
       return false;
     }
 
@@ -103,8 +99,9 @@ class PuzzleBoard extends ChangeNotifier {
     int numRowsOrColumns = matrix.length;
     int numInversions = countTotalInversion(matrix: matrix);
 
-    if ((!isEven(numRowsOrColumns) && isEven(numInversions)) ||
-        isEven(numRowsOrColumns) && !isEven(numInversions + blankTileRow)) {
+    if ((!isEven(num: numRowsOrColumns) && isEven(num: numInversions)) ||
+        isEven(num: numRowsOrColumns) &&
+            !isEven(num: numInversions + blankTileRow)) {
       return true;
     }
 
@@ -151,23 +148,6 @@ class PuzzleBoard extends ChangeNotifier {
     _toggleSolutionInProgress(false);
   }
 
-  // void solvePuzzleWithAStar() async {
-  //   _toggleSolutionInProgress(true);
-  //   AStarPuzzleSolver puzzleSolver = AStarPuzzleSolver(
-  //     startingBoardState: _puzzleTileNumberMatrix,
-  //     currentBlankTileCoordiante: currentBlankTileCoordiante,
-  //   );
-
-  //   Queue<Coordinate> moveList =
-  //       puzzleSolver.solvePuzzle(currentBlankTileCoordiante);
-
-  //   while (moveList.isNotEmpty) {
-  //     Coordinate nextBlankTileCoord = moveList.removeFirst();
-  //     await _aiMoveTile(nextBlankTileCoord);
-  //   }
-  //   _toggleSolutionInProgress(false);
-  // }
-
   Future<void> _aiMoveTile(Coordinate nextBlankTileCoord) async {
     // check which number needs to be swapped
     int tileNum =
@@ -187,7 +167,10 @@ class PuzzleBoard extends ChangeNotifier {
   void moveTile({
     required Coordinate correctTileCoordinate,
   }) {
-    if (isOutOfBounds(_puzzleTileNumberMatrix, correctTileCoordinate)) return;
+    if (isOutOfBounds(
+      matrix: _puzzleTileNumberMatrix,
+      curPoint: correctTileCoordinate,
+    )) return;
     final PuzzleTile clickedTile =
         _puzzleTiles2d[correctTileCoordinate.row][correctTileCoordinate.col];
 
@@ -279,8 +262,14 @@ class PuzzleBoard extends ChangeNotifier {
     PuzzleTile secondTile,
   ) {
     if (firstTile == secondTile ||
-        isOutOfBounds(_puzzleTileNumberMatrix, firstTile.currentCoordinate) ||
-        isOutOfBounds(_puzzleTileNumberMatrix, secondTile.currentCoordinate)) {
+        isOutOfBounds(
+          matrix: _puzzleTileNumberMatrix,
+          curPoint: firstTile.currentCoordinate,
+        ) ||
+        isOutOfBounds(
+          matrix: _puzzleTileNumberMatrix,
+          curPoint: secondTile.currentCoordinate,
+        )) {
       return;
     }
 

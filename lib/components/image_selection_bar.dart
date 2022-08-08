@@ -1,9 +1,6 @@
-// import 'package:anime_slide_puzzle/components/game_select_board_size.dart';
+import 'package:anime_slide_puzzle/components/game_select_board_size.dart';
 import 'package:anime_slide_puzzle/components/image_selection_icon.dart';
 import 'package:anime_slide_puzzle/models/anime_theme_list.dart';
-import 'package:anime_slide_puzzle/models/background_image.dart';
-import 'package:anime_slide_puzzle/models/puzzle_image_selector.dart';
-import 'package:anime_slide_puzzle/screens/game_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -25,12 +22,6 @@ class _ImageSelectionBarState extends State<ImageSelectionBar> {
   int selected = 0;
 
   @override
-  void initState() {
-    super.initState();
-    // context.read<PuzzleImageSelector>().loadImages();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
@@ -39,27 +30,18 @@ class _ImageSelectionBarState extends State<ImageSelectionBar> {
     return Container(
       margin: EdgeInsets.symmetric(
         horizontal: screenWidth * .05,
-        vertical: screenWidth * .02,
+        vertical: screenHeight * .05,
       ),
-      // decoration: BoxDecoration(color: Color(0xFF9FC2BA)),
       decoration: BoxDecoration(
-          // color: Color(0xFF6094A2),
           color: Colors.white.withOpacity(.20),
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: Colors.black)),
-      // color: Colors.white,
-      width: 250,
-      height: screenHeight,
-      // width: screenWidth * .25,
-      // height: screenHeight,
+      width: 200,
+      height: screenHeight * .7,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Text(
-            'Select Theme',
-            textAlign: TextAlign.center,
-          ),
           for (int i = 0; i < animeThemeList.listLength; ++i)
             Expanded(
               child: GestureDetector(
@@ -67,10 +49,6 @@ class _ImageSelectionBarState extends State<ImageSelectionBar> {
                     ? null
                     : () {
                         animeThemeList.changeTheme(i);
-                        // context
-                        //     .read<BackgroundImage>()
-                        //     .changeImage(backgroundList[i]);
-                        // context.read<PuzzleImageSelector>().changeImage(i);
                         setState(() {
                           selected = i;
                         });
@@ -83,24 +61,9 @@ class _ImageSelectionBarState extends State<ImageSelectionBar> {
                 ),
               ),
             ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
-            child: TextButton(
-                style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.pink)),
-                onPressed: () {
-                  // Navigator.pushNamed(context, GameScreen.id);
-
-                  Navigator.push(
-                    context,
-                    PageRouteBuilder(
-                      transitionDuration: const Duration(seconds: 1),
-                      pageBuilder: (_, __, ___) => const GameScreen(),
-                    ),
-                  );
-                },
-                child: Text('Start Puzzle')),
-          )
+          const SizedBox(height: 20),
+          const SelectBoardSize(),
+          const SizedBox(height: 20),
         ],
       ),
     );
