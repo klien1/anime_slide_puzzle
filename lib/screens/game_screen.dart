@@ -1,17 +1,19 @@
 import 'package:anime_slide_puzzle/components/background_image.dart';
-import 'package:anime_slide_puzzle/components/game_status.dart';
+import 'package:anime_slide_puzzle/components/game_board/game_board_components/game_status.dart';
 import 'package:anime_slide_puzzle/models/anime_theme.dart';
 import 'package:anime_slide_puzzle/models/anime_theme_list.dart';
+import 'package:anime_slide_puzzle/models/game_timer.dart';
+import 'package:anime_slide_puzzle/models/puzzle_board.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:anime_slide_puzzle/components/game_board/game_board.dart';
-import 'package:anime_slide_puzzle/components/game_button_controls.dart';
+import 'package:anime_slide_puzzle/components/game_board/game_board_components/game_board.dart';
+import 'package:anime_slide_puzzle/components/game_board/game_board_components/game_button_controls.dart';
 import 'dart:math';
 
 // const double gameWidth = 250;
 // const double gameHeight = 250;
-const double gameWidth = 600;
-const double gameHeight = 600;
+const double gameWidth = 500;
+const double gameHeight = 500;
 const double padding = 3;
 
 class GameScreen extends StatefulWidget {
@@ -26,6 +28,9 @@ class GameScreen extends StatefulWidget {
 class _GameScreenState extends State<GameScreen> {
   bool waitForImage = true;
   bool showPuzzle = false;
+
+  GameTimer? gameTimer;
+  PuzzleBoard? puzzleBoard;
 
   @override
   void initState() {
@@ -50,6 +55,30 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    // context.read<GameTimer>()
+    //   ..resetTimer()
+    //   ..endTimer();
+    // context.read<PuzzleBoard>()
+    //   ..resetNumberOfMoves()
+    //   ..resetBoard();
+    super.didChangeDependencies();
+    gameTimer = context.read<GameTimer>();
+    puzzleBoard = context.read<PuzzleBoard>();
+  }
+
+  @override
+  void dispose() {
+    gameTimer
+      ?..resetTimer()
+      ..endTimer();
+    puzzleBoard
+      ?..resetNumberOfMoves()
+      ..resetBoard();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     AnimeThemeList animeThemeList = context.read<AnimeThemeList>();
     AnimeTheme animeTheme = animeThemeList.curAnimeTheme;
@@ -61,11 +90,6 @@ class _GameScreenState extends State<GameScreen> {
             Transform(
               transform: Matrix4.rotationY(pi),
               alignment: Alignment.center,
-              // child: BackgroundImage(
-              //   key: const Key('character-background'),
-              //   imagePath: animeTheme.puzzleBackgroundImagePath,
-              //   backgroundColor: animeTheme.backgroundColor,
-              // )
               child: AnimatedSwitcher(
                 duration: const Duration(seconds: 1),
                 child: (waitForImage)
@@ -81,11 +105,37 @@ class _GameScreenState extends State<GameScreen> {
                       ),
               ),
             ),
-            Container(
-              child: TextButton(
+            Positioned(
+              top: 20,
+              left: 20,
+              child: TextButton.icon(
                 onPressed: () => Navigator.pop(context),
-                child: const Text('Back'),
+                icon: const Icon(Icons.arrow_back),
+                label: const Text(
+                  'Back',
+                  style: TextStyle(fontSize: 18),
+                ),
+                style: ButtonStyle(
+                  padding: MaterialStateProperty.all<EdgeInsets>(
+                    const EdgeInsets.all(10),
+                  ),
+                ),
               ),
+              // TextButton(
+              //   onPressed: () => Navigator.pop(context),
+              //   child: const Padding(
+              //     padding: EdgeInsets.only(bottom: 4, right: 2),
+              //     child: Text.rich(
+              //       TextSpan(
+              //         style: TextStyle(fontSize: 20),
+              //         children: [
+              //           WidgetSpan(child: Icon(Icons.arrow_back)),
+              //           TextSpan(text: 'Back'),
+              //         ],
+              //       ),
+              //     ),
+              //   ),
+              // ),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -98,7 +148,8 @@ class _GameScreenState extends State<GameScreen> {
                       // height: 200,
                       width: MediaQuery.of(context).size.width * 0.3,
                       child: Hero(
-                        tag: 'anime_photo${animeTheme.index}',
+                        tag: animeTheme.name,
+                        //'anime_photo${animeTheme.index}',
                         child: Image(
                           image: AssetImage(animeTheme.logoImagePath),
                         ),

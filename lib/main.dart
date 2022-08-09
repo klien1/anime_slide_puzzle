@@ -1,10 +1,8 @@
-// import 'dart:ui';
-
 import 'package:anime_slide_puzzle/constants.dart';
 import 'package:anime_slide_puzzle/models/anime_theme_list.dart';
+import 'package:anime_slide_puzzle/models/game_timer.dart';
 import 'package:anime_slide_puzzle/screens/game_screen.dart';
 import 'package:anime_slide_puzzle/screens/image_selection_screen.dart';
-// import 'package:anime_slide_puzzle/screens/welcome_screen.dart';
 import 'models/puzzle_board.dart';
 import 'models/number_puzzle_tiles.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +21,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final myProviders = [
+      ChangeNotifierProvider<GameTimer>(
+          create: (BuildContext context) => GameTimer()),
       ChangeNotifierProvider<NumberPuzzleTiles>(
         create: (BuildContext context) => NumberPuzzleTiles(),
       ),
@@ -44,33 +44,32 @@ class MyApp extends StatelessWidget {
                 // primaryColor: Colors.amber,
                 primarySwatch: animeTheme.primarySwatch,
                 scaffoldBackgroundColor: animeTheme.backgroundColor,
-                textButtonTheme: TextButtonThemeData(
-                  style: TextButton.styleFrom(
-                    primary: Colors.white,
-                    backgroundColor: Colors.teal,
-                    shadowColor: Colors.black,
-                    elevation: 10,
-                  ),
+
+                elevatedButtonTheme: ElevatedButtonThemeData(
+                  style: ElevatedButton.styleFrom(
+                      primary: animeTheme.elevatedButtonPrimary,
+                      onPrimary: animeTheme.elevatedButtonOnPrimary,
+                      onSurface: Colors.black
+                      // surfaceTintColor: Colors.white
+                      // primary: Color(0xFFb82f75), // button color
+                      // onSurface: Colors.green, // disabled text color
+                      // onPrimary: Colors.green // text color
+                      ),
                 ),
 
-                //animeTheme.primarySwatch,
-                // primarySwatch: Color(0xFF112233) //Colors.blue,
-                // primaryColor: kPrimarySwatchColor,
-                // colorScheme: ,
-                // textButtonTheme: TextButtonThemeData(
-                //   style: ButtonStyle(textStyle: )
-                // ),
-                buttonTheme: ButtonThemeData(
-                  buttonColor: Colors.amber,
-                  // textTheme: ButtonTextTheme.primary,
+                textButtonTheme: TextButtonThemeData(
+                  style: TextButton.styleFrom(
+                    primary: animeTheme.textButtonPrimary,
+                    backgroundColor: animeTheme.textButtonBackgroundColor,
+                    elevation: 2,
+                  ),
                 ),
                 textTheme: TextTheme(
-                  button: TextStyle(color: Colors.amber),
                   bodyText2: TextStyle(
-                    // color: context.read<AnimeThemeList>().color,
-                    // color: Colors.white,
-                    fontSize: 20,
+                    color: animeTheme.bodyText2Color,
+                    fontSize: 30,
                     fontWeight: FontWeight.bold,
+                    fontFamily: 'JosefinSans',
                   ),
                 ),
               ),

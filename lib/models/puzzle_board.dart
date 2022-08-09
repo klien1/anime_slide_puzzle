@@ -1,8 +1,6 @@
 import 'dart:async';
-import 'dart:collection';
 import 'package:anime_slide_puzzle/models/coordinate.dart';
 import 'package:anime_slide_puzzle/puzzle_solver/auto_solver.dart';
-import 'package:anime_slide_puzzle/puzzle_solver/ida_star_puzzle_solver.dart';
 import 'package:anime_slide_puzzle/utils/puzzle_board_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:anime_slide_puzzle/models/puzzle_tile.dart';
@@ -15,20 +13,24 @@ class PuzzleBoard extends ChangeNotifier {
   int _numberOfMoves = 0;
   double _currentTileOpacity = 0;
   bool _gameInProgress = false;
-  bool solutionInProgress = false;
+  bool _solutionInProgress = false;
+  bool _puzzleCompleted = false;
 
+  // initializes puzzle with number of rows or columns
   PuzzleBoard({required numRowsOrColumns})
       : _numRowsOrColumns = numRowsOrColumns {
-    _puzzleTiles2d = _generatePuzzleMatrix(numRowsOrColumns);
-
-    _puzzleTileNumberMatrix = List.generate(
-        _numRowsOrColumns,
-        (row) => List.generate(
-            _numRowsOrColumns, (col) => row * _numRowsOrColumns + col,
-            growable: false),
-        growable: false);
+    resetBoard();
+    // _puzzleTiles2d = _generatePuzzleMatrix(numRowsOrColumns);
+    // _puzzleTileNumberMatrix = _generatePuzzleNumberMatrix(numRowsOrColumns);
+    // List.generate(
+    //     _numRowsOrColumns,
+    //     (row) => List.generate(
+    //         _numRowsOrColumns, (col) => row * _numRowsOrColumns + col,
+    //         growable: false),
+    //     growable: false);
   }
 
+  // initializes puzzle board with 2d matrix
   PuzzleBoard.intBoard({required List<List<int>> board})
       : _numRowsOrColumns = board.length {
     _puzzleTiles2d = _generatePuzzleMatrix(numRowsOrColumns);
@@ -41,17 +43,34 @@ class PuzzleBoard extends ChangeNotifier {
             .currentCoordinate = correctCoordinate;
       }
     }
-
     _puzzleTileNumberMatrix = board;
   }
 
-  void autoSolve() {
-    solutionInProgress = true;
+  // solves the puzzle
+  Future<void> autoSolve() async {
+    _toggleSolutionInProgress(true);
 
     AutoSolver autoSolve = AutoSolver(puzzleBoard: this);
-    autoSolve.solve();
+    await autoSolve.solve();
 
-    solutionInProgress = false;
+    _toggleSolutionInProgress(false);
+  }
+
+  List<List<int>> _generatePuzzleNumberMatrix(int numRowsOrCols) {
+    return List.generate(
+        _numRowsOrColumns,
+        (row) => List.generate(
+            _numRowsOrColumns, (col) => row * _numRowsOrColumns + col,
+            growable: false),
+        growable: false);
+  }
+
+  void resetBoard() {
+    _puzzleTiles2d = _generatePuzzleMatrix(numRowsOrColumns);
+    _puzzleTileNumberMatrix = _generatePuzzleNumberMatrix(numRowsOrColumns);
+    _solutionInProgress = false;
+    _gameInProgress = false;
+    _puzzleCompleted = false;
   }
 
   List<List<PuzzleTile>> _generatePuzzleMatrix(int numRowsOrCols) {
@@ -104,63 +123,17 @@ class PuzzleBoard extends ChangeNotifier {
             !isEven(num: numInversions + blankTileRow)) {
       return true;
     }
-
     return false;
   }
 
   void _toggleSolutionInProgress(bool status) {
-    solutionInProgress = status;
+    _solutionInProgress = status;
     notifyListeners();
   }
 
   void _toggleGameInProgress(bool status) {
     _gameInProgress = status;
     notifyListeners();
-  }
-
-  void solvePuzzleWithIDAStar() async {
-    _toggleSolutionInProgress(true);
-
-    // convert matrix to 1d array to solver
-    List<int> flattenedTileNumbers = List.generate(
-      _puzzleTileNumberMatrix.length * _puzzleTileNumberMatrix.length,
-      (index) => 0,
-      growable: false,
-    );
-
-    for (int row = 0; row < _puzzleTileNumberMatrix.length; ++row) {
-      for (int col = 0; col < _puzzleTileNumberMatrix[row].length; ++col) {
-        flattenedTileNumbers[row * _puzzleTileNumberMatrix.length + col] =
-            _puzzleTileNumberMatrix[row][col];
-      }
-    }
-    IDAStarPuzzleSolver solver = IDAStarPuzzleSolver(
-      initialBoardState: flattenedTileNumbers,
-      numRowsOrColumns: _numRowsOrColumns,
-      blankTileCoordinate: currentBlankTileCoordiante,
-    );
-
-    Queue<Coordinate> moveList = solver.solvePuzzle();
-    while (moveList.isNotEmpty) {
-      Coordinate nextBlankTileCoord = moveList.removeFirst();
-      await _aiMoveTile(nextBlankTileCoord);
-    }
-    _toggleSolutionInProgress(false);
-  }
-
-  Future<void> _aiMoveTile(Coordinate nextBlankTileCoord) async {
-    // check which number needs to be swapped
-    int tileNum =
-        _puzzleTileNumberMatrix[nextBlankTileCoord.row][nextBlankTileCoord.col];
-    // convert to 2d coordinate
-    Coordinate adjacentTileCoordinate = convert1dArrayCoordTo2dArrayCoord(
-        index: tileNum, numRowOrColCount: _numRowsOrColumns);
-    // Get tile
-    PuzzleTile adjTile =
-        _puzzleTiles2d[adjacentTileCoordinate.row][adjacentTileCoordinate.col];
-
-    await Future.delayed(const Duration(milliseconds: 200));
-    moveTile(correctTileCoordinate: adjTile.correctCoordinate);
   }
 
   // moves tiles using tile correct coordinate and NOT current coordinate
@@ -182,7 +155,7 @@ class PuzzleBoard extends ChangeNotifier {
       ++_numberOfMoves;
 
       if (_isPuzzleTileInCorrectPosition() && _gameInProgress) {
-        // print('completed!');
+        _puzzleCompleted = true;
         _toggleGameInProgress(false);
       }
 
@@ -216,9 +189,14 @@ class PuzzleBoard extends ChangeNotifier {
             curBlankPos.calculateAdjacent(direction: Direction.top);
   }
 
-  void startGame() {
+  void resetNumberOfMoves() {
     _numberOfMoves = 0;
+  }
+
+  void startGame() {
+    resetNumberOfMoves();
     _gameInProgress = true;
+    _puzzleCompleted = false;
     _shuffleBoard();
   }
 
@@ -314,11 +292,15 @@ class PuzzleBoard extends ChangeNotifier {
     return _gameInProgress;
   }
 
+  bool get isPuzzleCompleted {
+    return _puzzleCompleted;
+  }
+
   List<List<int>> get puzzleTileNumberMatrix {
     return _puzzleTileNumberMatrix;
   }
 
   bool get isLookingForSolution {
-    return solutionInProgress;
+    return _solutionInProgress;
   }
 }

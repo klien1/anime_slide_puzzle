@@ -1,7 +1,5 @@
 import 'package:anime_slide_puzzle/models/anime_theme.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter/cupertino.dart';
-// import 'package:anime_slide_puzzle/constants.dart';
 
 class AnimeThemeList extends ChangeNotifier {
   AnimeThemeList({
@@ -11,17 +9,25 @@ class AnimeThemeList extends ChangeNotifier {
     animeImageList.forEach(
       (animeName, animeImage) => _animeThemeList.add(
         AnimeTheme(
+          name: animeName,
           logoImagePath: animeImage['logo'].toString(),
           backgroundImagePath: animeImage['background'].toString(),
           puzzleImagePath: animeImage['puzzle'].toString(),
           puzzleBackgroundImagePath: animeImage['puzzleBackground']?.toString(),
           primarySwatch: animeImage['primarySwatch'] as MaterialColor,
-          backgroundColor: (animeImage['backgroundColor'] == null)
-              ? null
-              : animeImage['backgroundColor'] as Color,
-          flipImage: (animeImage['flipImage'] == null)
-              ? null
-              : animeImage['flipImage'] as bool,
+          backgroundColor: _tryToCast<Color>(animeImage['backgroundColor']),
+          textButtonPrimary: _tryToCast<Color>(animeImage['textButtonPrimary']),
+          textButtonBackgroundColor:
+              _tryToCast<Color>(animeImage['textButtonBackgroundColor']),
+          elevatedButtonPrimary:
+              _tryToCast<Color>(animeImage['elevatedButtonPrimary']),
+          elevatedButtonOnPrimary:
+              _tryToCast<Color>(animeImage['elevatedButtonOnPrimary']),
+          bodyText2Color: _tryToCast<Color>(animeImage['bodyText2Color']),
+          // backgroundColor: (animeImage['backgroundColor'] == null)
+          //     ? null
+          //     : animeImage['backgroundColor'] as Color,
+          // textButtonPrimary: animeImage['textButtonPrimary'] as Color,
           index: i++,
         ),
       ),
@@ -43,7 +49,6 @@ class AnimeThemeList extends ChangeNotifier {
   String? _curPuzzleBackground;
 
   void changeTheme(int index) {
-    // print('changing theme');
     if (index < 0) return;
     _curIndex = index;
     _curLogo = _animeThemeList[index].logoImagePath;
@@ -57,28 +62,7 @@ class AnimeThemeList extends ChangeNotifier {
     return _animeThemeList[index];
   }
 
-  // SizedBox getCurrentBackgroundImage() {
-  //   return SizedBox(
-  //     key: UniqueKey(),
-  //     width: double.infinity,
-  //     height: double.infinity,
-  //     child: DecoratedBox(
-  //       key: UniqueKey(),
-  //       decoration: BoxDecoration(
-  //         image: DecorationImage(
-  //           image: AssetImage(_curBackground),
-  //           // source: https://wall.alphacoders.com/big.php?i=1143485
-  //           // image: AssetImage('images/jujutsu_kaisen_background2.jpg'),
-  //           // image: AssetImage('images/demon_slayer_background.jpg'),
-  //           // source: https://wallpapersden.com/demon-slayer-4k-gaming-wallpaper/
-  //           // image: AssetImage('images/spy-x-family-background2.jpg'),
-  //           // source: https://wall.alphacoders.com/big.php?i=1227567
-  //           fit: BoxFit.cover,
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
+  T? _tryToCast<T>(dynamic object) => object is T ? object : null;
 
   Color get color {
     return Colors.black;
@@ -106,5 +90,9 @@ class AnimeThemeList extends ChangeNotifier {
 
   AnimeTheme get curAnimeTheme {
     return _animeThemeList[_curIndex];
+  }
+
+  int get curIndex {
+    return _curIndex;
   }
 }

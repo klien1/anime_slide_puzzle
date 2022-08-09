@@ -48,6 +48,9 @@ class AutoSolver {
     List<int> solutionOrder = _getSolutionOrder();
 
     for (int tileNum in solutionOrder) {
+      // if user reset the board, then no longer looking for solution
+      if (!puzzleBoard.isLookingForSolution) break;
+
       final Coordinate correctPosition = convert1dArrayCoordTo2dArrayCoord(
         index: tileNum,
         numRowOrColCount: puzzleBoard.numRowsOrColumns,
@@ -115,7 +118,7 @@ class AutoSolver {
           curCoordinate:
               blankCoord.calculateAdjacent(direction: correctDirection));
       blankCoord = puzzleBoard.currentBlankTileCoordiante;
-      await Future.delayed(defaultTileSpeed);
+      await Future.delayed(aiTileSpeed);
     }
   }
 
@@ -171,7 +174,7 @@ class AutoSolver {
     while (shortestPath.isNotEmpty) {
       Coordinate curCoordinate = shortestPath.removeFirst();
       _swapTileUsingCurrentCoordinate(curCoordinate: curCoordinate);
-      await Future.delayed(defaultTileSpeed);
+      await Future.delayed(aiTileSpeed);
     }
   }
 
@@ -312,7 +315,7 @@ class AutoSolver {
       );
       currentPosition =
           currentPosition.calculateAdjacent(direction: correctDirection);
-      await Future.delayed(defaultTileSpeed);
+      await Future.delayed(aiTileSpeed);
     }
   }
 
@@ -340,7 +343,7 @@ class AutoSolver {
     while (moveList.isNotEmpty) {
       final Coordinate curCoordinate = moveList.removeFirst();
       _swapTileUsingCurrentCoordinate(curCoordinate: curCoordinate);
-      await Future.delayed(defaultTileSpeed);
+      await Future.delayed(aiTileSpeed);
     }
   }
 

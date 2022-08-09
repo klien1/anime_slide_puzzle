@@ -5,12 +5,12 @@ class ImageSelectionIcon extends StatelessWidget {
     Key? key,
     required this.imagePath,
     required this.isSelected,
-    required this.index,
+    required this.themeName,
   }) : super(key: key);
 
   final String imagePath;
   final bool isSelected;
-  final int index;
+  final String themeName;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class ImageSelectionIcon extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Hero(
-          tag: 'anime_photo$index',
+          tag: themeName,
           child: Image(
             image: AssetImage(imagePath),
           ),

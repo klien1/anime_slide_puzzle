@@ -1,3 +1,4 @@
+import 'package:anime_slide_puzzle/models/game_timer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:anime_slide_puzzle/models/puzzle_board.dart';
@@ -9,25 +10,31 @@ class GameButtonControls extends StatelessWidget {
   Widget build(BuildContext context) {
     PuzzleBoard puzzleBoard = context.watch<PuzzleBoard>();
 
-    return Column(
+    return Row(
       children: [
-        TextButton(
+        const SizedBox(height: 15),
+        ElevatedButton(
           onPressed: (puzzleBoard.isLookingForSolution)
               ? null
-              : () => puzzleBoard.startGame(),
+              : () {
+                  context.read<GameTimer>()
+                    ..resetTimer()
+                    ..startTimer();
+                  puzzleBoard.startGame();
+                },
           child: (puzzleBoard.isGameInProgress)
               ? const Text('Restart Game')
               : const Text('Start Game'),
         ),
-        SizedBox(height: 15),
-        TextButton(
+        const SizedBox(height: 15, width: 15),
+        ElevatedButton(
           onPressed: (puzzleBoard.isLookingForSolution)
               ? null
               : () => puzzleBoard.autoSolve(),
           child: const Text('Auto-Solve'),
         ),
-        SizedBox(height: 15),
-        TextButton(
+        const SizedBox(height: 15, width: 15),
+        ElevatedButton(
           onPressed: () => puzzleBoard.toggleTileNumberVisibility(),
           child: (puzzleBoard.currentTileOpacity == 0)
               ? const Text('Show Hints')
