@@ -52,17 +52,17 @@ class ImageSelectionBar extends StatelessWidget {
                 ),
               ),
             ),
-          const SizedBox(height: 20),
+          // const SizedBox(height: 10),
           const SelectBoardSize(minNumRowsOrColumns: 3, maxNumRowsOrColumns: 5),
-          const SizedBox(height: 20),
+          // const SizedBox(height: 10),
           Container(
-            margin: const EdgeInsets.symmetric(horizontal: 15),
+            margin: const EdgeInsets.symmetric(horizontal: 10),
             child: const CircleTransitionButton(
               destinationScreen: GameScreen(),
               buttonText: 'Go to Puzzle',
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 10),
         ],
       ),
     );

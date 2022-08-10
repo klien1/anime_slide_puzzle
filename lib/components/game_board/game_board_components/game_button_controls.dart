@@ -4,16 +4,23 @@ import 'package:provider/provider.dart';
 import 'package:anime_slide_puzzle/models/puzzle_board.dart';
 
 class GameButtonControls extends StatelessWidget {
-  const GameButtonControls({Key? key}) : super(key: key);
+  const GameButtonControls({
+    Key? key,
+    this.alignRow = true,
+    this.spaceBetween = 15,
+  }) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
+  final bool alignRow;
+  final double spaceBetween;
+
+  List<Widget> generateButtonControls(BuildContext context) {
     PuzzleBoard puzzleBoard = context.watch<PuzzleBoard>();
 
-    return Row(
-      children: [
-        const SizedBox(height: 15),
-        ElevatedButton(
+    return [
+      SizedBox(height: spaceBetween),
+      SizedBox(
+        width: 125,
+        child: ElevatedButton(
           onPressed: (puzzleBoard.isLookingForSolution)
               ? null
               : () {
@@ -26,21 +33,34 @@ class GameButtonControls extends StatelessWidget {
               ? const Text('Restart Game')
               : const Text('Start Game'),
         ),
-        const SizedBox(height: 15, width: 15),
-        ElevatedButton(
+      ),
+      SizedBox(height: spaceBetween, width: spaceBetween),
+      SizedBox(
+        width: 125,
+        child: ElevatedButton(
           onPressed: (puzzleBoard.isLookingForSolution)
               ? null
               : () => puzzleBoard.autoSolve(),
           child: const Text('Auto-Solve'),
         ),
-        const SizedBox(height: 15, width: 15),
-        ElevatedButton(
+      ),
+      SizedBox(height: spaceBetween, width: spaceBetween),
+      SizedBox(
+        width: 125,
+        child: ElevatedButton(
           onPressed: () => puzzleBoard.toggleTileNumberVisibility(),
           child: (puzzleBoard.currentTileOpacity == 0)
               ? const Text('Show Hints')
               : const Text('Hide Hints'),
         ),
-      ],
-    );
+      ),
+    ];
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return (alignRow)
+        ? Row(children: generateButtonControls(context))
+        : Column(children: generateButtonControls(context));
   }
 }

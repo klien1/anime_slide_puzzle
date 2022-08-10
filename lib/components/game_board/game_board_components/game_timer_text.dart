@@ -13,14 +13,13 @@ class GameTimerText extends StatelessWidget {
     if (puzzleBoard.isPuzzleCompleted) gameTimer.endTimer();
     // return Text('${gameTimer.hours}:${gameTimer.minutes}:${gameTimer.seconds}');
     return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const Padding(
           padding: EdgeInsets.only(bottom: 5),
           child: Icon(Icons.alarm_rounded),
         ),
-        const SizedBox(
-          width: 5,
-        ),
+        const SizedBox(width: 5),
         Text(gameTimer.totalTime),
       ],
     );

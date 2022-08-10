@@ -45,15 +45,16 @@ class MyApp extends StatelessWidget {
                     IconThemeData(color: animeTheme.bodyText2Color, size: 25),
                 elevatedButtonTheme: ElevatedButtonThemeData(
                   style: ElevatedButton.styleFrom(
-                      primary: animeTheme.elevatedButtonPrimary,
-                      onPrimary: animeTheme.elevatedButtonOnPrimary,
-                      onSurface: Colors.black
+                    primary: animeTheme.elevatedButtonPrimary,
+                    onPrimary: animeTheme.elevatedButtonOnPrimary,
+                    onSurface: Colors.black,
+                    // fixedSize: const Size(130, 30),
 
-                      // surfaceTintColor: Colors.white
-                      // primary: Color(0xFFb82f75), // button color
-                      // onSurface: Colors.green, // disabled text color
-                      // onPrimary: Colors.green // text color
-                      ),
+                    // surfaceTintColor: Colors.white
+                    // primary: Color(0xFFb82f75), // button color
+                    // onSurface: Colors.green, // disabled text color
+                    // onPrimary: Colors.green // text color
+                  ),
                 ),
                 textButtonTheme: TextButtonThemeData(
                   style: TextButton.styleFrom(
@@ -65,7 +66,7 @@ class MyApp extends StatelessWidget {
                 textTheme: TextTheme(
                   bodyText2: TextStyle(
                     color: animeTheme.bodyText2Color,
-                    fontSize: 30,
+                    fontSize: 25,
                     fontWeight: FontWeight.bold,
                     fontFamily: 'JosefinSans',
                   ),

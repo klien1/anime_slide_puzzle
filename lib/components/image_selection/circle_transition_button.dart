@@ -27,7 +27,7 @@ class CircleTransitionButton extends StatelessWidget {
             pageBuilder: (
               context,
               animation,
-              secondaryAniamtion,
+              secondaryAnimation,
             ) =>
                 destinationScreen,
             transitionsBuilder: (

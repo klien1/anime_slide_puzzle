@@ -23,13 +23,16 @@ class SelectBoardSize extends StatelessWidget {
         for (int numTiles = minNumRowsOrColumns;
             numTiles <= maxNumRowsOrColumns;
             ++numTiles)
-          ElevatedButton(
-            onPressed: (context.read<PuzzleBoard>().isLookingForSolution)
-                ? null
-                : (selector.currentNumberOfTiles == numTiles)
-                    ? null
-                    : () => selector.changeNumberOfTiles(numTiles),
-            child: Text('${numTiles}x$numTiles'),
+          SizedBox(
+            width: 60,
+            child: ElevatedButton(
+              onPressed: (context.read<PuzzleBoard>().isLookingForSolution)
+                  ? null
+                  : (selector.currentNumberOfTiles == numTiles)
+                      ? null
+                      : () => selector.changeNumberOfTiles(numTiles),
+              child: Text('${numTiles}x$numTiles'),
+            ),
           ),
       ],
     );
