@@ -24,10 +24,6 @@ class AnimeThemeList extends ChangeNotifier {
           elevatedButtonOnPrimary:
               _tryToCast<Color>(animeImage['elevatedButtonOnPrimary']),
           bodyText2Color: _tryToCast<Color>(animeImage['bodyText2Color']),
-          // backgroundColor: (animeImage['backgroundColor'] == null)
-          //     ? null
-          //     : animeImage['backgroundColor'] as Color,
-          // textButtonPrimary: animeImage['textButtonPrimary'] as Color,
           index: i++,
         ),
       ),
@@ -49,7 +45,7 @@ class AnimeThemeList extends ChangeNotifier {
   String? _curPuzzleBackground;
 
   void changeTheme(int index) {
-    if (index < 0) return;
+    if (index < 0 || index >= _animeThemeList.length) return;
     _curIndex = index;
     _curLogo = _animeThemeList[index].logoImagePath;
     _curBackground = _animeThemeList[index].backgroundImagePath;

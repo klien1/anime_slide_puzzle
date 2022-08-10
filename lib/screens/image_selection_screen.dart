@@ -1,5 +1,5 @@
-import 'package:anime_slide_puzzle/components/anime_slide_puzzle_title.dart';
 import 'package:anime_slide_puzzle/components/background_image.dart';
+import 'package:anime_slide_puzzle/components/custom_back_button.dart';
 import 'package:anime_slide_puzzle/components/image_selection/image_selection_bar.dart';
 import 'package:anime_slide_puzzle/models/anime_theme_list.dart';
 import 'package:flutter/material.dart';
@@ -24,11 +24,7 @@ class ImageSelectionScreen extends StatelessWidget {
               imagePath: animeThemeList.curBackground,
             ),
           ),
-          Positioned(
-            top: 50,
-            right: 250,
-            child: AnimeSlidePuzzleTitle(),
-          ),
+          const CustomBackButton(),
           const Positioned(
             right: 0,
             child: ImageSelectionBar(),

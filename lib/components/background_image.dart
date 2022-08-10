@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 
 class BackgroundImage extends StatelessWidget {
-  const BackgroundImage(
-      {Key? key,
-      this.imagePath,
-      this.backgroundColor //= const Color(0xFF6094a2),
-      })
-      : super(key: key);
+  const BackgroundImage({
+    Key? key,
+    this.imagePath,
+  }) : super(key: key);
 
   final String? imagePath;
-  final Color? backgroundColor;
 
   @override
   Widget build(BuildContext context) {

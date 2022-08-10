@@ -10,43 +10,42 @@ class GameBoard extends StatelessWidget {
     required this.width,
     required this.height,
     required this.tilePadding,
+    this.showPuzzle = true,
   }) : super(key: key);
 
   final double width;
   final double height;
   final double tilePadding;
+  final bool showPuzzle;
 
   @override
   Widget build(BuildContext context) {
     final PuzzleBoard puzzleBoardProvider = context.watch<PuzzleBoard>();
 
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.grey.withOpacity(0.25),
-        border: Border.all(
-          color: Colors.black,
-        ),
-      ),
-      // adding extra padding for the bottom and right of game board
-      width: width + tilePadding,
-      height: height + tilePadding,
-      child: Consumer<PuzzleBoard>(
-        builder: (BuildContext context, PuzzleBoard puzzleBoard, child) {
-          return Stack(
-            children: [
-              for (List<PuzzleTile> puzzleTileRow
-                  in puzzleBoardProvider.puzzleBoard2d)
-                for (PuzzleTile tile in puzzleTileRow)
-                  GameBoardTile(
-                    tile: tile,
-                    width: width,
-                    height: height,
-                    tilePadding: tilePadding,
-                  )
-            ],
-          );
-        },
-      ),
-    );
+    return AnimatedOpacity(
+        duration: const Duration(seconds: 1),
+        opacity: (showPuzzle) ? 1 : 0,
+        child: SizedBox(
+          // size of puzzle
+          width: width,
+          height: height,
+          child: Consumer<PuzzleBoard>(
+            builder: (BuildContext context, PuzzleBoard puzzleBoard, child) {
+              return Stack(
+                children: [
+                  for (List<PuzzleTile> puzzleTileRow
+                      in puzzleBoardProvider.puzzleBoard2d)
+                    for (PuzzleTile tile in puzzleTileRow)
+                      GameBoardTile(
+                        tile: tile,
+                        width: width,
+                        height: height,
+                        tilePadding: tilePadding,
+                      )
+                ],
+              );
+            },
+          ),
+        ));
   }
 }

@@ -41,4 +41,8 @@ class GameTimer extends ChangeNotifier {
     int acutalHours = _seconds ~/ 3600;
     return _shouldAddZero(acutalHours);
   }
+
+  String get totalTime {
+    return '$hours:$minutes:$seconds';
+  }
 }

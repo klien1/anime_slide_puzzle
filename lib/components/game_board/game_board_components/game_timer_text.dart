@@ -11,6 +11,18 @@ class GameTimerText extends StatelessWidget {
     GameTimer gameTimer = context.watch<GameTimer>();
     PuzzleBoard puzzleBoard = context.watch<PuzzleBoard>();
     if (puzzleBoard.isPuzzleCompleted) gameTimer.endTimer();
-    return Text('${gameTimer.hours}:${gameTimer.minutes}:${gameTimer.seconds}');
+    // return Text('${gameTimer.hours}:${gameTimer.minutes}:${gameTimer.seconds}');
+    return Row(
+      children: [
+        const Padding(
+          padding: EdgeInsets.only(bottom: 5),
+          child: Icon(Icons.alarm_rounded),
+        ),
+        const SizedBox(
+          width: 5,
+        ),
+        Text(gameTimer.totalTime),
+      ],
+    );
   }
 }

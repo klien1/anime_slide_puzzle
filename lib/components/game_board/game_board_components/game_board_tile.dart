@@ -73,20 +73,27 @@ class _GameBoardTile extends State<GameBoardTile> {
           child: AnimatedScale(
             duration: widget.scaleDuration,
             scale: isHovered ? .90 : 1,
-            child: (animeThemeList.isLoadingImage)
-                ? NoImagePuzzlePiece(
-                    height: tileHeight,
-                    width: tileWidth,
-                    tile: widget.tile,
-                  )
-                : BackgroundPuzzlePiece(
-                    tile: widget.tile,
-                    tileHeight: tileHeight,
-                    tileWidth: tileWidth,
-                    curImagePath: animeThemeList.curPuzzle,
-                    numRowsOrColumn: puzzleBoard.numRowsOrColumns,
-                    tileNumberOpacity: puzzleBoard.currentTileOpacity,
-                  ),
+            child: Material(
+              elevation: 10,
+              color: Colors.white.withOpacity(0),
+              shadowColor: (widget.tile.isBlankTile)
+                  ? Colors.black.withOpacity(0)
+                  : Colors.black,
+              child: (animeThemeList.isLoadingImage)
+                  ? NoImagePuzzlePiece(
+                      height: tileHeight,
+                      width: tileWidth,
+                      tile: widget.tile,
+                    )
+                  : BackgroundPuzzlePiece(
+                      tile: widget.tile,
+                      tileHeight: tileHeight,
+                      tileWidth: tileWidth,
+                      curImagePath: animeThemeList.curPuzzle,
+                      numRowsOrColumn: puzzleBoard.numRowsOrColumns,
+                      tileNumberOpacity: puzzleBoard.currentTileOpacity,
+                    ),
+            ),
           ),
         ),
       ),

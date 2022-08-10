@@ -1,4 +1,3 @@
-import 'package:anime_slide_puzzle/components/game_board/bordered_text.dart';
 import 'package:flutter/material.dart';
 
 const myStyle = TextStyle(fontSize: 70);

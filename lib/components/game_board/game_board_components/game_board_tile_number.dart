@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:anime_slide_puzzle/components/game_board/bordered_text.dart';
+import 'package:anime_slide_puzzle/components/game_board/game_board_components/bordered_text.dart';
 import 'package:anime_slide_puzzle/models/puzzle_tile.dart';
 
 class GameBoardTileNumber extends StatelessWidget {

@@ -3,6 +3,7 @@ import 'package:anime_slide_puzzle/models/anime_theme_list.dart';
 import 'package:anime_slide_puzzle/models/game_timer.dart';
 import 'package:anime_slide_puzzle/screens/game_screen.dart';
 import 'package:anime_slide_puzzle/screens/image_selection_screen.dart';
+import 'package:anime_slide_puzzle/screens/welcome_screen.dart';
 import 'models/puzzle_board.dart';
 import 'models/number_puzzle_tiles.dart';
 import 'package:flutter/material.dart';
@@ -11,9 +12,6 @@ import 'package:provider/provider.dart';
 void main() {
   runApp(const MyApp());
 }
-
-// const String defaultImage = 'images/demon_slayer_background.jpg';
-// const int defaultBoardSize = 4;
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -41,22 +39,22 @@ class MyApp extends StatelessWidget {
             return MaterialApp(
               title: 'Anime Slide Puzzle',
               theme: ThemeData(
-                // primaryColor: Colors.amber,
                 primarySwatch: animeTheme.primarySwatch,
                 scaffoldBackgroundColor: animeTheme.backgroundColor,
-
+                iconTheme:
+                    IconThemeData(color: animeTheme.bodyText2Color, size: 25),
                 elevatedButtonTheme: ElevatedButtonThemeData(
                   style: ElevatedButton.styleFrom(
                       primary: animeTheme.elevatedButtonPrimary,
                       onPrimary: animeTheme.elevatedButtonOnPrimary,
                       onSurface: Colors.black
+
                       // surfaceTintColor: Colors.white
                       // primary: Color(0xFFb82f75), // button color
                       // onSurface: Colors.green, // disabled text color
                       // onPrimary: Colors.green // text color
                       ),
                 ),
-
                 textButtonTheme: TextButtonThemeData(
                   style: TextButton.styleFrom(
                     primary: animeTheme.textButtonPrimary,
@@ -73,17 +71,16 @@ class MyApp extends StatelessWidget {
                   ),
                 ),
               ),
-              initialRoute: ImageSelectionScreen.id,
+              initialRoute: Welcome.id,
               routes: {
                 GameScreen.id: (context) => const GameScreen(),
                 ImageSelectionScreen.id: (context) =>
                     const ImageSelectionScreen(),
+                Welcome.id: (context) => const Welcome(),
               },
             );
           }),
     ];
-
-    // const MaterialColor kPrimarySwatchColor = Colors.orange;
 
     return MultiProvider(
       providers: myProviders,

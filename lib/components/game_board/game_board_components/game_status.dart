@@ -10,12 +10,16 @@ class GameStatus extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        const SizedBox(height: 10),
         const GameTimerText(),
+        const SizedBox(height: 10),
         Text('Number of Moves: ${context.watch<PuzzleBoard>().numberOfMoves}'),
+        const SizedBox(height: 10),
         Opacity(
           opacity: (context.watch<PuzzleBoard>().isLookingForSolution) ? 1 : 0,
           child: const Text('Solving puzzle...'),
-        )
+        ),
+        const SizedBox(height: 10),
       ],
     );
   }

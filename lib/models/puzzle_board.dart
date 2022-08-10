@@ -14,20 +14,12 @@ class PuzzleBoard extends ChangeNotifier {
   double _currentTileOpacity = 0;
   bool _gameInProgress = false;
   bool _solutionInProgress = false;
-  bool _puzzleCompleted = false;
+  bool _isPuzzleCompleted = false;
 
   // initializes puzzle with number of rows or columns
   PuzzleBoard({required numRowsOrColumns})
       : _numRowsOrColumns = numRowsOrColumns {
     resetBoard();
-    // _puzzleTiles2d = _generatePuzzleMatrix(numRowsOrColumns);
-    // _puzzleTileNumberMatrix = _generatePuzzleNumberMatrix(numRowsOrColumns);
-    // List.generate(
-    //     _numRowsOrColumns,
-    //     (row) => List.generate(
-    //         _numRowsOrColumns, (col) => row * _numRowsOrColumns + col,
-    //         growable: false),
-    //     growable: false);
   }
 
   // initializes puzzle board with 2d matrix
@@ -70,7 +62,8 @@ class PuzzleBoard extends ChangeNotifier {
     _puzzleTileNumberMatrix = _generatePuzzleNumberMatrix(numRowsOrColumns);
     _solutionInProgress = false;
     _gameInProgress = false;
-    _puzzleCompleted = false;
+    _isPuzzleCompleted = false;
+    _currentTileOpacity = 0;
   }
 
   List<List<PuzzleTile>> _generatePuzzleMatrix(int numRowsOrCols) {
@@ -131,10 +124,10 @@ class PuzzleBoard extends ChangeNotifier {
     notifyListeners();
   }
 
-  void _toggleGameInProgress(bool status) {
-    _gameInProgress = status;
-    notifyListeners();
-  }
+  // void _toggleGameInProgress(bool status) {
+  //   _gameInProgress = status;
+  //   notifyListeners();
+  // }
 
   // moves tiles using tile correct coordinate and NOT current coordinate
   void moveTile({
@@ -155,12 +148,17 @@ class PuzzleBoard extends ChangeNotifier {
       ++_numberOfMoves;
 
       if (_isPuzzleTileInCorrectPosition() && _gameInProgress) {
-        _puzzleCompleted = true;
-        _toggleGameInProgress(false);
+        _puzzleCompleted();
       }
 
       notifyListeners();
     }
+  }
+
+  void _puzzleCompleted() {
+    _isPuzzleCompleted = true;
+    _gameInProgress = false;
+    // _toggleGameInProgress(false);
   }
 
   /// returns current position of given tile number
@@ -196,7 +194,7 @@ class PuzzleBoard extends ChangeNotifier {
   void startGame() {
     resetNumberOfMoves();
     _gameInProgress = true;
-    _puzzleCompleted = false;
+    _isPuzzleCompleted = false;
     _shuffleBoard();
   }
 
@@ -293,7 +291,7 @@ class PuzzleBoard extends ChangeNotifier {
   }
 
   bool get isPuzzleCompleted {
-    return _puzzleCompleted;
+    return _isPuzzleCompleted;
   }
 
   List<List<int>> get puzzleTileNumberMatrix {
