@@ -1,9 +1,10 @@
-import 'package:anime_slide_puzzle/components/anime_slide_puzzle_title.dart';
+import 'package:anime_slide_puzzle/components/welcome_screen/anime_slide_puzzle_title.dart';
 import 'package:anime_slide_puzzle/components/background_image.dart';
-import 'package:anime_slide_puzzle/components/image_selection/image_selection_components/circle_transition_button.dart';
-import 'package:anime_slide_puzzle/screens/image_selection_screen.dart';
+import 'package:anime_slide_puzzle/components/welcome_screen/welcome_screen_circle_transition_button.dart';
 import 'package:anime_slide_puzzle/screens/loading_screen.dart';
+import 'package:anime_slide_puzzle/utils/responsive_layout_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:anime_slide_puzzle/constants.dart';
 
 class Welcome extends StatefulWidget {
   const Welcome({Key? key}) : super(key: key);
@@ -55,6 +56,39 @@ class _WelcomeState extends State<Welcome> {
     }
   }
 
+  Widget _getLandscapeContent() {
+    return Stack(
+      alignment: Alignment.center,
+      children: const [
+        BackgroundImage(imagePath: welcomeScreenImagePath),
+        Positioned(
+          top: 30,
+          child: SizedBox(
+            child: Text('Anime Slide Puzzle', style: titleStyle),
+          ),
+        ),
+        Positioned(top: 130, child: WelcomeScreenCircleTransition())
+      ],
+    );
+  }
+
+  Widget _getPortaitContent() {
+    return Stack(
+      alignment: Alignment.center,
+      children: const [
+        BackgroundImage(imagePath: welcomeScreenImagePath),
+        Positioned(
+          top: 30,
+          left: 0,
+          child: SizedBox(
+            child: AnimeSlidePuzzleTitle(),
+          ),
+        ),
+        Positioned(top: 250, child: WelcomeScreenCircleTransition())
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return AnimatedSwitcher(
@@ -62,32 +96,10 @@ class _WelcomeState extends State<Welcome> {
       child: (isLoading)
           ? const LoadingScreen()
           : Scaffold(
-              body: Stack(
-                alignment: Alignment.center,
-                children: [
-                  const BackgroundImage(
-                      imagePath: 'images/horizon_background.jpg'),
-                  const Positioned(
-                    top: 30,
-                    left: 0,
-                    child: SizedBox(
-                      child: AnimeSlidePuzzleTitle(),
-                    ),
-                  ),
-                  Positioned(
-                    top: 250,
-                    child: CircleTransitionButton(
-                      destinationScreen: const ImageSelectionScreen(),
-                      buttonText: 'Choose a theme',
-                      buttonStyle: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                          const Color(0xFF1b1d29),
-                        ),
-                      ),
-                      textStyle: const TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ],
+              body: ResponsiveLayout(
+                mobile: _getPortaitContent(),
+                tablet: _getLandscapeContent(),
+                web: _getLandscapeContent(),
               ),
             ),
     );

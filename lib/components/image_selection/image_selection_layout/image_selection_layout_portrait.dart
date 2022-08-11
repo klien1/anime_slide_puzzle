@@ -21,7 +21,7 @@ class ImageSelectionLayoutPortrait extends StatelessWidget {
             fit: BoxFit.fill,
           ),
         ),
-        const SafeArea(child: const BackButton()),
+        const SafeArea(child: BackButton()),
         const Align(
           alignment: Alignment.center,
           child: ImageSelectionBar(),

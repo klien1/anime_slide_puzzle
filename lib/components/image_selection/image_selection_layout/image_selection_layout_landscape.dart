@@ -21,7 +21,7 @@ class ImageSelectionLayoutLandscape extends StatelessWidget {
               imagePath: animeThemeList.curBackground,
             ),
           ),
-          const BackButton(),
+          const SafeArea(child: BackButton()),
           const Positioned(
             right: 0,
             child: ImageSelectionBar(),

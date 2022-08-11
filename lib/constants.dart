@@ -41,6 +41,13 @@ const Map<String, Map<String, Object>> animeImageList = {
   },
 };
 
+const welcomeScreenImagePath = 'images/horizon_background.jpg';
+
+const titleStyle = TextStyle(
+  fontSize: 70,
+  color: Color(0xFF1b1d29),
+);
+
 // const test = {
 //   'a': {'b': 'c', 'color': Colors.teal}
 // };
