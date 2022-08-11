@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 
 class BackgroundImage extends StatelessWidget {
-  const BackgroundImage({
-    Key? key,
-    this.imagePath,
-  }) : super(key: key);
+  const BackgroundImage({Key? key, this.imagePath, this.fit = BoxFit.cover})
+      : super(key: key);
 
   final String? imagePath;
+  final BoxFit fit;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +17,7 @@ class BackgroundImage extends StatelessWidget {
           decoration: BoxDecoration(
             image: DecorationImage(
               image: AssetImage(imagePath!),
-              fit: BoxFit.cover,
+              fit: fit,
             ),
           ),
         ),

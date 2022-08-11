@@ -52,11 +52,11 @@ const Map<String, Map<String, Object>> animeImageList = {
 // image: AssetImage('images/spy-x-family-background2.jpg'),
 // source: https://wall.alphacoders.com/big.php?i=1227567
 
-const Duration aiTileSpeed = Duration(milliseconds: 100);
-const Duration defaultTileSpeed = Duration(milliseconds: 100);
+const Duration aiTileSpeed = Duration(milliseconds: 200);
+const Duration defaultTileSpeed = Duration(milliseconds: 200);
 
 // Max width for a small layout.
-const double small = 576;
+const double small = 680;
 
 // Max width for a medium layout.
 const double medium = 1200;

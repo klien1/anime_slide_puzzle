@@ -315,7 +315,7 @@ class AutoSolver {
       );
       currentPosition =
           currentPosition.calculateAdjacent(direction: correctDirection);
-      await Future.delayed(aiTileSpeed);
+      // await Future.delayed(aiTileSpeed);
     }
   }
 

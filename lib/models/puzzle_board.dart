@@ -1,10 +1,11 @@
 import 'dart:async';
+import 'dart:math';
+
 import 'package:anime_slide_puzzle/models/coordinate.dart';
+import 'package:anime_slide_puzzle/models/puzzle_tile.dart';
 import 'package:anime_slide_puzzle/puzzle_solver/auto_solver.dart';
 import 'package:anime_slide_puzzle/utils/puzzle_board_helper.dart';
 import 'package:flutter/material.dart';
-import 'package:anime_slide_puzzle/models/puzzle_tile.dart';
-import 'dart:math';
 
 class PuzzleBoard extends ChangeNotifier {
   final int _numRowsOrColumns;
@@ -46,6 +47,7 @@ class PuzzleBoard extends ChangeNotifier {
     await autoSolve.solve();
 
     _toggleSolutionInProgress(false);
+    _isPuzzleCompleted = false;
   }
 
   List<List<int>> _generatePuzzleNumberMatrix(int numRowsOrCols) {
@@ -124,10 +126,15 @@ class PuzzleBoard extends ChangeNotifier {
     notifyListeners();
   }
 
-  // void _toggleGameInProgress(bool status) {
-  //   _gameInProgress = status;
-  //   notifyListeners();
-  // }
+  void moveTilesWithCurrentCoordinates({required Coordinate curCoordinate}) {
+    int tileNum = _puzzleTileNumberMatrix[curCoordinate.row][curCoordinate.col];
+
+    moveTile(
+        correctTileCoordinate: convert1dArrayCoordTo2dArrayCoord(
+      index: tileNum,
+      numRowOrColCount: _numRowsOrColumns,
+    ));
+  }
 
   // moves tiles using tile correct coordinate and NOT current coordinate
   void moveTile({
@@ -151,6 +158,11 @@ class PuzzleBoard extends ChangeNotifier {
         _puzzleCompleted();
       }
 
+      // edge case - auto solver triggered notify listeners as well
+      // complete screen gets triggered twice.
+
+      // puzzle is complete
+      // solution in progress
       notifyListeners();
     }
   }
@@ -158,7 +170,6 @@ class PuzzleBoard extends ChangeNotifier {
   void _puzzleCompleted() {
     _isPuzzleCompleted = true;
     _gameInProgress = false;
-    // _toggleGameInProgress(false);
   }
 
   /// returns current position of given tile number
@@ -250,8 +261,30 @@ class PuzzleBoard extends ChangeNotifier {
     }
 
     final Coordinate temp = firstTile.currentCoordinate;
-    firstTile.currentCoordinate = secondTile.currentCoordinate;
-    secondTile.currentCoordinate = temp;
+
+    int fx = firstTile.correctCoordinate.row;
+    int fy = firstTile.correctCoordinate.col;
+
+    // assign first tile
+    _puzzleTiles2d[fx][fy] = PuzzleTile(
+      correctCoordinate: firstTile.correctCoordinate,
+      currentCoordinate: secondTile.currentCoordinate,
+      tileNumber: firstTile.tileNumber,
+      isBlank: firstTile.isBlankTile,
+    );
+
+    // assign second tile
+    int sx = secondTile.correctCoordinate.row;
+    int sy = secondTile.correctCoordinate.col;
+    _puzzleTiles2d[sx][sy] = PuzzleTile(
+      correctCoordinate: secondTile.correctCoordinate,
+      currentCoordinate: temp,
+      tileNumber: secondTile.tileNumber,
+      isBlank: secondTile.isBlankTile,
+    );
+
+    // firstTile.currentCoordinate = secondTile.currentCoordinate;
+    // secondTile.currentCoordinate = temp;
 
     swapTileNumbers(
       matrix: _puzzleTileNumberMatrix,
@@ -300,5 +333,9 @@ class PuzzleBoard extends ChangeNotifier {
 
   bool get isLookingForSolution {
     return _solutionInProgress;
+  }
+
+  int get blankTileNumber {
+    return _numRowsOrColumns * _numRowsOrColumns - 1;
   }
 }

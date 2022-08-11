@@ -1,4 +1,5 @@
-import 'package:anime_slide_puzzle/components/image_selection/circle_transition_clipper.dart';
+// import 'package:anime_slide_puzzle/components/anime_slide_puzzle_title.dart';
+import 'package:anime_slide_puzzle/components/image_selection/image_selection_components/circle_transition_clipper.dart';
 import 'package:flutter/material.dart';
 
 class CircleTransitionButton extends StatelessWidget {
@@ -6,6 +7,8 @@ class CircleTransitionButton extends StatelessWidget {
     Key? key,
     required this.destinationScreen,
     required this.buttonText,
+    this.buttonStyle,
+    this.textStyle,
     this.pageTransitionDuration = const Duration(seconds: 2),
     this.transitionStartPosition = const Offset(0, 0),
   }) : super(key: key);
@@ -14,10 +17,13 @@ class CircleTransitionButton extends StatelessWidget {
   final Widget destinationScreen;
   final String buttonText;
   final Offset transitionStartPosition;
+  final ButtonStyle? buttonStyle;
+  final TextStyle? textStyle;
 
   @override
   Widget build(BuildContext context) {
     return TextButton(
+      style: buttonStyle,
       onPressed: () {
         Navigator.push(
           context,
@@ -40,8 +46,8 @@ class CircleTransitionButton extends StatelessWidget {
               final screenWidth = MediaQuery.of(context).size.width;
               final screenHeight = MediaQuery.of(context).size.height;
               double endRadius = (screenWidth > screenHeight)
-                  ? screenWidth * 1.3
-                  : screenHeight * 1.3;
+                  ? screenWidth * 1.4
+                  : screenHeight * 1.4;
 
               var radiusTween = Tween(begin: beginRadius, end: endRadius);
               var radiusTweenAnimation = animation.drive(radiusTween);
@@ -57,7 +63,10 @@ class CircleTransitionButton extends StatelessWidget {
           ),
         );
       },
-      child: Text(buttonText),
+      child: Text(
+        buttonText,
+        style: textStyle,
+      ),
     );
   }
 }

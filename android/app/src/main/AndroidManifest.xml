@@ -4,6 +4,7 @@
         android:label="anime_slide_puzzle"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+        <!-- android:screenOrientation="portrait" -->
         <activity
             android:name=".MainActivity"
             android:exported="true"

@@ -1,9 +1,6 @@
-import 'package:anime_slide_puzzle/components/background_image.dart';
-import 'package:anime_slide_puzzle/components/custom_back_button.dart';
-import 'package:anime_slide_puzzle/components/image_selection/image_selection_bar.dart';
-import 'package:anime_slide_puzzle/models/anime_theme_list.dart';
+import 'package:anime_slide_puzzle/components/image_selection/image_selection_layout/image_selection_layout_landscape.dart';
+import 'package:anime_slide_puzzle/components/image_selection/image_selection_layout/image_selection_layout_portrait.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class ImageSelectionScreen extends StatelessWidget {
   const ImageSelectionScreen({Key? key}) : super(key: key);
@@ -12,25 +9,12 @@ class ImageSelectionScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AnimeThemeList animeThemeList = context.watch<AnimeThemeList>();
-
-    return Scaffold(
-      body: Stack(
-        children: [
-          AnimatedSwitcher(
-            duration: const Duration(seconds: 1),
-            child: BackgroundImage(
-              key: UniqueKey(),
-              imagePath: animeThemeList.curBackground,
-            ),
-          ),
-          const CustomBackButton(),
-          const Positioned(
-            right: 0,
-            child: ImageSelectionBar(),
-          ),
-        ],
-      ),
-    );
+    return LayoutBuilder(builder: (context, constraints) {
+      if (constraints.maxWidth > constraints.maxHeight) {
+        return const ImageSelectionLayoutLandscape();
+      } else {
+        return const ImageSelectionLayoutPortrait();
+      }
+    });
   }
 }

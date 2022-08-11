@@ -1,6 +1,6 @@
-import 'package:anime_slide_puzzle/components/image_selection/circle_transition_button.dart';
-import 'package:anime_slide_puzzle/components/image_selection/game_select_board_size.dart';
-import 'package:anime_slide_puzzle/components/image_selection/image_selection_icon.dart';
+import 'package:anime_slide_puzzle/components/image_selection/image_selection_components/circle_transition_button.dart';
+import 'package:anime_slide_puzzle/components/image_selection/image_selection_components/game_select_board_size.dart';
+import 'package:anime_slide_puzzle/components/image_selection/image_selection_components/image_selection_icon.dart';
 import 'package:anime_slide_puzzle/models/anime_theme_list.dart';
 import 'package:anime_slide_puzzle/screens/game_screen.dart';
 import 'package:flutter/material.dart';
@@ -13,8 +13,23 @@ import 'package:provider/provider.dart';
 // image: AssetImage('images/spy-x-family-background2.jpg'),
 // source: https://wall.alphacoders.com/big.php?i=1227567
 
-class ImageSelectionBar extends StatelessWidget {
+class ImageSelectionBar extends StatefulWidget {
   const ImageSelectionBar({Key? key}) : super(key: key);
+
+  @override
+  State<ImageSelectionBar> createState() => _ImageSelectionBarState();
+}
+
+class _ImageSelectionBarState extends State<ImageSelectionBar> {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // precache image to prevent white screen / scaffold background color
+    precacheImage(
+      AssetImage(context.read<AnimeThemeList>().curPuzzleBackground!),
+      context,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,9 +67,7 @@ class ImageSelectionBar extends StatelessWidget {
                 ),
               ),
             ),
-          // const SizedBox(height: 10),
           const SelectBoardSize(minNumRowsOrColumns: 3, maxNumRowsOrColumns: 5),
-          // const SizedBox(height: 10),
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 10),
             child: const CircleTransitionButton(

@@ -1,6 +1,7 @@
 import 'package:anime_slide_puzzle/components/game_board/game_board_components/no_image_puzzle_piece.dart';
 import 'package:anime_slide_puzzle/components/game_board/game_board_components/background_puzzle_piece.dart';
 import 'package:anime_slide_puzzle/models/anime_theme_list.dart';
+import 'package:anime_slide_puzzle/models/coordinate.dart';
 import 'package:anime_slide_puzzle/models/puzzle_tile.dart';
 import 'package:provider/provider.dart';
 import 'package:anime_slide_puzzle/models/puzzle_board.dart';
@@ -50,49 +51,52 @@ class _GameBoardTile extends State<GameBoardTile> {
 
     // To calculate the position of each tile we need to calculate the size of the tile with the padding
     // we also add an additional padding for the top and left
+    final Coordinate curTileCoordiante = widget.tile.currentCoordinate;
+
     final double animatedPositionLeft = widget.tilePadding +
-        (tileWidth + widget.tilePadding) * widget.tile.currentCoordinate.col;
+        (tileWidth + widget.tilePadding) * curTileCoordiante.col;
+
     final double animatedPositionTop = widget.tilePadding +
-        (tileHeight + widget.tilePadding) * widget.tile.currentCoordinate.row;
+        (tileHeight + widget.tilePadding) * curTileCoordiante.row;
 
     return AnimatedPositioned(
       left: animatedPositionLeft,
       top: animatedPositionTop,
       duration: widget.positionDuration,
-      child: MouseRegion(
-        onEnter: (e) => setState(() => isHovered = true),
-        onExit: (e) => setState(() => isHovered = false),
-        child: GestureDetector(
-          onTap: (puzzleBoard.isLookingForSolution)
-              ? null
-              : () {
-                  puzzleBoard.moveTile(
-                    correctTileCoordinate: widget.tile.correctCoordinate,
-                  );
-                },
+      child: GestureDetector(
+        onTap: (puzzleBoard.isLookingForSolution)
+            ? null
+            : () {
+                puzzleBoard.moveTile(
+                  correctTileCoordinate: widget.tile.correctCoordinate,
+                );
+              },
+        child: MouseRegion(
+          onEnter: (event) => setState(() => isHovered = true),
+          onExit: (event) => setState(() => isHovered = false),
           child: AnimatedScale(
             duration: widget.scaleDuration,
             scale: isHovered ? .90 : 1,
-            child: Material(
-              elevation: 10,
-              color: Colors.white.withOpacity(0),
-              shadowColor: (widget.tile.isBlankTile)
-                  ? Colors.black.withOpacity(0)
-                  : Colors.black,
-              child: (animeThemeList.isLoadingImage)
-                  ? NoImagePuzzlePiece(
-                      height: tileHeight,
-                      width: tileWidth,
-                      tile: widget.tile,
-                    )
-                  : BackgroundPuzzlePiece(
-                      tile: widget.tile,
-                      tileHeight: tileHeight,
-                      tileWidth: tileWidth,
-                      curImagePath: animeThemeList.curPuzzle,
-                      numRowsOrColumn: puzzleBoard.numRowsOrColumns,
-                      tileNumberOpacity: puzzleBoard.currentTileOpacity,
-                    ),
+            child: Opacity(
+              opacity: (widget.tile.isBlankTile) ? 0 : 1,
+              child: Material(
+                elevation: 10,
+                color: Colors.white.withOpacity(0),
+                child: (animeThemeList.isLoadingImage)
+                    ? NoImagePuzzlePiece(
+                        height: tileHeight,
+                        width: tileWidth,
+                        tile: widget.tile,
+                      )
+                    : BackgroundPuzzlePiece(
+                        tile: widget.tile,
+                        tileHeight: tileHeight,
+                        tileWidth: tileWidth,
+                        curImagePath: animeThemeList.curPuzzle,
+                        // numRowsOrColumn: puzzleBoard.numRowsOrColumns,
+                        // tileNumberOpacity: puzzleBoard.currentTileOpacity,
+                      ),
+              ),
             ),
           ),
         ),

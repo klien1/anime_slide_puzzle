@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
-const myStyle = TextStyle(fontSize: 70);
+const myStyle = TextStyle(
+  fontSize: 70,
+  color: Color(0xFF1b1d29),
+);
 
 class AnimeSlidePuzzleTitle extends StatelessWidget {
   const AnimeSlidePuzzleTitle({Key? key}) : super(key: key);
@@ -9,25 +12,22 @@ class AnimeSlidePuzzleTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: const [
-        // BorderedText(
-        //     text: 'Anime',
-        //     strokeWidth: 1,
-        //     strokeColor: Colors.white,
-        //     textColor: Colors.black),
-        // // BorderedText('Anime'),
-        Text(
-          'Anime',
-          style: myStyle,
+        Align(
+          // alignment: Alignment.centerLeft,
+          child: Text(
+            'Anime',
+            style: myStyle,
+          ),
         ),
         Padding(
-          padding: EdgeInsets.only(left: 40),
+          padding: EdgeInsets.only(left: 60),
           child: Text(
             'Slide',
             style: myStyle,
           ),
         ),
         Padding(
-          padding: EdgeInsets.only(left: 100),
+          padding: EdgeInsets.only(left: 150),
           child: Text(
             'Puzzle',
             style: myStyle,

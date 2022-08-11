@@ -16,6 +16,7 @@ class GameTimer extends ChangeNotifier {
   }
 
   void resetTimer() {
+    endTimer();
     _seconds = 0;
   }
 
