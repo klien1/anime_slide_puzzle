@@ -21,8 +21,6 @@ class GameBoardLayoutMedium extends StatelessWidget {
   final double puzzleHeight;
   final double puzzlePadding;
 
-  void reset() {}
-
   @override
   Widget build(BuildContext context) {
     AnimeThemeList animeThemeList = context.read<AnimeThemeList>();

@@ -11,7 +11,7 @@ class GameButtonControls extends StatelessWidget {
 
   final double spaceBetween;
 
-  List<Widget> generateTextButtonControls(BuildContext context) {
+  List<Widget> _generateTextButtonControls(BuildContext context) {
     PuzzleBoard puzzleBoard = context.watch<PuzzleBoard>();
 
     return [
@@ -47,7 +47,7 @@ class GameButtonControls extends StatelessWidget {
     ];
   }
 
-  List<Widget> generateElevatedButtonControls(BuildContext context) {
+  List<Widget> _generateElevatedButtonControls(BuildContext context) {
     PuzzleBoard puzzleBoard = context.watch<PuzzleBoard>();
 
     return [
@@ -92,14 +92,14 @@ class GameButtonControls extends StatelessWidget {
           ? Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: (animeTheme.name == 'jujutsu_kaisen')
-                  ? generateElevatedButtonControls(context)
-                  : generateTextButtonControls(context),
+                  ? _generateElevatedButtonControls(context)
+                  : _generateTextButtonControls(context),
             )
           : Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: (animeTheme.name == 'jujutsu_kaisen')
-                  ? generateElevatedButtonControls(context)
-                  : generateTextButtonControls(context),
+                  ? _generateElevatedButtonControls(context)
+                  : _generateTextButtonControls(context),
             );
     });
   }

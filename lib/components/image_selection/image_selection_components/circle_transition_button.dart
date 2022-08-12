@@ -1,5 +1,3 @@
-// import 'package:anime_slide_puzzle/components/anime_slide_puzzle_title.dart';
-import 'package:anime_slide_puzzle/components/image_selection/image_selection_components/circle_transition_clipper.dart';
 import 'package:flutter/material.dart';
 
 class CircleTransitionButton extends StatelessWidget {
@@ -53,7 +51,7 @@ class CircleTransitionButton extends StatelessWidget {
               var radiusTweenAnimation = animation.drive(radiusTween);
 
               return ClipPath(
-                clipper: CircleTransitionClipper(
+                clipper: _CircleTransitionClipper(
                   center: transitionStartPosition,
                   radius: radiusTweenAnimation.value,
                 ),
@@ -68,5 +66,31 @@ class CircleTransitionButton extends StatelessWidget {
         style: textStyle,
       ),
     );
+  }
+}
+
+class _CircleTransitionClipper extends CustomClipper<Path> {
+  final Offset center;
+  final double radius;
+
+  _CircleTransitionClipper({
+    required this.center,
+    required this.radius,
+  });
+
+  @override
+  Path getClip(Size size) {
+    return Path()
+      ..addOval(
+        Rect.fromCircle(
+          center: center,
+          radius: radius,
+        ),
+      );
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) {
+    return true;
   }
 }
