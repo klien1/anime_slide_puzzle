@@ -66,7 +66,7 @@ class GameBoardLayoutLarge extends StatelessWidget {
                   ),
                   Padding(
                     padding: EdgeInsets.only(
-                      right: MediaQuery.of(context).size.width * .15,
+                      right: MediaQuery.of(context).size.width * .05,
                       left: MediaQuery.of(context).size.width * .01,
                     ),
                     child: GameBoard(
