@@ -1,10 +1,14 @@
-import 'package:anime_slide_puzzle/components/welcome_screen/anime_slide_puzzle_title.dart';
-import 'package:anime_slide_puzzle/components/background_image.dart';
-import 'package:anime_slide_puzzle/components/welcome_screen/welcome_screen_circle_transition_button.dart';
+import 'package:anime_slide_puzzle/components/image_selection/image_selection_components/circle_transition_button.dart';
+import 'package:anime_slide_puzzle/models/anime_theme.dart';
+import 'package:anime_slide_puzzle/models/anime_theme_list.dart';
+import 'package:anime_slide_puzzle/screens/image_selection_screen.dart';
 import 'package:anime_slide_puzzle/screens/loading_screen.dart';
 import 'package:anime_slide_puzzle/utils/responsive_layout_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:anime_slide_puzzle/constants.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:provider/provider.dart';
 
 class Welcome extends StatefulWidget {
   const Welcome({Key? key}) : super(key: key);
@@ -20,7 +24,7 @@ class _WelcomeState extends State<Welcome> {
 
   Future<void> loadingAssets() async {
     Future.delayed(
-      const Duration(seconds: 5),
+      const Duration(seconds: 3),
       () => setState(
         () => isLoading = false,
       ),
@@ -39,51 +43,115 @@ class _WelcomeState extends State<Welcome> {
     super.didChangeDependencies();
 
     precacheImage(
-      const AssetImage('images/horizon_background.jpg'),
+      const AssetImage(welcomeScreenImagePath),
       context,
     );
 
+    AnimeTheme animeTheme = context.read<AnimeThemeList>().curAnimeTheme;
     if (MediaQuery.of(context).orientation == Orientation.portrait) {
       precacheImage(
-        const AssetImage('images/spy-x-family-background3-no-logo.jpg'),
+        AssetImage(animeTheme.puzzleImagePath),
         context,
       );
     } else {
       precacheImage(
-        const AssetImage('images/spy-x-family-background3-no-logo.jpg'),
+        AssetImage(animeTheme.backgroundImagePath),
         context,
       );
     }
   }
 
-  Widget _getLandscapeContent() {
-    return Stack(
-      alignment: Alignment.center,
-      children: const [
-        BackgroundImage(imagePath: welcomeScreenImagePath),
-        Positioned(
-          top: 30,
-          child: SizedBox(
-            child: Text('Anime Slide Puzzle', style: titleStyle),
+  Widget _landscapeLayout() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        const Text(
+          'Anime Slide Puzzle',
+          style: kAnimeTitleStyle,
+          textAlign: TextAlign.center,
+        ),
+        Container(
+          constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height * .6),
+          width: double.infinity,
+          child: const Image(
+            image: AssetImage(welcomeScreenImagePath),
           ),
         ),
-        Positioned(top: 130, child: WelcomeScreenCircleTransition())
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            _linkToGithub(),
+            CircleTransitionButton(
+              destinationScreen: const ImageSelectionScreen(),
+              buttonText: 'Let\'s get started',
+              buttonStyle: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(
+                  kWelcomeScreenCallToActionButtonBackgroundColor,
+                ),
+              ),
+              textStyle: const TextStyle(color: kWelcomeScreenButtonTextColor),
+            ),
+          ],
+        ),
       ],
     );
   }
 
-  Widget _getPortaitContent() {
-    return Stack(
-      alignment: Alignment.center,
-      children: const [
-        BackgroundImage(imagePath: welcomeScreenImagePath),
-        Positioned(
-          top: 30,
-          child: AnimeSlidePuzzleTitle(),
+  Widget _portraitLayout() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        const Text(
+          'Anime Slide Puzzle',
+          style: kAnimeTitleStyle,
+          textAlign: TextAlign.center,
         ),
-        Positioned(top: 250, child: WelcomeScreenCircleTransition())
+        Container(
+          constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height * .6),
+          width: double.infinity,
+          child: const Image(
+            image: AssetImage(welcomeScreenImagePath),
+          ),
+        ),
+        _linkToGithub(),
+        CircleTransitionButton(
+          destinationScreen: const ImageSelectionScreen(),
+          buttonText: 'Let\'s get started',
+          buttonStyle: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all<Color>(
+              kWelcomeScreenCallToActionButtonBackgroundColor,
+            ),
+          ),
+          textStyle: const TextStyle(color: kWelcomeScreenButtonTextColor),
+        ),
       ],
     );
+  }
+
+  Widget _linkToGithub() {
+    return TextButton.icon(
+      style: TextButton.styleFrom(
+          backgroundColor: kWelcomeScreenButtonBackgroundColor),
+      onPressed: () =>
+          _launchUrl('https://github.com/klien1/anime_slide_puzzle'),
+      icon: const Icon(
+        FontAwesomeIcons.github,
+        color: kWelcomeScreenButtonTextColor,
+      ),
+      label: const Text(
+        'Github',
+        style: TextStyle(color: kWelcomeScreenButtonTextColor),
+      ),
+    );
+  }
+
+  Future<void> _launchUrl(String url) async {
+    final Uri urlPath = Uri.parse(url);
+    if (!await launchUrl(urlPath)) {
+      throw 'Count not launch $urlPath';
+    }
   }
 
   @override
@@ -93,10 +161,13 @@ class _WelcomeState extends State<Welcome> {
       child: (isLoading)
           ? const LoadingScreen()
           : Scaffold(
-              body: ResponsiveLayout(
-                mobile: _getPortaitContent(),
-                tablet: _getLandscapeContent(),
-                web: _getLandscapeContent(),
+              backgroundColor: Colors.white,
+              body: SafeArea(
+                child: ResponsiveLayout(
+                  mobile: _portraitLayout(),
+                  tablet: _landscapeLayout(),
+                  web: _landscapeLayout(),
+                ),
               ),
             ),
     );

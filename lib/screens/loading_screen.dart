@@ -6,9 +6,12 @@ class LoadingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const SpinKitPouringHourGlassRefined(
-      color: Colors.white,
-      size: 100,
+    return const Scaffold(
+      backgroundColor: Colors.black,
+      body: SpinKitPouringHourGlassRefined(
+        color: Colors.white,
+        size: 100,
+      ),
     );
   }
 }
