@@ -24,24 +24,17 @@ class _ImageSelectionBarState extends State<ImageSelectionBar> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+
     // precache image to prevent white screen / scaffold background color
     precacheImage(
       AssetImage(context.read<AnimeThemeList>().curPuzzleBackground!),
       context,
     );
 
-    AnimeThemeList animeThemeList = context.read<AnimeThemeList>();
-    for (int i = 0; i < animeThemeList.listLength; ++i) {
-      precacheImage(
-        AssetImage(animeThemeList.getAnimeThemeAtIndex(i).backgroundImagePath),
-        context,
-      );
-      precacheImage(
-        AssetImage(
-            animeThemeList.getAnimeThemeAtIndex(i).puzzleBackgroundImagePath!),
-        context,
-      );
-    }
+    precacheImage(
+      AssetImage(context.read<AnimeThemeList>().curPuzzle),
+      context,
+    );
   }
 
   @override

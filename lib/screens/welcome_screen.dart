@@ -47,15 +47,20 @@ class _WelcomeState extends State<Welcome> {
       context,
     );
 
-    AnimeTheme animeTheme = context.read<AnimeThemeList>().curAnimeTheme;
-    if (MediaQuery.of(context).orientation == Orientation.portrait) {
+    // cache all images on next page
+    AnimeThemeList animeThemeList = context.read<AnimeThemeList>();
+    for (int i = 0; i < animeThemeList.listLength; ++i) {
       precacheImage(
-        AssetImage(animeTheme.puzzleImagePath),
+        AssetImage(animeThemeList.getAnimeThemeAtIndex(i).backgroundImagePath),
         context,
       );
-    } else {
       precacheImage(
-        AssetImage(animeTheme.backgroundImagePath),
+        AssetImage(
+            animeThemeList.getAnimeThemeAtIndex(i).puzzleBackgroundImagePath!),
+        context,
+      );
+      precacheImage(
+        AssetImage(animeThemeList.getAnimeThemeAtIndex(i).logoImagePath),
         context,
       );
     }
