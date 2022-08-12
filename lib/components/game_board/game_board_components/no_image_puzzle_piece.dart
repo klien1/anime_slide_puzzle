@@ -1,9 +1,9 @@
-import 'package:anime_slide_puzzle/components/game_board/game_board_tile_number.dart';
+import 'package:anime_slide_puzzle/components/game_board/game_board_components/game_board_tile_number.dart';
 import 'package:anime_slide_puzzle/models/puzzle_tile.dart';
 import 'package:flutter/material.dart';
 
-class ImagelessPuzzle extends StatelessWidget {
-  const ImagelessPuzzle({
+class NoImagePuzzlePiece extends StatelessWidget {
+  const NoImagePuzzlePiece({
     Key? key,
     required this.width,
     required this.height,

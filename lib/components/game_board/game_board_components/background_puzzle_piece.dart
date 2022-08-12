@@ -1,6 +1,9 @@
+// import 'package:anime_slide_puzzle/models/puzzle_board.dart';
+import 'package:anime_slide_puzzle/models/puzzle_board.dart';
 import 'package:flutter/material.dart';
 import 'package:anime_slide_puzzle/models/puzzle_tile.dart';
-import 'package:anime_slide_puzzle/components/game_board/game_board_tile_number.dart';
+import 'package:anime_slide_puzzle/components/game_board/game_board_components/game_board_tile_number.dart';
+import 'package:provider/provider.dart';
 
 class BackgroundPuzzlePiece extends StatelessWidget {
   const BackgroundPuzzlePiece({
@@ -9,8 +12,8 @@ class BackgroundPuzzlePiece extends StatelessWidget {
     required this.tileHeight,
     required this.tileWidth,
     required this.curImagePath,
-    required this.numRowsOrColumn,
-    this.tileNumberOpacity = 1,
+    // required this.numRowsOrColumn,
+    // this.tileNumberOpacity = 1,
     this.tileBorderRadius = 10,
   }) : super(key: key);
 
@@ -18,8 +21,8 @@ class BackgroundPuzzlePiece extends StatelessWidget {
   final double tileHeight;
   final double tileWidth;
   final double tileBorderRadius;
-  final double tileNumberOpacity;
-  final int numRowsOrColumn;
+  // final double tileNumberOpacity;
+  // final int numRowsOrColumn;
   final String curImagePath;
 
   Widget fullImage() {
@@ -33,7 +36,7 @@ class BackgroundPuzzlePiece extends StatelessWidget {
     );
   }
 
-  Widget dividedImage() {
+  Widget dividedImage(int numRowsOrColumn) {
     final int curRow = tile.correctCoordinate.row;
     final int curCol = tile.correctCoordinate.col;
 
@@ -85,7 +88,7 @@ class BackgroundPuzzlePiece extends StatelessWidget {
           tileHeight: tileHeight,
           tileWidth: tileWidth,
           tile: tile,
-          tileNumberOpacity: tileNumberOpacity,
+          // tileNumberOpacity: tileNumberOpacity,
         )
       ],
     );
@@ -95,6 +98,8 @@ class BackgroundPuzzlePiece extends StatelessWidget {
   Widget build(BuildContext context) {
     // check if numTilesPerRowOrColumn == 1 to avoid divide by zero error
     // we will return the full image if there is only 1 tile
-    return (numRowsOrColumn == 1) ? fullImage() : dividedImage();
+    int numRowsOrColumn =
+        context.select<PuzzleBoard, int>((value) => value.numRowsOrColumns);
+    return (numRowsOrColumn == 1) ? fullImage() : dividedImage(numRowsOrColumn);
   }
 }

@@ -1,69 +1,55 @@
+import 'package:anime_slide_puzzle/components/game_board/game_board_layout/game_board_layout_large.dart';
+import 'package:anime_slide_puzzle/components/game_board/game_board_layout/game_board_layout_small.dart';
+import 'package:anime_slide_puzzle/components/game_board/game_board_layout/game_board_layout_medium.dart';
+import 'package:anime_slide_puzzle/utils/responsive_layout_helper.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:anime_slide_puzzle/components/game_board/game_board.dart';
-import 'package:anime_slide_puzzle/models/number_puzzle_tiles.dart';
-import 'package:anime_slide_puzzle/models/puzzle_board.dart';
-import 'package:anime_slide_puzzle/components/game_select_board_size.dart';
-import 'package:anime_slide_puzzle/components/game_button_controls.dart';
 
-const double gameWidth = 500;
-const double gameHeight = 500;
-const double padding = 3;
-
-class GameScreen extends StatefulWidget {
+class GameScreen extends StatelessWidget {
   const GameScreen({Key? key}) : super(key: key);
 
-  static const String id = 'game_screen_id';
-
-  @override
-  State<GameScreen> createState() => _GameScreenState();
-}
-
-class _GameScreenState extends State<GameScreen> {
+  static String id = 'game_screen_id';
   @override
   Widget build(BuildContext context) {
-    final myProviders = [
-      ChangeNotifierProvider<NumberPuzzleTiles>(
-        create: (BuildContext context) => NumberPuzzleTiles(),
-      ),
-      ChangeNotifierProxyProvider<NumberPuzzleTiles, PuzzleBoard>(
-        create: (BuildContext context) => PuzzleBoard(
-          numRowsOrColumns:
-              Provider.of<NumberPuzzleTiles>(context, listen: false)
-                  .currentNumberOfTiles,
-        ),
-        update: ((context, value, previous) =>
-            PuzzleBoard(numRowsOrColumns: value.currentNumberOfTiles)),
-      ),
-    ];
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = MediaQuery.of(context).size.height;
 
-    return MultiProvider(
-      providers: myProviders,
-      child: Scaffold(
-        body: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Back'),
+    const double smallScreenPercentage = 0.75;
+    const double mediumScreenPercentage = 0.65;
+    const double largeScreenPercentage = 0.8;
+
+    return ResponsiveLayout(
+        mobile: (screenHeight < screenWidth)
+            ? GameBoardLayoutSmall(
+                puzzleWidth: screenHeight * smallScreenPercentage,
+                puzzleHeight: screenHeight * smallScreenPercentage,
+                puzzlePadding: 5,
+              )
+            : GameBoardLayoutSmall(
+                puzzleWidth: screenWidth * smallScreenPercentage,
+                puzzleHeight: screenWidth * smallScreenPercentage,
+                puzzlePadding: 5,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: const [
-                  SelectBoardSize(),
-                  GameBoard(
-                    width: gameWidth,
-                    height: gameHeight,
-                    tilePadding: padding,
-                  ),
-                  GameButtonControls(),
-                ],
+        tablet: (screenHeight < screenWidth)
+            ? GameBoardLayoutMedium(
+                puzzleWidth: screenHeight * mediumScreenPercentage,
+                puzzleHeight: screenHeight * mediumScreenPercentage,
+                puzzlePadding: 5,
+              )
+            : GameBoardLayoutMedium(
+                puzzleWidth: screenWidth * mediumScreenPercentage,
+                puzzleHeight: screenWidth * mediumScreenPercentage,
+                puzzlePadding: 5,
               ),
-            ],
-          ),
-        ),
-      ),
-    );
+        web: (screenHeight < screenWidth)
+            ? GameBoardLayoutLarge(
+                puzzleWidth: screenHeight * largeScreenPercentage,
+                puzzleHeight: screenHeight * largeScreenPercentage,
+                puzzlePadding: 5,
+              )
+            : GameBoardLayoutLarge(
+                puzzleWidth: screenWidth * largeScreenPercentage,
+                puzzleHeight: screenWidth * largeScreenPercentage,
+                puzzlePadding: 5,
+              ));
   }
 }

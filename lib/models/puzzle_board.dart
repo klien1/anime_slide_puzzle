@@ -1,13 +1,11 @@
 import 'dart:async';
-import 'dart:collection';
-import 'package:anime_slide_puzzle/models/coordinate.dart';
-import 'package:anime_slide_puzzle/puzzle_solver/auto_solver.dart';
-import 'package:anime_slide_puzzle/puzzle_solver/ida_star_puzzle_solver.dart';
-import 'package:anime_slide_puzzle/utils/puzzle_board_helper.dart';
-// import 'package:anime_slide_puzzle/puzzle_solver/a_star_puzzle_solver.dart';
-import 'package:flutter/material.dart';
-import 'package:anime_slide_puzzle/models/puzzle_tile.dart';
 import 'dart:math';
+
+import 'package:anime_slide_puzzle/models/coordinate.dart';
+import 'package:anime_slide_puzzle/models/puzzle_tile.dart';
+import 'package:anime_slide_puzzle/puzzle_solver/auto_solver.dart';
+import 'package:anime_slide_puzzle/utils/puzzle_board_helper.dart';
+import 'package:flutter/material.dart';
 
 class PuzzleBoard extends ChangeNotifier {
   final int _numRowsOrColumns;
@@ -16,24 +14,16 @@ class PuzzleBoard extends ChangeNotifier {
   int _numberOfMoves = 0;
   double _currentTileOpacity = 0;
   bool _gameInProgress = false;
-  bool solutionInProgress = false;
+  bool _solutionInProgress = false;
+  bool _isPuzzleCompleted = false;
 
+  // initializes puzzle with number of rows or columns
   PuzzleBoard({required numRowsOrColumns})
       : _numRowsOrColumns = numRowsOrColumns {
-    _puzzleTiles2d = _generatePuzzleMatrix(numRowsOrColumns);
-
-    _puzzleTileNumberMatrix = List.generate(
-        _numRowsOrColumns,
-        (row) => List.generate(
-            _numRowsOrColumns, (col) => row * _numRowsOrColumns + col,
-            growable: false),
-        growable: false);
+    resetBoard();
   }
 
-  PuzzleBoard.board({required List<List<PuzzleTile>> board})
-      : _puzzleTiles2d = board,
-        _numRowsOrColumns = board.length;
-
+  // initializes puzzle board with 2d matrix
   PuzzleBoard.intBoard({required List<List<int>> board})
       : _numRowsOrColumns = board.length {
     _puzzleTiles2d = _generatePuzzleMatrix(numRowsOrColumns);
@@ -46,17 +36,40 @@ class PuzzleBoard extends ChangeNotifier {
             .currentCoordinate = correctCoordinate;
       }
     }
-
     _puzzleTileNumberMatrix = board;
   }
 
-  void autoSolve() {
-    solutionInProgress = true;
+  // solves the puzzle
+  Future<void> autoSolve() async {
+    _toggleSolutionInProgress(true);
 
     AutoSolver autoSolve = AutoSolver(puzzleBoard: this);
-    autoSolve.solve();
+    await autoSolve.solve();
 
-    solutionInProgress = false;
+    _toggleSolutionInProgress(false);
+    _isPuzzleCompleted = false;
+  }
+
+  List<List<int>> _generatePuzzleNumberMatrix(int numRowsOrCols) {
+    return List.generate(
+        _numRowsOrColumns,
+        (row) => List.generate(
+            _numRowsOrColumns, (col) => row * _numRowsOrColumns + col,
+            growable: false),
+        growable: false);
+  }
+
+  void resetBoard() {
+    if (_solutionInProgress) {
+      _solutionInProgress = false;
+    } else {
+      _puzzleTiles2d = _generatePuzzleMatrix(numRowsOrColumns);
+      _puzzleTileNumberMatrix = _generatePuzzleNumberMatrix(numRowsOrColumns);
+      _gameInProgress = false;
+      _isPuzzleCompleted = false;
+      _currentTileOpacity = 0;
+      _numberOfMoves = 0;
+    }
   }
 
   List<List<PuzzleTile>> _generatePuzzleMatrix(int numRowsOrCols) {
@@ -85,7 +98,8 @@ class PuzzleBoard extends ChangeNotifier {
     required Coordinate second,
   }) {
     // check if coordinates are within boundary
-    if (isOutOfBounds(matrix, first) || isOutOfBounds(matrix, second)) {
+    if (isOutOfBounds(matrix: matrix, curPoint: first) ||
+        isOutOfBounds(matrix: matrix, curPoint: second)) {
       return false;
     }
 
@@ -103,91 +117,37 @@ class PuzzleBoard extends ChangeNotifier {
     int numRowsOrColumns = matrix.length;
     int numInversions = countTotalInversion(matrix: matrix);
 
-    if ((!isEven(numRowsOrColumns) && isEven(numInversions)) ||
-        isEven(numRowsOrColumns) && !isEven(numInversions + blankTileRow)) {
+    if ((!isEven(num: numRowsOrColumns) && isEven(num: numInversions)) ||
+        isEven(num: numRowsOrColumns) &&
+            !isEven(num: numInversions + blankTileRow)) {
       return true;
     }
-
     return false;
   }
 
   void _toggleSolutionInProgress(bool status) {
-    solutionInProgress = status;
+    _solutionInProgress = status;
     notifyListeners();
   }
 
-  void _toggleGameInProgress(bool status) {
-    _gameInProgress = status;
-    notifyListeners();
-  }
+  void moveTilesWithCurrentCoordinates({required Coordinate curCoordinate}) {
+    int tileNum = _puzzleTileNumberMatrix[curCoordinate.row][curCoordinate.col];
 
-  void solvePuzzleWithIDAStar() async {
-    _toggleSolutionInProgress(true);
-
-    // convert matrix to 1d array to solver
-    List<int> flattenedTileNumbers = List.generate(
-      _puzzleTileNumberMatrix.length * _puzzleTileNumberMatrix.length,
-      (index) => 0,
-      growable: false,
-    );
-
-    for (int row = 0; row < _puzzleTileNumberMatrix.length; ++row) {
-      for (int col = 0; col < _puzzleTileNumberMatrix[row].length; ++col) {
-        flattenedTileNumbers[row * _puzzleTileNumberMatrix.length + col] =
-            _puzzleTileNumberMatrix[row][col];
-      }
-    }
-    IDAStarPuzzleSolver solver = IDAStarPuzzleSolver(
-      initialBoardState: flattenedTileNumbers,
-      numRowsOrColumns: _numRowsOrColumns,
-      blankTileCoordinate: currentBlankTileCoordiante,
-    );
-
-    Queue<Coordinate> moveList = solver.solvePuzzle();
-    while (moveList.isNotEmpty) {
-      Coordinate nextBlankTileCoord = moveList.removeFirst();
-      await _aiMoveTile(nextBlankTileCoord);
-    }
-    _toggleSolutionInProgress(false);
-  }
-
-  // void solvePuzzleWithAStar() async {
-  //   _toggleSolutionInProgress(true);
-  //   AStarPuzzleSolver puzzleSolver = AStarPuzzleSolver(
-  //     startingBoardState: _puzzleTileNumberMatrix,
-  //     currentBlankTileCoordiante: currentBlankTileCoordiante,
-  //   );
-
-  //   Queue<Coordinate> moveList =
-  //       puzzleSolver.solvePuzzle(currentBlankTileCoordiante);
-
-  //   while (moveList.isNotEmpty) {
-  //     Coordinate nextBlankTileCoord = moveList.removeFirst();
-  //     await _aiMoveTile(nextBlankTileCoord);
-  //   }
-  //   _toggleSolutionInProgress(false);
-  // }
-
-  Future<void> _aiMoveTile(Coordinate nextBlankTileCoord) async {
-    // check which number needs to be swapped
-    int tileNum =
-        _puzzleTileNumberMatrix[nextBlankTileCoord.row][nextBlankTileCoord.col];
-    // convert to 2d coordinate
-    Coordinate adjacentTileCoordinate = convert1dArrayCoordTo2dArrayCoord(
-        index: tileNum, numRowOrColCount: _numRowsOrColumns);
-    // Get tile
-    PuzzleTile adjTile =
-        _puzzleTiles2d[adjacentTileCoordinate.row][adjacentTileCoordinate.col];
-
-    await Future.delayed(const Duration(milliseconds: 200));
-    moveTile(correctTileCoordinate: adjTile.correctCoordinate);
+    moveTile(
+        correctTileCoordinate: convert1dArrayCoordTo2dArrayCoord(
+      index: tileNum,
+      numRowOrColCount: _numRowsOrColumns,
+    ));
   }
 
   // moves tiles using tile correct coordinate and NOT current coordinate
   void moveTile({
     required Coordinate correctTileCoordinate,
   }) {
-    if (isOutOfBounds(_puzzleTileNumberMatrix, correctTileCoordinate)) return;
+    if (isOutOfBounds(
+      matrix: _puzzleTileNumberMatrix,
+      curPoint: correctTileCoordinate,
+    )) return;
     final PuzzleTile clickedTile =
         _puzzleTiles2d[correctTileCoordinate.row][correctTileCoordinate.col];
 
@@ -199,17 +159,19 @@ class PuzzleBoard extends ChangeNotifier {
       ++_numberOfMoves;
 
       if (_isPuzzleTileInCorrectPosition() && _gameInProgress) {
-        // print('completed!');
-        _toggleGameInProgress(false);
+        _puzzleCompleted();
       }
 
       notifyListeners();
     }
   }
 
-/**
- * returns current position of tileNum
- */
+  void _puzzleCompleted() {
+    _isPuzzleCompleted = true;
+    _gameInProgress = false;
+  }
+
+  /// returns current position of given tile number
   Coordinate findCurrentTileNumberCoordiante(int tileNum) {
     Coordinate correctTileCoordiante = convert1dArrayCoordTo2dArrayCoord(
       index: tileNum,
@@ -238,6 +200,7 @@ class PuzzleBoard extends ChangeNotifier {
   void startGame() {
     _numberOfMoves = 0;
     _gameInProgress = true;
+    _isPuzzleCompleted = false;
     _shuffleBoard();
   }
 
@@ -281,14 +244,42 @@ class PuzzleBoard extends ChangeNotifier {
     PuzzleTile secondTile,
   ) {
     if (firstTile == secondTile ||
-        isOutOfBounds(_puzzleTileNumberMatrix, firstTile.currentCoordinate) ||
-        isOutOfBounds(_puzzleTileNumberMatrix, secondTile.currentCoordinate)) {
+        isOutOfBounds(
+          matrix: _puzzleTileNumberMatrix,
+          curPoint: firstTile.currentCoordinate,
+        ) ||
+        isOutOfBounds(
+          matrix: _puzzleTileNumberMatrix,
+          curPoint: secondTile.currentCoordinate,
+        )) {
       return;
     }
 
     final Coordinate temp = firstTile.currentCoordinate;
-    firstTile.currentCoordinate = secondTile.currentCoordinate;
-    secondTile.currentCoordinate = temp;
+
+    int fx = firstTile.correctCoordinate.row;
+    int fy = firstTile.correctCoordinate.col;
+
+    // assign first tile
+    _puzzleTiles2d[fx][fy] = PuzzleTile(
+      correctCoordinate: firstTile.correctCoordinate,
+      currentCoordinate: secondTile.currentCoordinate,
+      tileNumber: firstTile.tileNumber,
+      isBlank: firstTile.isBlankTile,
+    );
+
+    // assign second tile
+    int sx = secondTile.correctCoordinate.row;
+    int sy = secondTile.correctCoordinate.col;
+    _puzzleTiles2d[sx][sy] = PuzzleTile(
+      correctCoordinate: secondTile.correctCoordinate,
+      currentCoordinate: temp,
+      tileNumber: secondTile.tileNumber,
+      isBlank: secondTile.isBlankTile,
+    );
+
+    // firstTile.currentCoordinate = secondTile.currentCoordinate;
+    // secondTile.currentCoordinate = temp;
 
     swapTileNumbers(
       matrix: _puzzleTileNumberMatrix,
@@ -327,11 +318,19 @@ class PuzzleBoard extends ChangeNotifier {
     return _gameInProgress;
   }
 
+  bool get isPuzzleCompleted {
+    return _isPuzzleCompleted;
+  }
+
   List<List<int>> get puzzleTileNumberMatrix {
     return _puzzleTileNumberMatrix;
   }
 
   bool get isLookingForSolution {
-    return solutionInProgress;
+    return _solutionInProgress;
+  }
+
+  int get blankTileNumber {
+    return _numRowsOrColumns * _numRowsOrColumns - 1;
   }
 }

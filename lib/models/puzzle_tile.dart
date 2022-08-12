@@ -30,5 +30,6 @@ class PuzzleTile extends Equatable {
   }
 
   @override
-  List<Coordinate> get props => [correctCoordinate];
+  // List<Coordinate> get props => [correctCoordinate];
+  List<Coordinate> get props => [currentCoordinate];
 }

@@ -29,10 +29,12 @@ class Coordinate extends Equatable {
     return _col;
   }
 
+  int getOneDimensionalArrayIndex(int numRowsOrColumns) {
+    return _row * numRowsOrColumns + _col;
+  }
+
   Coordinate calculateAdjacent({
     required Direction direction,
-    // int row = 0,
-    // int col = 0,
   }) {
     switch (direction) {
       case Direction.top:
