@@ -14,7 +14,7 @@ class GameScreen extends StatelessWidget {
     final double screenHeight = MediaQuery.of(context).size.height;
 
     const double smallScreenPercentage = 0.75;
-    const double mediumScreenPercentage = 0.6;
+    const double mediumScreenPercentage = 0.65;
     const double largeScreenPercentage = 0.8;
 
     return ResponsiveLayout(
