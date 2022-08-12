@@ -49,7 +49,10 @@ class AutoSolver {
 
     for (int tileNum in solutionOrder) {
       // if user reset the board, then no longer looking for solution
-      if (!puzzleBoard.isLookingForSolution) break;
+      if (!puzzleBoard.isLookingForSolution) {
+        puzzleBoard.resetNumberOfMoves();
+        break;
+      }
 
       final Coordinate correctPosition = convert1dArrayCoordTo2dArrayCoord(
         index: tileNum,
@@ -98,7 +101,9 @@ class AutoSolver {
   Future<void> _moveBlankTileNextToTarget({required Coordinate target}) async {
     Coordinate blankCoord = puzzleBoard.currentBlankTileCoordiante;
 
-    while (_getEuclindianDistance(first: target, second: blankCoord) > 1) {
+    // we are using 1.5 as the cut off because blank tiles can move
+    // target tile from the corner poistions
+    while (_getEuclindianDistance(first: target, second: blankCoord) > 1.5) {
       // find the best valid path that puts the blank tile closer to target
       double minDistance = double.infinity;
       late Direction correctDirection;

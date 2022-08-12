@@ -1,28 +1,26 @@
-// import 'package:flutter/material.dart';
+import 'package:anime_slide_puzzle/models/game_timer.dart';
+import 'package:anime_slide_puzzle/models/puzzle_board.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-// class CustomBackButton extends StatelessWidget {
-//   const CustomBackButton({
-//     Key? key,
-//   }) : super(key: key);
+class CustomBackButton extends StatelessWidget {
+  const CustomBackButton({
+    Key? key,
+  }) : super(key: key);
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return SizedBox(
-//       // width: 125,
-//       // height: 40,
-//       child: TextButton.icon(
-//         onPressed: () => Navigator.pop(context),
-//         icon: const Icon(Icons.arrow_back),
-//         label: const Text(
-//           'Back',
-//           style: TextStyle(fontSize: 15),
-//         ),
-//         // style: ButtonStyle(
-//         //   padding: MaterialStateProperty.all<EdgeInsets>(
-//         //     const EdgeInsets.all(10),
-//         //   ),
-//         // ),
-//       ),
-//     );
-//   }
-// }
+  @override
+  Widget build(BuildContext context) {
+    GameTimer gameTimer = context.read<GameTimer>();
+    PuzzleBoard puzzleBoard = context.read<PuzzleBoard>();
+
+    return BackButton(
+      onPressed: () {
+        gameTimer
+          ..resetTimer()
+          ..endTimer();
+        puzzleBoard.resetBoard();
+        Navigator.pop(context);
+      },
+    );
+  }
+}

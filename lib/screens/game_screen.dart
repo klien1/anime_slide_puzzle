@@ -26,33 +26,5 @@ class GameScreen extends StatelessWidget {
           puzzleHeight: 300,
           puzzlePadding: 5,
         ));
-    // return LayoutBuilder(builder: (context, constraints) {
-    //   if (constraints.maxWidth < small) {
-    //     return const GameBoardLayoutSmall(
-    //       puzzleWidth: 350,
-    //       puzzleHeight: 350,
-    //       puzzlePadding: 5,
-    //     );
-    //   } else if (constraints.maxWidth < medium) {
-    //     return const GameBoardLayoutMedium(
-    //       puzzleWidth: 300,
-    //       puzzleHeight: 300,
-    //       puzzlePadding: 5,
-    //     );
-    //   } else {
-    //     //if (constraints.maxWidth < large) {
-    //     return Text('large');
-    //     // return const GameBoardLayoutLarge(
-    //     //   puzzleWidth: 500,
-    //     //   puzzleHeight: 500,
-    //     //   puzzlePadding: 5,
-    //     // );
-    //   }
-    // }
-    // else {
-    //   return Container();
-    // }
-    // }
-    // );
   }
 }

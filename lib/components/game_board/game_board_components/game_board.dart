@@ -23,28 +23,6 @@ class GameBoard extends StatefulWidget {
 }
 
 class _GameBoardState extends State<GameBoard> {
-  GameTimer? gameTimer;
-  PuzzleBoard? puzzleBoard;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    gameTimer = context.read<GameTimer>();
-    puzzleBoard = context.read<PuzzleBoard>();
-  }
-
-  @override
-  void dispose() {
-    gameTimer
-      ?..resetTimer()
-      ..endTimer();
-    puzzleBoard
-      ?..resetNumberOfMoves()
-      ..resetBoard();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     List<List<PuzzleTile>> puzzleMatrix =

@@ -21,6 +21,8 @@ class GameBoardLayoutMedium extends StatelessWidget {
   final double puzzleHeight;
   final double puzzlePadding;
 
+  void reset() {}
+
   @override
   Widget build(BuildContext context) {
     AnimeThemeList animeThemeList = context.read<AnimeThemeList>();
@@ -45,8 +47,9 @@ class GameBoardLayoutMedium extends StatelessWidget {
                           const Expanded(
                             flex: 1,
                             child: Align(
-                                alignment: Alignment.topLeft,
-                                child: BackButton()),
+                              alignment: Alignment.topLeft,
+                              child: CustomBackButton(),
+                            ),
                           ),
                           const SizedBox(height: 20),
                           Expanded(
@@ -56,7 +59,7 @@ class GameBoardLayoutMedium extends StatelessWidget {
                           const Expanded(flex: 2, child: GameStatus()),
                           const Expanded(
                             flex: 2,
-                            child: GameButtonControls(spaceBetween: 5),
+                            child: GameButtonControls(),
                           ),
                         ],
                       ),

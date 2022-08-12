@@ -66,6 +66,7 @@ class PuzzleBoard extends ChangeNotifier {
     _gameInProgress = false;
     _isPuzzleCompleted = false;
     _currentTileOpacity = 0;
+    _numberOfMoves = 0;
   }
 
   List<List<PuzzleTile>> _generatePuzzleMatrix(int numRowsOrCols) {

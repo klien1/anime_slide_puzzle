@@ -15,14 +15,7 @@ class GameStatus extends StatelessWidget {
       children: [
         const GameTimerText(),
         SizedBox(height: spaceBetween),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Text('Number of Moves:'),
-            Text('${context.watch<PuzzleBoard>().numberOfMoves}')
-          ],
-        )
-        // Text('Number of Moves: ${context.watch<PuzzleBoard>().numberOfMoves}'),
+        Text('Number of Moves: ${context.watch<PuzzleBoard>().numberOfMoves}'),
       ],
     );
   }

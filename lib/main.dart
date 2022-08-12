@@ -65,8 +65,7 @@ class MyApp extends StatelessWidget {
                 textTheme: TextTheme(
                   bodyText2: TextStyle(
                     color: animeTheme.bodyText2Color,
-                    // fontSize: 20, ////// MEDIUM FONT
-                    fontSize: 30, ////// SMALL FONT
+                    fontSize: 30,
                     fontWeight: FontWeight.bold,
                     fontFamily: 'JosefinSans',
                   ),
