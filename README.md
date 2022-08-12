@@ -1,16 +1,13 @@
-# anime_slide_puzzle
+## Anime Slide Puzzle
 
-Flutter Slide Puzzle
+A responsive slide puzzle game built using flutter.
+If you ever get stuck, you can use the auto solver to help solve the puzzle.
 
-## Getting Started
+The auto solver is built with IDA* algorithm using manhattan distance heuritics. 
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
+![alt text](sample_screenshots/welcome_page.png)
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+![alt text](https://github.com/klien1/anime_slide_puzzle/blob/main/sample_screenshots/puzzle_page_landscape.png?raw=true)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+![alt text](https://github.com/klien1/anime_slide_puzzle/blob/main/sample_screenshots/puzzle_page_portrait.png?raw=true)
