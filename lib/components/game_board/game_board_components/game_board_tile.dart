@@ -93,8 +93,6 @@ class _GameBoardTile extends State<GameBoardTile> {
                         tileHeight: tileHeight,
                         tileWidth: tileWidth,
                         curImagePath: animeThemeList.curPuzzle,
-                        // numRowsOrColumn: puzzleBoard.numRowsOrColumns,
-                        // tileNumberOpacity: puzzleBoard.currentTileOpacity,
                       ),
               ),
             ),

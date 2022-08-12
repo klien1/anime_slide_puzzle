@@ -48,6 +48,7 @@ class _GameBoardState extends State<GameBoard> {
           height: widget.height + widget.tilePadding * 2,
           child: Consumer<NumberPuzzleTiles>(
             builder: (_, value, child) {
+              // watch for dimension changes to
               // prevent out of range index error when puzzle tile changes
               List<List<PuzzleTile>> puzzleMatrix =
                   context.read<PuzzleBoard>().puzzleBoard2d;

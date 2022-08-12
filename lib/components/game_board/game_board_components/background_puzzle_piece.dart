@@ -12,8 +12,6 @@ class BackgroundPuzzlePiece extends StatelessWidget {
     required this.tileHeight,
     required this.tileWidth,
     required this.curImagePath,
-    // required this.numRowsOrColumn,
-    // this.tileNumberOpacity = 1,
     this.tileBorderRadius = 10,
   }) : super(key: key);
 
@@ -21,8 +19,6 @@ class BackgroundPuzzlePiece extends StatelessWidget {
   final double tileHeight;
   final double tileWidth;
   final double tileBorderRadius;
-  // final double tileNumberOpacity;
-  // final int numRowsOrColumn;
   final String curImagePath;
 
   Widget fullImage() {
@@ -88,7 +84,6 @@ class BackgroundPuzzlePiece extends StatelessWidget {
           tileHeight: tileHeight,
           tileWidth: tileWidth,
           tile: tile,
-          // tileNumberOpacity: tileNumberOpacity,
         )
       ],
     );

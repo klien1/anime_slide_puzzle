@@ -29,6 +29,14 @@ class _ImageSelectionBarState extends State<ImageSelectionBar> {
       AssetImage(context.read<AnimeThemeList>().curPuzzleBackground!),
       context,
     );
+
+    AnimeThemeList animeThemeList = context.read<AnimeThemeList>();
+    for (int i = 0; i < animeThemeList.listLength; ++i) {
+      precacheImage(
+        AssetImage(animeThemeList.getAnimeThemeAtIndex(i).backgroundImagePath),
+        context,
+      );
+    }
   }
 
   @override

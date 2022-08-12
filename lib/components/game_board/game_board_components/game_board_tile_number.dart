@@ -1,6 +1,5 @@
 import 'package:anime_slide_puzzle/models/puzzle_board.dart';
 import 'package:flutter/material.dart';
-import 'package:anime_slide_puzzle/components/game_board/game_board_components/bordered_text.dart';
 import 'package:anime_slide_puzzle/models/puzzle_tile.dart';
 import 'package:provider/provider.dart';
 
@@ -10,7 +9,6 @@ class GameBoardTileNumber extends StatelessWidget {
     required this.tileHeight,
     required this.tileWidth,
     required this.tile,
-    // this.tileNumberOpacity = 1,
     this.textOpacityDuration = const Duration(milliseconds: 200),
   }) : super(key: key);
 
@@ -18,7 +16,6 @@ class GameBoardTileNumber extends StatelessWidget {
   final double tileWidth;
   final Duration textOpacityDuration;
   final PuzzleTile tile;
-  // final double tileNumberOpacity;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +31,7 @@ class GameBoardTileNumber extends StatelessWidget {
             opacity: (tile.isBlankTile) ? 0 : tileNumberOpacity,
             child: child,
           ),
-          child: BorderedText(
+          child: _BorderedText(
             text: (tile.tileNumber + 1).toString(),
             style: const TextStyle(fontFamily: 'JosefinSans'),
             textColor: Colors.white,
@@ -44,6 +41,46 @@ class GameBoardTileNumber extends StatelessWidget {
         ),
       ),
       // ),
+    );
+  }
+}
+
+class _BorderedText extends StatelessWidget {
+  const _BorderedText({
+    Key? key,
+    required this.text,
+    required this.strokeWidth,
+    required this.strokeColor,
+    required this.textColor,
+    this.style = const TextStyle(),
+  }) : super(key: key);
+
+  final String text;
+  final double strokeWidth;
+  final Color strokeColor;
+  final Color textColor;
+  final TextStyle style;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Text(
+          text,
+          style: style.copyWith(
+            foreground: Paint()
+              ..style = PaintingStyle.stroke
+              ..strokeWidth = strokeWidth
+              ..color = strokeColor,
+          ),
+        ),
+        Text(
+          text,
+          style: style.copyWith(
+            color: textColor,
+          ),
+        ),
+      ],
     );
   }
 }
