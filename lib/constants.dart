@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
 
-// primary: Colors.white,
-// backgroundColor: Colors.orange,
-// shadowColor: Colors.black,
-// elevation: 2,
-
 const Map<String, Map<String, Object>> animeImageList = {
   'spy_x_family': {
     'logo': 'images/Spy_×_Family_logo.png',
@@ -47,10 +42,6 @@ const titleStyle = TextStyle(
   fontSize: 70,
   color: Color(0xFF1b1d29),
 );
-
-// const test = {
-//   'a': {'b': 'c', 'color': Colors.teal}
-// };
 
 // source: https://wall.alphacoders.com/big.php?i=1143485
 // image: AssetImage('images/jujutsu_kaisen_background2.jpg'),

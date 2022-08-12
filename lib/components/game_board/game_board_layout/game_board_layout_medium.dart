@@ -1,5 +1,5 @@
 import 'package:anime_slide_puzzle/components/background_image.dart';
-import 'package:anime_slide_puzzle/components/custom_back_button.dart';
+import 'package:anime_slide_puzzle/components/game_board/game_board_components/custom_back_button.dart';
 import 'package:anime_slide_puzzle/components/game_board/game_board_components/game_board.dart';
 import 'package:anime_slide_puzzle/components/game_board/game_board_components/game_button_controls.dart';
 import 'package:anime_slide_puzzle/components/game_board/game_board_components/game_status.dart';
@@ -32,42 +32,42 @@ class GameBoardLayoutMedium extends StatelessWidget {
       body: Stack(
         children: [
           BackgroundImage(imagePath: animeTheme.puzzleBackgroundImagePath),
+          const SafeArea(
+            child: Align(
+              alignment: Alignment.topLeft,
+              child: CustomBackButton(),
+            ),
+          ),
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Expanded(
+                  Flexible(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 20),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          const Expanded(
-                            flex: 1,
-                            child: Align(
-                              alignment: Alignment.topLeft,
-                              child: CustomBackButton(),
-                            ),
-                          ),
                           const SizedBox(height: 20),
-                          Expanded(
-                            flex: 2,
-                            child: SizedHeroImage(animeTheme: animeTheme),
-                          ),
+                          Flexible(
+                              flex: 2,
+                              child: SizedHeroImage(
+                                animeTheme: animeTheme,
+                                width: (animeTheme.name == 'demon_slayer')
+                                    ? null
+                                    : puzzleWidth,
+                              )),
                           const Expanded(flex: 2, child: GameStatus()),
-                          const Expanded(
-                            flex: 2,
-                            child: GameButtonControls(),
-                          ),
+                          const Flexible(flex: 2, child: GameButtonControls()),
                         ],
                       ),
                     ),
                   ),
                   Padding(
                     padding: EdgeInsets.only(
-                      right: MediaQuery.of(context).size.width * .025,
+                      right: MediaQuery.of(context).size.width * .05,
                       left: MediaQuery.of(context).size.width * .01,
                     ),
                     child: GameBoard(

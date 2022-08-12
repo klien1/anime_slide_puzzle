@@ -79,10 +79,7 @@ class _WelcomeState extends State<Welcome> {
         BackgroundImage(imagePath: welcomeScreenImagePath),
         Positioned(
           top: 30,
-          left: 0,
-          child: SizedBox(
-            child: AnimeSlidePuzzleTitle(),
-          ),
+          child: AnimeSlidePuzzleTitle(),
         ),
         Positioned(top: 250, child: WelcomeScreenCircleTransition())
       ],

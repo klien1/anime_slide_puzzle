@@ -50,7 +50,7 @@ class AutoSolver {
     for (int tileNum in solutionOrder) {
       // if user reset the board, then no longer looking for solution
       if (!puzzleBoard.isLookingForSolution) {
-        puzzleBoard.resetNumberOfMoves();
+        puzzleBoard.resetBoard();
         break;
       }
 
@@ -320,7 +320,6 @@ class AutoSolver {
       );
       currentPosition =
           currentPosition.calculateAdjacent(direction: correctDirection);
-      // await Future.delayed(aiTileSpeed);
     }
   }
 

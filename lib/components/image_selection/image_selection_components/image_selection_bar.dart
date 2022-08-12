@@ -33,13 +33,11 @@ class _ImageSelectionBarState extends State<ImageSelectionBar> {
 
   @override
   Widget build(BuildContext context) {
-    // final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     AnimeThemeList animeThemeList = context.watch<AnimeThemeList>();
 
     return Container(
       margin: EdgeInsets.symmetric(
-        // horizontal: screenWidth * .05,
         horizontal: 40,
         vertical: screenHeight * .05,
       ),
@@ -55,6 +53,7 @@ class _ImageSelectionBarState extends State<ImageSelectionBar> {
         children: [
           for (int i = 0; i < animeThemeList.listLength; ++i)
             Expanded(
+              flex: 3,
               child: GestureDetector(
                 onTap: (i == animeThemeList.curIndex)
                     ? null
@@ -67,7 +66,10 @@ class _ImageSelectionBarState extends State<ImageSelectionBar> {
                 ),
               ),
             ),
-          const SelectBoardSize(minNumRowsOrColumns: 3, maxNumRowsOrColumns: 5),
+          const SizedBox(height: 10),
+          const Expanded(
+              child: SelectBoardSize(
+                  minNumRowsOrColumns: 3, maxNumRowsOrColumns: 5)),
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 10),
             child: const CircleTransitionButton(

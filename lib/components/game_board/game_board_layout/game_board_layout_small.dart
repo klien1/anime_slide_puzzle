@@ -1,5 +1,5 @@
 import 'package:anime_slide_puzzle/components/background_image.dart';
-import 'package:anime_slide_puzzle/components/custom_back_button.dart';
+import 'package:anime_slide_puzzle/components/game_board/game_board_components/custom_back_button.dart';
 import 'package:anime_slide_puzzle/components/game_board/game_board_components/game_board.dart';
 import 'package:anime_slide_puzzle/components/game_board/game_board_components/game_button_controls.dart';
 import 'package:anime_slide_puzzle/components/game_board/game_board_components/game_status.dart';
@@ -36,8 +36,8 @@ class GameBoardLayoutSmall extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 const SizedBox(height: 50),
-                Expanded(child: SizedHeroImage(animeTheme: animeTheme)),
-                const Expanded(child: GameStatus()),
+                Flexible(child: SizedHeroImage(animeTheme: animeTheme)),
+                const Flexible(child: GameStatus()),
                 GameBoard(
                   width: puzzleWidth,
                   height: puzzleHeight,

@@ -4,23 +4,27 @@ import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
 class GameTimerText extends StatelessWidget {
-  const GameTimerText({Key? key}) : super(key: key);
+  const GameTimerText({Key? key, this.size}) : super(key: key);
+
+  final double? size;
 
   @override
   Widget build(BuildContext context) {
     GameTimer gameTimer = context.watch<GameTimer>();
     PuzzleBoard puzzleBoard = context.watch<PuzzleBoard>();
     if (puzzleBoard.isPuzzleCompleted) gameTimer.endTimer();
-    // return Text('${gameTimer.hours}:${gameTimer.minutes}:${gameTimer.seconds}');
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Padding(
-          padding: EdgeInsets.only(bottom: 5),
-          child: Icon(Icons.alarm_rounded),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 5),
+          child: Icon(
+            Icons.alarm_rounded,
+            size: size,
+          ),
         ),
         const SizedBox(width: 5),
-        Text(gameTimer.totalTime),
+        Text(gameTimer.totalTime, style: TextStyle(fontSize: size)),
       ],
     );
   }

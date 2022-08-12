@@ -14,19 +14,13 @@ class AnimeSlidePuzzleTitle extends StatelessWidget {
             style: titleStyle,
           ),
         ),
-        Padding(
-          padding: EdgeInsets.only(left: 60),
-          child: Text(
-            'Slide',
-            style: titleStyle,
-          ),
+        Text(
+          'Slide',
+          style: titleStyle,
         ),
-        Padding(
-          padding: EdgeInsets.only(left: 150),
-          child: Text(
-            'Puzzle',
-            style: titleStyle,
-          ),
+        Text(
+          'Puzzle',
+          style: titleStyle,
         ),
       ],
     );

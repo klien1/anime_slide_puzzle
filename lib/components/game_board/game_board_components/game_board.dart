@@ -1,5 +1,5 @@
 import 'package:anime_slide_puzzle/components/game_board/game_board_components/game_board_tile.dart';
-import 'package:anime_slide_puzzle/models/game_timer.dart';
+import 'package:anime_slide_puzzle/models/number_puzzle_tiles.dart';
 import 'package:anime_slide_puzzle/models/puzzle_board.dart';
 import 'package:anime_slide_puzzle/models/puzzle_tile.dart';
 import 'package:anime_slide_puzzle/screens/congratulations.dart';
@@ -25,8 +25,7 @@ class GameBoard extends StatefulWidget {
 class _GameBoardState extends State<GameBoard> {
   @override
   Widget build(BuildContext context) {
-    List<List<PuzzleTile>> puzzleMatrix =
-        context.read<PuzzleBoard>().puzzleBoard2d;
+    context.watch<NumberPuzzleTiles>();
 
     return Selector<PuzzleBoard, bool>(
       selector: (_, puzzleBoard) => puzzleBoard.isPuzzleCompleted,
@@ -47,21 +46,30 @@ class _GameBoardState extends State<GameBoard> {
               border: Border.all(color: Colors.black)),
           width: widget.width + widget.tilePadding * 2,
           height: widget.height + widget.tilePadding * 2,
-          child: Stack(children: [
-            for (int row = 0; row < puzzleMatrix.length; ++row)
-              for (int col = 0; col < puzzleMatrix[row].length; ++col)
-                Selector<PuzzleBoard, PuzzleTile>(
-                  selector: (_, board) => board.puzzleBoard2d[row][col],
-                  builder: (context, tile, child) {
-                    return GameBoardTile(
-                      tile: tile,
-                      width: widget.width,
-                      height: widget.height,
-                      tilePadding: widget.tilePadding,
-                    );
-                  },
-                )
-          ]),
+          child: Consumer<NumberPuzzleTiles>(
+            builder: (_, value, child) {
+              // prevent out of range index error when puzzle tile changes
+              List<List<PuzzleTile>> puzzleMatrix =
+                  context.read<PuzzleBoard>().puzzleBoard2d;
+              return Stack(
+                children: [
+                  for (int row = 0; row < puzzleMatrix.length; ++row)
+                    for (int col = 0; col < puzzleMatrix[row].length; ++col)
+                      Selector<PuzzleBoard, PuzzleTile>(
+                        selector: (_, board) => board.puzzleBoard2d[row][col],
+                        builder: (context, tile, child) {
+                          return GameBoardTile(
+                            tile: tile,
+                            width: widget.width,
+                            height: widget.height,
+                            tilePadding: widget.tilePadding,
+                          );
+                        },
+                      )
+                ],
+              );
+            },
+          ),
         );
       },
     );

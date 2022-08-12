@@ -60,13 +60,16 @@ class PuzzleBoard extends ChangeNotifier {
   }
 
   void resetBoard() {
-    _puzzleTiles2d = _generatePuzzleMatrix(numRowsOrColumns);
-    _puzzleTileNumberMatrix = _generatePuzzleNumberMatrix(numRowsOrColumns);
-    _solutionInProgress = false;
-    _gameInProgress = false;
-    _isPuzzleCompleted = false;
-    _currentTileOpacity = 0;
-    _numberOfMoves = 0;
+    if (_solutionInProgress) {
+      _solutionInProgress = false;
+    } else {
+      _puzzleTiles2d = _generatePuzzleMatrix(numRowsOrColumns);
+      _puzzleTileNumberMatrix = _generatePuzzleNumberMatrix(numRowsOrColumns);
+      _gameInProgress = false;
+      _isPuzzleCompleted = false;
+      _currentTileOpacity = 0;
+      _numberOfMoves = 0;
+    }
   }
 
   List<List<PuzzleTile>> _generatePuzzleMatrix(int numRowsOrCols) {
@@ -159,11 +162,6 @@ class PuzzleBoard extends ChangeNotifier {
         _puzzleCompleted();
       }
 
-      // edge case - auto solver triggered notify listeners as well
-      // complete screen gets triggered twice.
-
-      // puzzle is complete
-      // solution in progress
       notifyListeners();
     }
   }
@@ -199,12 +197,8 @@ class PuzzleBoard extends ChangeNotifier {
             curBlankPos.calculateAdjacent(direction: Direction.top);
   }
 
-  void resetNumberOfMoves() {
-    _numberOfMoves = 0;
-  }
-
   void startGame() {
-    resetNumberOfMoves();
+    _numberOfMoves = 0;
     _gameInProgress = true;
     _isPuzzleCompleted = false;
     _shuffleBoard();

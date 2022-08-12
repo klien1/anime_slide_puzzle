@@ -10,21 +10,46 @@ class GameScreen extends StatelessWidget {
   static String id = 'game_screen_id';
   @override
   Widget build(BuildContext context) {
-    return const ResponsiveLayout(
-        mobile: GameBoardLayoutSmall(
-          puzzleWidth: 350,
-          puzzleHeight: 350,
-          puzzlePadding: 5,
-        ),
-        tablet: GameBoardLayoutMedium(
-          puzzleWidth: 300,
-          puzzleHeight: 300,
-          puzzlePadding: 5,
-        ),
-        web: GameBoardLayoutMedium(
-          puzzleWidth: 300,
-          puzzleHeight: 300,
-          puzzlePadding: 5,
-        ));
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = MediaQuery.of(context).size.height;
+
+    const double smallScreenPercentage = 0.75;
+    const double mediumScreenPercentage = 0.6;
+    const double largeScreenPercentage = 0.8;
+
+    return ResponsiveLayout(
+        mobile: (screenHeight < screenWidth)
+            ? GameBoardLayoutSmall(
+                puzzleWidth: screenHeight * smallScreenPercentage,
+                puzzleHeight: screenHeight * smallScreenPercentage,
+                puzzlePadding: 5,
+              )
+            : GameBoardLayoutSmall(
+                puzzleWidth: screenWidth * smallScreenPercentage,
+                puzzleHeight: screenWidth * smallScreenPercentage,
+                puzzlePadding: 5,
+              ),
+        tablet: (screenHeight < screenWidth)
+            ? GameBoardLayoutMedium(
+                puzzleWidth: screenHeight * mediumScreenPercentage,
+                puzzleHeight: screenHeight * mediumScreenPercentage,
+                puzzlePadding: 5,
+              )
+            : GameBoardLayoutMedium(
+                puzzleWidth: screenWidth * mediumScreenPercentage,
+                puzzleHeight: screenWidth * mediumScreenPercentage,
+                puzzlePadding: 5,
+              ),
+        web: (screenHeight < screenWidth)
+            ? GameBoardLayoutLarge(
+                puzzleWidth: screenHeight * largeScreenPercentage,
+                puzzleHeight: screenHeight * largeScreenPercentage,
+                puzzlePadding: 5,
+              )
+            : GameBoardLayoutLarge(
+                puzzleWidth: screenWidth * largeScreenPercentage,
+                puzzleHeight: screenWidth * largeScreenPercentage,
+                puzzlePadding: 5,
+              ));
   }
 }

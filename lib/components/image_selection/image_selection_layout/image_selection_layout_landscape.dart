@@ -22,10 +22,18 @@ class ImageSelectionLayoutLandscape extends StatelessWidget {
             ),
           ),
           SafeArea(
-            child: TextButton(
-              style: TextButton.styleFrom(shape: const CircleBorder()),
-              onPressed: () => Navigator.pop(context),
-              child: const Icon(Icons.arrow_back_ios_new),
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: TextButton.icon(
+                style: TextButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    backgroundColor:
+                        animeThemeList.curAnimeTheme.elevatedButtonPrimary),
+                onPressed: () => Navigator.pop(context),
+                icon: const Icon(Icons.arrow_back_ios_new),
+                label: const Text('Back'),
+              ),
             ),
           ),
           const Positioned(

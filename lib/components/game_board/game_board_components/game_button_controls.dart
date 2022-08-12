@@ -87,10 +87,20 @@ class GameButtonControls extends StatelessWidget {
   Widget build(BuildContext context) {
     AnimeTheme animeTheme = context.read<AnimeThemeList>().curAnimeTheme;
 
-    return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: (animeTheme.name == 'jujutsu_kaisen')
-            ? generateElevatedButtonControls(context)
-            : generateTextButtonControls(context));
+    return LayoutBuilder(builder: (context, constraints) {
+      return (constraints.maxWidth < 330)
+          ? Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: (animeTheme.name == 'jujutsu_kaisen')
+                  ? generateElevatedButtonControls(context)
+                  : generateTextButtonControls(context),
+            )
+          : Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: (animeTheme.name == 'jujutsu_kaisen')
+                  ? generateElevatedButtonControls(context)
+                  : generateTextButtonControls(context),
+            );
+    });
   }
 }
