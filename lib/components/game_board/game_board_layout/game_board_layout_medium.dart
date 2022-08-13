@@ -89,56 +89,5 @@ class GameBoardLayoutMedium extends StatelessWidget {
         ],
       ),
     );
-    // return Scaffold(
-    //   body: Stack(
-    //     children: [
-    //       BackgroundImage(imagePath: animeTheme.puzzleBackgroundImagePath),
-    //       const SafeArea(
-    //         child: Align(
-    //           alignment: Alignment.topLeft,
-    //           child: CustomBackButton(),
-    //         ),
-    //       ),
-    //       SafeArea(
-    //         child: Padding(
-    //           padding: const EdgeInsets.symmetric(horizontal: 10),
-    //           child: Row(
-    //             mainAxisAlignment: MainAxisAlignment.spaceAround,
-    //             children: [
-    //               Flexible(
-    //                 child: Column(
-    //                   mainAxisAlignment: MainAxisAlignment.center,
-    //                   children: [
-    //                     Flexible(
-    //                       child: SizedHeroImage(
-    //                         animeTheme: animeTheme,
-    //                         width: (animeTheme.name == 'demon_slayer')
-    //                             ? MediaQuery.of(context).size.height * .3
-    //                             : MediaQuery.of(context).size.width * .3,
-    //                       ),
-    //                     ),
-    //                     const Flexible(child: GameStatus()),
-    //                   ],
-    //                 ),
-    //               ),
-    //               GameBoard(
-    //                 width: puzzleWidth,
-    //                 height: puzzleHeight,
-    //                 tilePadding: puzzlePadding,
-    //               ),
-    //               Column(
-    //                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-    //                 children: const [
-    //                   GameBoardReferenceImage(height: 100, width: 100),
-    //                   GameButtonControls(useColumn: true),
-    //                 ],
-    //               ),
-    //             ],
-    //           ),
-    //         ),
-    //       ),
-    //     ],
-    //   ),
-    // );
   }
 }
