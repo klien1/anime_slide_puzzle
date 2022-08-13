@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
 
+// source: https://wall.alphacoders.com/big.php?i=1143485
+// image: AssetImage('images/jujutsu_kaisen_background2.jpg'),
+// image: AssetImage('images/demon_slayer_background.jpg'),
+// source: https://wallpapersden.com/demon-slayer-4k-gaming-wallpaper/
+// image: AssetImage('images/spy-x-family-background2.jpg'),
+// source: https://wall.alphacoders.com/big.php?i=1227567
+
 const Map<String, Map<String, Object>> animeImageList = {
   'spy_x_family': {
     'logo': 'images/Spy_×_Family_logo.png',
@@ -45,15 +52,7 @@ const TextStyle kAnimeTitleStyle = TextStyle(
 
 const Color kWelcomeScreenButtonBackgroundColor = Color(0xFF1b1d29);
 const Color kWelcomeScreenButtonTextColor = Colors.white;
-
 const Color kWelcomeScreenCallToActionButtonBackgroundColor = Color(0xFFc56b74);
-
-// source: https://wall.alphacoders.com/big.php?i=1143485
-// image: AssetImage('images/jujutsu_kaisen_background2.jpg'),
-// image: AssetImage('images/demon_slayer_background.jpg'),
-// source: https://wallpapersden.com/demon-slayer-4k-gaming-wallpaper/
-// image: AssetImage('images/spy-x-family-background2.jpg'),
-// source: https://wall.alphacoders.com/big.php?i=1227567
 
 const Duration aiTileSpeed = Duration(milliseconds: 200);
 const Duration defaultTileSpeed = Duration(milliseconds: 200);
@@ -62,7 +61,7 @@ const Duration defaultTileSpeed = Duration(milliseconds: 200);
 const double small = 680;
 
 // Max width for a medium layout.
-const double medium = 1200;
+const double medium = 1250;
 
 // Max width for a large layout.
 const double large = 1440;

@@ -1,8 +1,10 @@
 import 'package:anime_slide_puzzle/components/background_image.dart';
 import 'package:anime_slide_puzzle/components/game_board/game_board_components/custom_back_button.dart';
 import 'package:anime_slide_puzzle/components/game_board/game_board_components/game_board.dart';
+import 'package:anime_slide_puzzle/components/game_board/game_board_components/game_board_reference_image.dart';
 import 'package:anime_slide_puzzle/components/game_board/game_board_components/game_button_controls.dart';
-import 'package:anime_slide_puzzle/components/game_board/game_board_components/game_status.dart';
+import 'package:anime_slide_puzzle/components/game_board/game_board_components/game_timer_text.dart';
+import 'package:anime_slide_puzzle/components/game_board/game_board_components/number_of_moves.dart';
 import 'package:anime_slide_puzzle/components/game_board/game_board_components/sized_hero_image.dart';
 import 'package:anime_slide_puzzle/models/anime_theme.dart';
 import 'package:anime_slide_puzzle/models/anime_theme_list.dart';
@@ -35,17 +37,41 @@ class GameBoardLayoutSmall extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                const SizedBox(height: 50),
-                Flexible(child: SizedHeroImage(animeTheme: animeTheme)),
-                const Flexible(child: GameStatus()),
+                const SizedBox(height: 30),
+                Flexible(
+                  child: SizedHeroImage(
+                    animeTheme: animeTheme,
+                    width: (animeTheme.name == 'spy_x_family')
+                        ? MediaQuery.of(context).size.width * .8
+                        : null,
+                    height: (animeTheme.name == 'demon_slayer')
+                        ? MediaQuery.of(context).size.height * .3
+                        : null,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Column(
+                      children: const [
+                        GameTimerText(),
+                        SizedBox(height: 10),
+                        NumberOfMoves(),
+                      ],
+                    ),
+                    const GameBoardReferenceImage(height: 100, width: 100)
+                  ],
+                ),
+                const SizedBox(height: 20),
                 GameBoard(
                   width: puzzleWidth,
                   height: puzzleHeight,
                   tilePadding: puzzlePadding,
                 ),
-                const Expanded(
-                  child: GameButtonControls(),
-                )
+                const SizedBox(height: 20),
+                const GameButtonControls(),
+                const SizedBox(height: 40),
               ],
             ),
           ),

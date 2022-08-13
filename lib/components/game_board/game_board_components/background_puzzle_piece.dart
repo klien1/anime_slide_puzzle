@@ -1,4 +1,3 @@
-// import 'package:anime_slide_puzzle/models/puzzle_board.dart';
 import 'package:anime_slide_puzzle/models/puzzle_board.dart';
 import 'package:flutter/material.dart';
 import 'package:anime_slide_puzzle/models/puzzle_tile.dart';

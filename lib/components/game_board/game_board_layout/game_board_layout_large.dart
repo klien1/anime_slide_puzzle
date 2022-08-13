@@ -1,8 +1,10 @@
 import 'package:anime_slide_puzzle/components/background_image.dart';
 import 'package:anime_slide_puzzle/components/game_board/game_board_components/custom_back_button.dart';
 import 'package:anime_slide_puzzle/components/game_board/game_board_components/game_board.dart';
+import 'package:anime_slide_puzzle/components/game_board/game_board_components/game_board_reference_image.dart';
 import 'package:anime_slide_puzzle/components/game_board/game_board_components/game_button_controls.dart';
-import 'package:anime_slide_puzzle/components/game_board/game_board_components/game_status.dart';
+import 'package:anime_slide_puzzle/components/game_board/game_board_components/game_timer_text.dart';
+import 'package:anime_slide_puzzle/components/game_board/game_board_components/number_of_moves.dart';
 import 'package:anime_slide_puzzle/components/game_board/game_board_components/sized_hero_image.dart';
 import 'package:anime_slide_puzzle/models/anime_theme.dart';
 import 'package:anime_slide_puzzle/models/anime_theme_list.dart';
@@ -40,38 +42,47 @@ class GameBoardLayoutLarge extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Flexible(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 20),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          const SizedBox(height: 20),
-                          Flexible(
-                              flex: 2,
-                              child: SizedHeroImage(animeTheme: animeTheme)),
-                          const Expanded(
-                              flex: 2,
-                              child: GameStatus(
-                                size: 40,
-                              )),
-                          const Expanded(flex: 2, child: GameButtonControls()),
-                        ],
-                      ),
-                    ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedHeroImage(
+                          animeTheme: animeTheme,
+                          height: (animeTheme.name == 'demon_slayer')
+                              ? MediaQuery.of(context).size.height * .3
+                              : null,
+                          width: (animeTheme.name == 'demon_slayer')
+                              ? null
+                              : MediaQuery.of(context).size.width * .2),
+                      const SizedBox(height: 100),
+                      const GameTimerText(),
+                      const SizedBox(height: 20),
+                      const NumberOfMoves(),
+                    ],
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                      right: MediaQuery.of(context).size.width * .05,
-                      left: MediaQuery.of(context).size.width * .01,
-                    ),
-                    child: GameBoard(
-                      width: puzzleWidth,
-                      height: puzzleHeight,
-                      tilePadding: puzzlePadding,
-                    ),
+                  GameBoard(
+                    width: puzzleWidth,
+                    height: puzzleHeight,
+                    tilePadding: puzzlePadding,
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Flexible(
+                        flex: 2,
+                        child: GameBoardReferenceImage(
+                          width: 200,
+                          height: 200,
+                        ),
+                      ),
+                      Flexible(
+                        child: GameButtonControls(
+                          spaceBetween: 30,
+                          useColumn: true,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),

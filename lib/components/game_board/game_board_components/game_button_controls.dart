@@ -6,16 +6,17 @@ import 'package:provider/provider.dart';
 import 'package:anime_slide_puzzle/models/puzzle_board.dart';
 
 class GameButtonControls extends StatelessWidget {
-  const GameButtonControls({Key? key, this.spaceBetween = 10})
+  const GameButtonControls(
+      {Key? key, this.spaceBetween = 10, this.useColumn = false})
       : super(key: key);
 
   final double spaceBetween;
+  final bool useColumn;
 
   List<Widget> _generateTextButtonControls(BuildContext context) {
     PuzzleBoard puzzleBoard = context.watch<PuzzleBoard>();
 
     return [
-      SizedBox(height: spaceBetween),
       TextButton(
         onPressed: (puzzleBoard.isLookingForSolution)
             ? null
@@ -51,7 +52,6 @@ class GameButtonControls extends StatelessWidget {
     PuzzleBoard puzzleBoard = context.watch<PuzzleBoard>();
 
     return [
-      SizedBox(height: spaceBetween),
       ElevatedButton(
         onPressed: (puzzleBoard.isLookingForSolution)
             ? null
@@ -88,7 +88,7 @@ class GameButtonControls extends StatelessWidget {
     AnimeTheme animeTheme = context.read<AnimeThemeList>().curAnimeTheme;
 
     return LayoutBuilder(builder: (context, constraints) {
-      return (constraints.maxWidth < 330)
+      return (useColumn || constraints.maxWidth < 340)
           ? Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: (animeTheme.name == 'jujutsu_kaisen')

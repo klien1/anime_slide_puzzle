@@ -25,16 +25,25 @@ class _ImageSelectionBarState extends State<ImageSelectionBar> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    // precache image to prevent white screen / scaffold background color
-    precacheImage(
-      AssetImage(context.read<AnimeThemeList>().curPuzzleBackground!),
-      context,
-    );
+    _preloadImages();
+  }
 
-    precacheImage(
-      AssetImage(context.read<AnimeThemeList>().curPuzzle),
-      context,
-    );
+  void _preloadImages() {
+    if (!mounted) return;
+    final AnimeThemeList animeThemeList = context.read<AnimeThemeList>();
+    for (int i = 0; i < animeThemeList.listLength; ++i) {
+      if (!mounted) break;
+      precacheImage(
+        AssetImage(animeThemeList.getAnimeThemeAtIndex(i).backgroundImagePath),
+        context,
+      );
+      if (!mounted) break;
+      precacheImage(
+        AssetImage(
+            animeThemeList.getAnimeThemeAtIndex(i).puzzleBackgroundImagePath!),
+        context,
+      );
+    }
   }
 
   @override
@@ -76,6 +85,7 @@ class _ImageSelectionBarState extends State<ImageSelectionBar> {
           const Expanded(
               child: SelectBoardSize(
                   minNumRowsOrColumns: 3, maxNumRowsOrColumns: 5)),
+          const SizedBox(height: 10),
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 10),
             child: const CircleTransitionButton(
