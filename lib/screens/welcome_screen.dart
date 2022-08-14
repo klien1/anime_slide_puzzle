@@ -162,7 +162,8 @@ class _WelcomeState extends State<Welcome> {
       child: (isLoading)
           ? const LoadingScreen()
           : Scaffold(
-              backgroundColor: Colors.white,
+              // backgroundColor: Colors.white,
+              backgroundColor: const Color(0xFFc2c2c2),
               body: SafeArea(
                 child: ResponsiveLayout(
                   mobile: _portraitLayout(),

@@ -42,7 +42,8 @@ const Map<String, Map<String, Object>> animeImageList = {
   },
 };
 
-const String welcomeScreenImagePath = 'images/chibis.jpg';
+// const String welcomeScreenImagePath = 'images/chibis.jpg';
+const String welcomeScreenImagePath = 'images/chibis_grey.jpg';
 
 const TextStyle kAnimeTitleStyle = TextStyle(
   fontSize: 50,
