@@ -1,7 +1,7 @@
 import 'package:anime_slide_puzzle/models/coordinate.dart';
 import 'package:anime_slide_puzzle/utils/puzzle_board_helper.dart';
 
-int getTotalManhattanDistance({
+int calcTotalManhattanDistance({
   required List<int> boardState,
   required int numRowsOrColumns,
 }) {
@@ -10,17 +10,14 @@ int getTotalManhattanDistance({
 
   for (int row = 0; row < numRowsOrColumns; ++row) {
     for (int col = 0; col < numRowsOrColumns; ++col) {
-      final curTileNum = boardState[row * numRowsOrColumns + col];
+      final currentTileNumber = boardState[row * numRowsOrColumns + col];
       // skip blank tile
-      if (curTileNum == blankTileNum) continue;
+      if (currentTileNumber == blankTileNum) continue;
 
-      Coordinate curCoord = Coordinate(
-        row: row,
-        col: col,
-      );
+      Coordinate curCoord = Coordinate(row: row, col: col);
 
       totalManhattanValue += findManhattanDistanceWithTileNumber(
-        tileNum: curTileNum,
+        tileNum: currentTileNumber,
         numRowsOrColumns: numRowsOrColumns,
         currentCoordinate: curCoord,
       );
@@ -34,23 +31,15 @@ int findManhattanDistanceWithTileNumber({
   required int numRowsOrColumns,
   required Coordinate currentCoordinate,
 }) {
-  Coordinate correctCoord = convert1dArrayCoordTo2dArrayCoord(
+  Coordinate correctCoord = findCorrectTileCoordinate(
     index: tileNum,
     numRowOrColCount: numRowsOrColumns,
   );
 
-  Coordinate curCoord = Coordinate(
-    row: currentCoordinate.row,
-    col: currentCoordinate.col,
-  );
-
-  return getManhattanDistance(first: correctCoord, second: curCoord);
+  return calcManhattanDist(first: correctCoord, second: currentCoordinate);
 }
 
-int getManhattanDistance({
-  required Coordinate first,
-  required Coordinate second,
-}) {
+int calcManhattanDist({required Coordinate first, required Coordinate second}) {
   return (first.col - second.col).abs() + (first.row - second.row).abs();
 }
 
@@ -70,18 +59,10 @@ bool swap1dMatrix({
 }) {
   if (isOutOfBounds1d(length: numRowOrColumn, curPoint: first) ||
       isOutOfBounds1d(length: numRowOrColumn, curPoint: second)) return false;
-  // both points are within boundary
 
-  int firstPoint = convert2dArrayCoordTo1dArrayCoord(
-    row: first.row,
-    col: first.col,
-    numRowOrColCount: numRowOrColumn,
-  );
-  int secondPoint = convert2dArrayCoordTo1dArrayCoord(
-    row: second.row,
-    col: second.col,
-    numRowOrColCount: numRowOrColumn,
-  );
+  // both points are within boundary
+  int firstPoint = first.getOneDimensionalArrayIndex(numRowOrColumn);
+  int secondPoint = second.getOneDimensionalArrayIndex(numRowOrColumn);
 
   int temp = matrix1d[firstPoint];
   matrix1d[firstPoint] = matrix1d[secondPoint];

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:anime_slide_puzzle/models/puzzle_board.dart';
 
-class GameButtonControls extends StatelessWidget {
+class GameButtonControls extends StatefulWidget {
   const GameButtonControls(
       {Key? key, this.spaceBetween = 10, this.useColumn = false})
       : super(key: key);
@@ -13,31 +13,31 @@ class GameButtonControls extends StatelessWidget {
   final double spaceBetween;
   final bool useColumn;
 
+  @override
+  State<GameButtonControls> createState() => _GameButtonControlsState();
+}
+
+class _GameButtonControlsState extends State<GameButtonControls> {
   List<Widget> _generateTextButtonControls(BuildContext context) {
     PuzzleBoard puzzleBoard = context.watch<PuzzleBoard>();
 
     return [
       TextButton(
-        onPressed: (puzzleBoard.isLookingForSolution)
+        onPressed: (puzzleBoard.isLookingForSolution || puzzleBoard.isShuffling)
             ? null
-            : () {
-                context.read<GameTimer>()
-                  ..resetTimer()
-                  ..startTimer();
-                puzzleBoard.startGame();
-              },
+            : () => shuffleBoard(),
         child: (puzzleBoard.isGameInProgress)
             ? const Text('Restart Game')
             : const Text('Start Game'),
       ),
-      SizedBox(height: spaceBetween, width: spaceBetween),
+      SizedBox(height: widget.spaceBetween, width: widget.spaceBetween),
       TextButton(
-        onPressed: (puzzleBoard.isLookingForSolution)
+        onPressed: (puzzleBoard.isLookingForSolution || puzzleBoard.isShuffling)
             ? null
             : () => puzzleBoard.autoSolve(),
         child: const Text('Auto-Solve'),
       ),
-      SizedBox(height: spaceBetween, width: spaceBetween),
+      SizedBox(height: widget.spaceBetween, width: widget.spaceBetween),
       if (!context.read<AnimeThemeList>().isLoadingImage)
         TextButton(
           onPressed: () => puzzleBoard.toggleTileNumberVisibility(),
@@ -48,31 +48,37 @@ class GameButtonControls extends StatelessWidget {
     ];
   }
 
+  Future<void> shuffleBoard() async {
+    if (!mounted) return;
+    context.read<GameTimer>().resetTimer();
+
+    PuzzleBoard puzzleBoard = context.read<PuzzleBoard>();
+    await puzzleBoard.startGame(5);
+
+    if (!mounted) return;
+    context.read<GameTimer>().startTimer();
+  }
+
   List<Widget> _generateElevatedButtonControls(BuildContext context) {
     PuzzleBoard puzzleBoard = context.watch<PuzzleBoard>();
 
     return [
       ElevatedButton(
-        onPressed: (puzzleBoard.isLookingForSolution)
+        onPressed: (puzzleBoard.isLookingForSolution || puzzleBoard.isShuffling)
             ? null
-            : () {
-                context.read<GameTimer>()
-                  ..resetTimer()
-                  ..startTimer();
-                puzzleBoard.startGame();
-              },
+            : () => shuffleBoard(),
         child: (puzzleBoard.isGameInProgress)
             ? const Text('Restart Game')
             : const Text('Start Game'),
       ),
-      SizedBox(height: spaceBetween, width: spaceBetween),
+      SizedBox(height: widget.spaceBetween, width: widget.spaceBetween),
       ElevatedButton(
-        onPressed: (puzzleBoard.isLookingForSolution)
+        onPressed: (puzzleBoard.isLookingForSolution || puzzleBoard.isShuffling)
             ? null
             : () => puzzleBoard.autoSolve(),
         child: const Text('Auto-Solve'),
       ),
-      SizedBox(height: spaceBetween, width: spaceBetween),
+      SizedBox(height: widget.spaceBetween, width: widget.spaceBetween),
       if (!context.read<AnimeThemeList>().isLoadingImage)
         ElevatedButton(
           onPressed: () => puzzleBoard.toggleTileNumberVisibility(),
@@ -88,7 +94,7 @@ class GameButtonControls extends StatelessWidget {
     AnimeTheme animeTheme = context.read<AnimeThemeList>().curAnimeTheme;
 
     return LayoutBuilder(builder: (context, constraints) {
-      return (useColumn || constraints.maxWidth < 340)
+      return (widget.useColumn || constraints.maxWidth < 340)
           ? Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: (animeTheme.name == 'jujutsu_kaisen')

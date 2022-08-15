@@ -11,8 +11,9 @@ void main() {
       [12, 14, 13, 15]
     ];
 
-    bool isSolvable =
-        PuzzleBoard.isPuzzleIsSolvable(matrix: matrix, blankTileRow: 3);
+    PuzzleBoard puzzleBoard = PuzzleBoard.intBoard(board: matrix);
+
+    bool isSolvable = puzzleBoard.isPuzzleIsSolvable();
     expect(isSolvable, false);
   });
   test('isPuzzleIsSolvable should return true', () {
@@ -23,8 +24,9 @@ void main() {
       [12, 13, 14, 15]
     ];
 
-    bool isSolvable =
-        PuzzleBoard.isPuzzleIsSolvable(matrix: matrix, blankTileRow: 3);
+    PuzzleBoard puzzleBoard = PuzzleBoard.intBoard(board: matrix);
+
+    bool isSolvable = puzzleBoard.isPuzzleIsSolvable();
     expect(isSolvable, true);
   });
 
@@ -38,8 +40,11 @@ void main() {
 
     const Coordinate first = Coordinate(row: 1, col: 1);
     const Coordinate second = Coordinate(row: 3, col: 3);
-    bool succesfullySwapped = PuzzleBoard.swapTileNumbers(
-        matrix: matrix, first: first, second: second);
+
+    PuzzleBoard puzzleBoard = PuzzleBoard.intBoard(board: matrix);
+
+    bool succesfullySwapped =
+        puzzleBoard.swapPosMatrix(first: first, second: second);
 
     test('position (1,1) and (3,3) should be swapped', () {
       expect(matrix, [
@@ -63,10 +68,11 @@ void main() {
       [12, 14, 13, 15]
     ];
 
+    PuzzleBoard puzzleBoard = PuzzleBoard.intBoard(board: matrix);
+
     const Coordinate first = Coordinate(row: -1, col: 1);
     const Coordinate second = Coordinate(row: 3, col: 3);
-    bool failedToSwap = PuzzleBoard.swapTileNumbers(
-        matrix: matrix, first: first, second: second);
+    bool failedToSwap = puzzleBoard.swapPosMatrix(first: first, second: second);
 
     test('position (-1,1) and (3,3) should not be swapped', () {
       expect(matrix, [

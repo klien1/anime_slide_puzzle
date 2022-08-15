@@ -24,7 +24,7 @@ class IDAStarPuzzleSolver {
         _numRowsOrColumns = numRowsOrColumns,
         _initialBlankTileCoordinate = blankTileCoordinate {
     _goalState = generateGoalState(numRowsOrColumns: numRowsOrColumns);
-    _initialManhattanDistance = getTotalManhattanDistance(
+    _initialManhattanDistance = calcTotalManhattanDistance(
       boardState: _initialBoardState,
       numRowsOrColumns: numRowsOrColumns,
     );
@@ -38,8 +38,8 @@ class IDAStarPuzzleSolver {
   ];
 
   Queue<Coordinate> solvePuzzle() {
-    Queue<Coordinate> moveList = Queue();
     // already checked to see if puzzle is solvable when generating the board
+    Queue<Coordinate> moveList = Queue();
 
     // initialize values for solution
     IDAStarNode curNode = IDAStarNode(
@@ -81,8 +81,7 @@ class IDAStarPuzzleSolver {
       Coordinate blankTilePos = curNode.blankTileCoordiante;
       IDAStarNode? adjNode = _addNextBoardState(
         curNode: curNode,
-        adjacentTileCoordinate:
-            blankTilePos.calculateAdjacent(direction: direction),
+        adjTileCoord: blankTilePos.calculateAdjacent(direction: direction),
       );
 
       // check if we have visited puzzle state
@@ -102,33 +101,30 @@ class IDAStarPuzzleSolver {
 
   IDAStarNode? _addNextBoardState({
     required IDAStarNode curNode,
-    required Coordinate adjacentTileCoordinate,
+    required Coordinate adjTileCoord,
   }) {
     // check if coordinates are within boundary
-    if (isOutOfBounds1d(
-      length: _numRowsOrColumns,
-      curPoint: adjacentTileCoordinate,
-    )) return null;
+    if (isOutOfBounds1d(length: _numRowsOrColumns, curPoint: adjTileCoord)) {
+      return null;
+    }
 
     // copy board
-    final List<int> newBoardState =
-        List.of(curNode.boardState, growable: false);
+    final List<int> newBoard = List.of(curNode.boardState, growable: false);
 
-    final tileNum = newBoardState[
-        adjacentTileCoordinate.row * _numRowsOrColumns +
-            adjacentTileCoordinate.col];
+    final tileNum =
+        newBoard[adjTileCoord.getOneDimensionalArrayIndex(_numRowsOrColumns)];
 
     final int prevManhattanValue = findManhattanDistanceWithTileNumber(
       tileNum: tileNum,
       numRowsOrColumns: _numRowsOrColumns,
-      currentCoordinate: adjacentTileCoordinate,
+      currentCoordinate: adjTileCoord,
     );
 
     final bool didSwapPosition = swap1dMatrix(
-      matrix1d: newBoardState,
+      matrix1d: newBoard,
       numRowOrColumn: _numRowsOrColumns,
       first: curNode.blankTileCoordiante,
-      second: adjacentTileCoordinate,
+      second: adjTileCoord,
     );
     if (!didSwapPosition) return null;
 
@@ -147,8 +143,8 @@ class IDAStarPuzzleSolver {
     final double fScore = newManhattanDistance + curNode.numMoves + 1;
 
     IDAStarNode newNode = IDAStarNode(
-      boardState: newBoardState,
-      blankTileCoordinate: adjacentTileCoordinate,
+      boardState: newBoard,
+      blankTileCoordinate: adjTileCoord,
       manhattanDistance: newManhattanDistance,
       numMoves: curNode.numMoves + 1,
       fScore: fScore,

@@ -5,13 +5,13 @@ import 'package:anime_slide_puzzle/models/coordinate.dart';
 void main() {
   test('tile number 11 should return (2,3)', () {
     Coordinate curCoord =
-        convert1dArrayCoordTo2dArrayCoord(index: 11, numRowOrColCount: 4);
+        findCorrectTileCoordinate(index: 11, numRowOrColCount: 4);
     expect(curCoord, const Coordinate(row: 2, col: 3));
   });
 
   test('(2,3) should return tile number 11', () {
-    int val =
-        convert2dArrayCoordTo1dArrayCoord(row: 2, col: 3, numRowOrColCount: 4);
+    Coordinate coordinate = const Coordinate(row: 2, col: 3);
+    int val = coordinate.getOneDimensionalArrayIndex(4);
     expect(val, 11);
   });
 
@@ -68,7 +68,7 @@ void main() {
       [12, 14, 13, 15]
     ];
     expect(
-        isOutOfBounds(
+        isOutOfBoundsMatrix(
           matrix: matrix,
           curPoint: const Coordinate(row: 0, col: -1),
         ),
@@ -82,7 +82,7 @@ void main() {
       [12, 14, 13, 15]
     ];
     expect(
-        isOutOfBounds(
+        isOutOfBoundsMatrix(
           matrix: matrix,
           curPoint: const Coordinate(row: 0, col: 4),
         ),
@@ -96,7 +96,7 @@ void main() {
       [12, 14, 13, 15]
     ];
     expect(
-        isOutOfBounds(
+        isOutOfBoundsMatrix(
           matrix: matrix,
           curPoint: const Coordinate(row: -1, col: 0),
         ),
@@ -110,7 +110,7 @@ void main() {
       [12, 14, 13, 15]
     ];
     expect(
-        isOutOfBounds(
+        isOutOfBoundsMatrix(
           matrix: matrix,
           curPoint: const Coordinate(row: 4, col: 0),
         ),
@@ -124,7 +124,7 @@ void main() {
       [12, 14, 13, 15]
     ];
     expect(
-        isOutOfBounds(
+        isOutOfBoundsMatrix(
           matrix: matrix,
           curPoint: const Coordinate(row: 2, col: 2),
         ),
@@ -138,7 +138,7 @@ void main() {
       [12, 14, 13, 15]
     ];
     expect(
-        isOutOfBounds(
+        isOutOfBoundsMatrix(
           matrix: matrix,
           curPoint: Coordinate(row: matrix.length - 1, col: matrix.length - 1),
         ),

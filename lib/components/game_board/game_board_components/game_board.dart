@@ -51,13 +51,14 @@ class _GameBoardState extends State<GameBoard> {
               // watch for dimension changes to
               // prevent out of range index error when puzzle tile changes
               List<List<PuzzleTile>> puzzleMatrix =
-                  context.read<PuzzleBoard>().puzzleBoard2d;
+                  context.read<PuzzleBoard>().correctTileMatrix;
               return Stack(
                 children: [
                   for (int row = 0; row < puzzleMatrix.length; ++row)
                     for (int col = 0; col < puzzleMatrix[row].length; ++col)
                       Selector<PuzzleBoard, PuzzleTile>(
-                        selector: (_, board) => board.puzzleBoard2d[row][col],
+                        selector: (_, board) =>
+                            board.correctTileMatrix[row][col],
                         builder: (context, tile, child) {
                           return GameBoardTile(
                             tile: tile,
