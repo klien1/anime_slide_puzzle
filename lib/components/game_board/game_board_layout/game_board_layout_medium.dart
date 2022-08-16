@@ -1,4 +1,5 @@
 import 'package:anime_slide_puzzle/components/background_image.dart';
+import 'package:anime_slide_puzzle/components/game_board/game_board_components/countdown.dart';
 import 'package:anime_slide_puzzle/components/game_board/game_board_components/custom_back_button.dart';
 import 'package:anime_slide_puzzle/components/game_board/game_board_components/game_board.dart';
 import 'package:anime_slide_puzzle/components/game_board/game_board_components/game_board_reference_image.dart';
@@ -8,6 +9,7 @@ import 'package:anime_slide_puzzle/components/game_board/game_board_components/n
 import 'package:anime_slide_puzzle/components/game_board/game_board_components/sized_hero_image.dart';
 import 'package:anime_slide_puzzle/models/anime_theme.dart';
 import 'package:anime_slide_puzzle/models/anime_theme_list.dart';
+import 'package:anime_slide_puzzle/models/puzzle_board.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -27,6 +29,8 @@ class GameBoardLayoutMedium extends StatelessWidget {
   Widget build(BuildContext context) {
     AnimeThemeList animeThemeList = context.read<AnimeThemeList>();
     AnimeTheme animeTheme = animeThemeList.curAnimeTheme;
+    bool isShuffling = context
+        .select<PuzzleBoard, bool>((puzzleBoard) => puzzleBoard.isShuffling);
 
     return Scaffold(
       body: Stack(
@@ -65,14 +69,16 @@ class GameBoardLayoutMedium extends StatelessWidget {
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: const [
-                          GameTimerText(),
-                          Text(' | '),
-                          NumberOfMoves(),
-                        ],
-                      ),
+                      (isShuffling)
+                          ? const Countdown(textSize: 50)
+                          : Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: const [
+                                GameTimerText(),
+                                Text(' | '),
+                                NumberOfMoves(),
+                              ],
+                            ),
                       const SizedBox(height: 20),
                       GameBoard(
                         width: puzzleWidth,

@@ -12,11 +12,11 @@ class PuzzleBoard extends ChangeNotifier {
   late List<List<PuzzleTile>> _correctTileMatrix;
   late List<List<int>> _curPositionMatrix;
   int _numberOfMoves = 0;
-  double _currentTileOpacity = 0;
   bool _gameInProgress = false;
   bool _solutionInProgress = false;
   bool _isPuzzleCompleted = false;
   bool _isShuffling = false;
+  int _curCountdown = 0;
 
   // initializes puzzle with number of rows or columns
   PuzzleBoard({required numRowsOrColumns})
@@ -61,12 +61,12 @@ class PuzzleBoard extends ChangeNotifier {
     if (_solutionInProgress) {
       _solutionInProgress = false;
     } else {
-      _correctTileMatrix = _generatePuzzleMatrix(numRowsOrColumns);
-      _curPositionMatrix = _generateTileNumberMatrix(numRowsOrColumns);
+      _curCountdown = 0;
+      _numberOfMoves = 0;
       _gameInProgress = false;
       _isPuzzleCompleted = false;
-      _currentTileOpacity = 0;
-      _numberOfMoves = 0;
+      _correctTileMatrix = _generatePuzzleMatrix(numRowsOrColumns);
+      _curPositionMatrix = _generateTileNumberMatrix(numRowsOrColumns);
     }
   }
 
@@ -207,15 +207,22 @@ class PuzzleBoard extends ChangeNotifier {
     _numberOfMoves = 0;
     _gameInProgress = true;
     _isPuzzleCompleted = false;
-    await timedShuffled(countdown);
+    _curCountdown = countdown;
+    await timedShuffled();
   }
 
-  Future<void> timedShuffled(int numShuffles) async {
+  Future<void> timedShuffled() async {
     toggleShuffle();
-    for (int countdown = numShuffles; countdown > 0; --countdown) {
+    while (_curCountdown > 0) {
       _shuffleBoard();
       await Future.delayed(const Duration(seconds: 1));
+      --_curCountdown;
     }
+
+    // delay isShuffling notification to display start message
+    notifyListeners();
+    await Future.delayed(const Duration(milliseconds: 500));
+
     toggleShuffle();
   }
 
@@ -238,11 +245,6 @@ class PuzzleBoard extends ChangeNotifier {
       }
     }
     return true;
-  }
-
-  void toggleTileNumberVisibility() {
-    _currentTileOpacity = (_currentTileOpacity == 1) ? 0 : 1;
-    notifyListeners();
   }
 
   void toggleShuffle() {
@@ -320,10 +322,6 @@ class PuzzleBoard extends ChangeNotifier {
     return _numberOfMoves;
   }
 
-  double get currentTileOpacity {
-    return _currentTileOpacity;
-  }
-
   bool get isGameInProgress {
     return _gameInProgress;
   }
@@ -346,5 +344,9 @@ class PuzzleBoard extends ChangeNotifier {
 
   bool get isShuffling {
     return _isShuffling;
+  }
+
+  int get curCountdown {
+    return _curCountdown;
   }
 }

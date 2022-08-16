@@ -7,7 +7,6 @@ class LoadingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      // backgroundColor: Colors.black,
       backgroundColor: Color(0xFFc2c2c2),
       body: SpinKitPouringHourGlassRefined(
         color: Colors.black,

@@ -1,8 +1,7 @@
-// import 'dart:html';
-
 import 'package:anime_slide_puzzle/constants.dart';
 import 'package:anime_slide_puzzle/models/anime_theme_list.dart';
 import 'package:anime_slide_puzzle/models/game_timer.dart';
+import 'package:anime_slide_puzzle/models/show_hints.dart';
 import 'package:anime_slide_puzzle/screens/game_screen.dart';
 import 'package:anime_slide_puzzle/screens/image_selection_screen.dart';
 import 'package:anime_slide_puzzle/screens/welcome_screen.dart';
@@ -21,6 +20,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final myProviders = [
+      ChangeNotifierProvider<ShowHints>(
+          create: (BuildContext context) => ShowHints()),
       ChangeNotifierProvider<GameTimer>(
           create: (BuildContext context) => GameTimer()),
       ChangeNotifierProvider<NumberPuzzleTiles>(
