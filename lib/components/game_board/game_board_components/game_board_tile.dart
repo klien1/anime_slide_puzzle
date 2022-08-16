@@ -62,7 +62,9 @@ class _GameBoardTile extends State<GameBoardTile> {
     return AnimatedPositioned(
       left: animatedPositionLeft,
       top: animatedPositionTop,
-      duration: widget.positionDuration,
+      duration: (puzzleBoard.isShuffling)
+          ? const Duration(milliseconds: 800)
+          : widget.positionDuration,
       child: GestureDetector(
         onTap: (puzzleBoard.isLookingForSolution)
             ? null

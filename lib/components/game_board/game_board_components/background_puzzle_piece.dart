@@ -1,4 +1,3 @@
-// import 'package:anime_slide_puzzle/models/puzzle_board.dart';
 import 'package:anime_slide_puzzle/models/puzzle_board.dart';
 import 'package:flutter/material.dart';
 import 'package:anime_slide_puzzle/models/puzzle_tile.dart';
@@ -25,10 +24,7 @@ class BackgroundPuzzlePiece extends StatelessWidget {
     return SizedBox(
       height: tileHeight,
       width: tileWidth,
-      child: Image(
-        fit: BoxFit.cover,
-        image: AssetImage(curImagePath),
-      ),
+      child: Image(fit: BoxFit.cover, image: AssetImage(curImagePath)),
     );
   }
 

@@ -1,4 +1,4 @@
-import 'package:anime_slide_puzzle/models/puzzle_board.dart';
+import 'package:anime_slide_puzzle/models/show_hints.dart';
 import 'package:flutter/material.dart';
 import 'package:anime_slide_puzzle/models/puzzle_tile.dart';
 import 'package:provider/provider.dart';
@@ -19,19 +19,18 @@ class GameBoardTileNumber extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool showingHints = context.watch<ShowHints>().isShowingHints;
+
     return SizedBox(
       height: tileHeight / 2,
       width: tileWidth / 2,
       child: FittedBox(
         fit: BoxFit.contain,
-        child: Selector<PuzzleBoard, double>(
-          selector: (_, puzzleBoard) => puzzleBoard.currentTileOpacity,
-          builder: (context, tileNumberOpacity, child) => AnimatedOpacity(
-            duration: textOpacityDuration,
-            opacity: (tile.isBlankTile) ? 0 : tileNumberOpacity,
-            child: child,
-          ),
+        child: AnimatedOpacity(
+          duration: textOpacityDuration,
+          opacity: (!showingHints || tile.isBlankTile) ? 0 : 1,
           child: _BorderedText(
+            key: UniqueKey(),
             text: (tile.tileNumber + 1).toString(),
             style: const TextStyle(fontFamily: 'JosefinSans'),
             textColor: Colors.white,
@@ -40,7 +39,6 @@ class GameBoardTileNumber extends StatelessWidget {
           ),
         ),
       ),
-      // ),
     );
   }
 }

@@ -1,14 +1,13 @@
 import 'package:anime_slide_puzzle/components/image_selection/image_selection_components/circle_transition_button.dart';
-import 'package:anime_slide_puzzle/models/anime_theme.dart';
 import 'package:anime_slide_puzzle/models/anime_theme_list.dart';
 import 'package:anime_slide_puzzle/screens/image_selection_screen.dart';
 import 'package:anime_slide_puzzle/screens/loading_screen.dart';
+import 'package:provider/provider.dart';
 import 'package:anime_slide_puzzle/utils/responsive_layout_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:anime_slide_puzzle/constants.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:provider/provider.dart';
 
 class Welcome extends StatefulWidget {
   const Welcome({Key? key}) : super(key: key);
@@ -23,42 +22,37 @@ class _WelcomeState extends State<Welcome> {
   bool isLoading = true;
 
   Future<void> loadingAssets() async {
-    Future.delayed(
-      const Duration(seconds: 3),
-      () => setState(
-        () => isLoading = false,
-      ),
+    await precacheImage(
+      const AssetImage(welcomeScreenImagePath),
+      context,
     );
-  }
 
-  @override
-  void initState() {
-    super.initState();
+    if (!mounted) return;
+    final AnimeThemeList animeThemeList = context.read<AnimeThemeList>();
+    final int curIndex = animeThemeList.curIndex;
 
-    loadingAssets();
+    if (!mounted) return;
+    await precacheImage(
+      AssetImage(
+          animeThemeList.getAnimeThemeAtIndex(curIndex).backgroundImagePath),
+      context,
+    );
+
+    if (!mounted) return;
+    await precacheImage(
+      AssetImage(animeThemeList
+          .getAnimeThemeAtIndex(curIndex)
+          .puzzleBackgroundImagePath!),
+      context,
+    );
+
+    setState(() => isLoading = false);
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-
-    precacheImage(
-      const AssetImage(welcomeScreenImagePath),
-      context,
-    );
-
-    AnimeTheme animeTheme = context.read<AnimeThemeList>().curAnimeTheme;
-    if (MediaQuery.of(context).orientation == Orientation.portrait) {
-      precacheImage(
-        AssetImage(animeTheme.puzzleImagePath),
-        context,
-      );
-    } else {
-      precacheImage(
-        AssetImage(animeTheme.backgroundImagePath),
-        context,
-      );
-    }
+    loadingAssets();
   }
 
   Widget _landscapeLayout() {
@@ -161,7 +155,7 @@ class _WelcomeState extends State<Welcome> {
       child: (isLoading)
           ? const LoadingScreen()
           : Scaffold(
-              backgroundColor: Colors.white,
+              backgroundColor: const Color(0xFFc2c2c2),
               body: SafeArea(
                 child: ResponsiveLayout(
                   mobile: _portraitLayout(),

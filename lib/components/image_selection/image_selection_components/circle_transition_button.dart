@@ -7,7 +7,7 @@ class CircleTransitionButton extends StatelessWidget {
     required this.buttonText,
     this.buttonStyle,
     this.textStyle,
-    this.pageTransitionDuration = const Duration(seconds: 2),
+    this.pageTransitionDuration = const Duration(seconds: 1),
     this.transitionStartPosition = const Offset(0, 0),
   }) : super(key: key);
 
