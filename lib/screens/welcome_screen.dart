@@ -2,7 +2,6 @@ import 'package:anime_slide_puzzle/components/image_selection/image_selection_co
 import 'package:anime_slide_puzzle/models/anime_theme_list.dart';
 import 'package:anime_slide_puzzle/screens/image_selection_screen.dart';
 import 'package:anime_slide_puzzle/screens/loading_screen.dart';
-// import 'package:anime_slide_puzzle/utils/precache_helper.dart';
 import 'package:provider/provider.dart';
 import 'package:anime_slide_puzzle/utils/responsive_layout_helper.dart';
 import 'package:flutter/material.dart';
@@ -30,28 +29,22 @@ class _WelcomeState extends State<Welcome> {
 
     if (!mounted) return;
     final AnimeThemeList animeThemeList = context.read<AnimeThemeList>();
-    for (int i = 0; i < animeThemeList.listLength; ++i) {
-      if (!mounted) break;
-      await precacheImage(
-        AssetImage(animeThemeList.getAnimeThemeAtIndex(i).logoImagePath),
-        context,
-      );
-      if (!mounted) break;
-      await precacheImage(
-        AssetImage(animeThemeList.getAnimeThemeAtIndex(i).backgroundImagePath),
-        context,
-      );
-      if (!mounted) break;
-      await precacheImage(
-        AssetImage(
-            animeThemeList.getAnimeThemeAtIndex(i).puzzleBackgroundImagePath!),
-        context,
-      );
-    }
+    final int curIndex = animeThemeList.curIndex;
 
-    // await preloadSelectionBackground(context: context);
-    // await preloadPuzzleBackground(context: context);
-    // await preloadSelectionLogos(context: context);
+    if (!mounted) return;
+    await precacheImage(
+      AssetImage(
+          animeThemeList.getAnimeThemeAtIndex(curIndex).backgroundImagePath),
+      context,
+    );
+
+    if (!mounted) return;
+    await precacheImage(
+      AssetImage(animeThemeList
+          .getAnimeThemeAtIndex(curIndex)
+          .puzzleBackgroundImagePath!),
+      context,
+    );
 
     setState(() => isLoading = false);
   }
@@ -162,7 +155,6 @@ class _WelcomeState extends State<Welcome> {
       child: (isLoading)
           ? const LoadingScreen()
           : Scaffold(
-              // backgroundColor: Colors.white,
               backgroundColor: const Color(0xFFc2c2c2),
               body: SafeArea(
                 child: ResponsiveLayout(

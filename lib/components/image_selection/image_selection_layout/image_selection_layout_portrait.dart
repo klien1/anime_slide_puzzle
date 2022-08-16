@@ -16,7 +16,8 @@ class ImageSelectionLayoutPortrait extends StatelessWidget {
         AnimatedSwitcher(
           duration: const Duration(seconds: 1),
           child: BackgroundImage(
-            key: UniqueKey(),
+            key: ValueKey(
+                animeThemeList.curAnimeTheme.puzzleBackgroundImagePath),
             imagePath: animeThemeList.curPuzzleBackground,
             fit: BoxFit.fill,
           ),

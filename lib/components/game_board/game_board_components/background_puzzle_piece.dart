@@ -24,10 +24,7 @@ class BackgroundPuzzlePiece extends StatelessWidget {
     return SizedBox(
       height: tileHeight,
       width: tileWidth,
-      child: Image(
-        fit: BoxFit.cover,
-        image: AssetImage(curImagePath),
-      ),
+      child: Image(fit: BoxFit.cover, image: AssetImage(curImagePath)),
     );
   }
 

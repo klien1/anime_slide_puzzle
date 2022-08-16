@@ -6,45 +6,8 @@ import 'package:anime_slide_puzzle/screens/game_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-// source: https://wall.alphacoders.com/big.php?i=1143485
-// image: AssetImage('images/jujutsu_kaisen_background2.jpg'),
-// image: AssetImage('images/demon_slayer_background.jpg'),
-// source: https://wallpapersden.com/demon-slayer-4k-gaming-wallpaper/
-// image: AssetImage('images/spy-x-family-background2.jpg'),
-// source: https://wall.alphacoders.com/big.php?i=1227567
-
-class ImageSelectionBar extends StatefulWidget {
+class ImageSelectionBar extends StatelessWidget {
   const ImageSelectionBar({Key? key}) : super(key: key);
-
-  @override
-  State<ImageSelectionBar> createState() => _ImageSelectionBarState();
-}
-
-class _ImageSelectionBarState extends State<ImageSelectionBar> {
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    _preloadImages();
-  }
-
-  void _preloadImages() {
-    if (!mounted) return;
-    final AnimeThemeList animeThemeList = context.read<AnimeThemeList>();
-    for (int i = 0; i < animeThemeList.listLength; ++i) {
-      if (!mounted) break;
-      precacheImage(
-        AssetImage(animeThemeList.getAnimeThemeAtIndex(i).backgroundImagePath),
-        context,
-      );
-      if (!mounted) break;
-      precacheImage(
-        AssetImage(
-            animeThemeList.getAnimeThemeAtIndex(i).puzzleBackgroundImagePath!),
-        context,
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,8 +46,7 @@ class _ImageSelectionBarState extends State<ImageSelectionBar> {
             ),
           const SizedBox(height: 10),
           const Expanded(
-              child: SelectBoardSize(
-                  minNumRowsOrColumns: 3, maxNumRowsOrColumns: 5)),
+              child: SelectBoardSize(minRowsOrColumns: 3, maxRowsOrColumns: 5)),
           const SizedBox(height: 10),
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 10),

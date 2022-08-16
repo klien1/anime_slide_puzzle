@@ -6,7 +6,7 @@ import 'package:anime_slide_puzzle/screens/congratulations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class GameBoard extends StatefulWidget {
+class GameBoard extends StatelessWidget {
   const GameBoard({
     Key? key,
     required this.width,
@@ -18,11 +18,6 @@ class GameBoard extends StatefulWidget {
   final double height;
   final double tilePadding;
 
-  @override
-  State<GameBoard> createState() => _GameBoardState();
-}
-
-class _GameBoardState extends State<GameBoard> {
   @override
   Widget build(BuildContext context) {
     context.watch<NumberPuzzleTiles>();
@@ -44,8 +39,8 @@ class _GameBoardState extends State<GameBoard> {
               color: Colors.white.withOpacity(0.25),
               borderRadius: BorderRadius.circular(10),
               border: Border.all(color: Colors.black)),
-          width: widget.width + widget.tilePadding * 2,
-          height: widget.height + widget.tilePadding * 2,
+          width: width + tilePadding * 2,
+          height: height + tilePadding * 2,
           child: Consumer<NumberPuzzleTiles>(
             builder: (_, value, child) {
               // watch for dimension changes to
@@ -59,14 +54,12 @@ class _GameBoardState extends State<GameBoard> {
                       Selector<PuzzleBoard, PuzzleTile>(
                         selector: (_, board) =>
                             board.correctTileMatrix[row][col],
-                        builder: (context, tile, child) {
-                          return GameBoardTile(
-                            tile: tile,
-                            width: widget.width,
-                            height: widget.height,
-                            tilePadding: widget.tilePadding,
-                          );
-                        },
+                        builder: (context, tile, child) => GameBoardTile(
+                          tile: tile,
+                          width: width,
+                          height: height,
+                          tilePadding: tilePadding,
+                        ),
                       )
                 ],
               );
