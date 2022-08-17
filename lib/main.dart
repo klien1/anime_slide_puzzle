@@ -1,12 +1,8 @@
 import 'package:anime_slide_puzzle/constants.dart';
 import 'package:anime_slide_puzzle/models/anime_theme_list.dart';
-import 'package:anime_slide_puzzle/models/game_timer.dart';
-import 'package:anime_slide_puzzle/models/show_hints.dart';
 import 'package:anime_slide_puzzle/screens/game_screen.dart';
 import 'package:anime_slide_puzzle/screens/image_selection_screen.dart';
 import 'package:anime_slide_puzzle/screens/welcome_screen.dart';
-import 'models/puzzle_board.dart';
-import 'models/number_puzzle_tiles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -19,21 +15,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final myProviders = [
-      ChangeNotifierProvider<ShowHints>(
-          create: (BuildContext context) => ShowHints()),
-      ChangeNotifierProvider<GameTimer>(
-          create: (BuildContext context) => GameTimer()),
-      ChangeNotifierProvider<NumberPuzzleTiles>(
-        create: (BuildContext context) => NumberPuzzleTiles(),
-      ),
-      ChangeNotifierProxyProvider<NumberPuzzleTiles, PuzzleBoard>(
-        create: (BuildContext context) => PuzzleBoard(
-            numRowsOrColumns:
-                context.read<NumberPuzzleTiles>().currentNumberOfTiles),
-        update: ((context, value, previous) =>
-            PuzzleBoard(numRowsOrColumns: value.currentNumberOfTiles)),
-      ),
+    final globalProviers = [
       ChangeNotifierProvider<AnimeThemeList>(
           create: (context) => AnimeThemeList(animeImageList: animeImageList),
           builder: (context, child) {
@@ -83,6 +65,6 @@ class MyApp extends StatelessWidget {
           }),
     ];
 
-    return MultiProvider(providers: myProviders);
+    return MultiProvider(providers: globalProviers);
   }
 }

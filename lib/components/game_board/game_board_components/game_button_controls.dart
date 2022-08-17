@@ -64,25 +64,29 @@ class _GameButtonControlsState extends State<GameButtonControls> {
   }
 
   List<Widget> _generateElevatedButtonControls(BuildContext context) {
-    PuzzleBoard puzzleBoard = context.watch<PuzzleBoard>();
     ShowHints showHints = context.watch<ShowHints>();
+    bool isLookingForSolution = context.select<PuzzleBoard, bool>(
+        (puzzleBoard) => puzzleBoard.isLookingForSolution);
+    bool isShuffling = context
+        .select<PuzzleBoard, bool>((puzzleBoard) => puzzleBoard.isShuffling);
+    bool isGameInProgress = context.select<PuzzleBoard, bool>(
+        (puzzleBoard) => puzzleBoard.isGameInProgress);
 
     return [
       ElevatedButton(
-        onPressed: (puzzleBoard.isLookingForSolution || puzzleBoard.isShuffling)
-            ? null
-            : () => shuffleBoard(),
-        child: (puzzleBoard.isGameInProgress)
+        onPressed:
+            (isLookingForSolution || isShuffling) ? null : () => shuffleBoard(),
+        child: (isGameInProgress)
             ? const Text('Restart Game')
             : const Text('Start Game'),
       ),
       SizedBox(height: widget.spaceBetween, width: widget.spaceBetween),
-      (!puzzleBoard.isGameInProgress || puzzleBoard.isShuffling)
+      (!isGameInProgress || isShuffling)
           ? const SizedBox()
           : ElevatedButton(
-              onPressed: (puzzleBoard.isLookingForSolution)
+              onPressed: (isLookingForSolution)
                   ? null
-                  : () => puzzleBoard.autoSolve(),
+                  : () => context.read<PuzzleBoard>().autoSolve(),
               child: const Text('Auto-Solve'),
             ),
       SizedBox(height: widget.spaceBetween, width: widget.spaceBetween),

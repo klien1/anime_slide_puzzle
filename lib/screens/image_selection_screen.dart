@@ -1,6 +1,7 @@
 import 'package:anime_slide_puzzle/components/image_selection/image_selection_layout/image_selection_layout_landscape.dart';
 import 'package:anime_slide_puzzle/components/image_selection/image_selection_layout/image_selection_layout_portrait.dart';
 import 'package:anime_slide_puzzle/models/anime_theme_list.dart';
+import 'package:anime_slide_puzzle/models/number_puzzle_tiles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:anime_slide_puzzle/constants.dart';
@@ -64,11 +65,13 @@ class _ImageSelectionScreenState extends State<ImageSelectionScreen> {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
-      if (constraints.maxWidth > constraints.maxHeight) {
-        return const ImageSelectionLayoutLandscape();
-      } else {
-        return const ImageSelectionLayoutPortrait();
-      }
+      return ChangeNotifierProvider<NumberPuzzleTiles>(
+        create: (BuildContext context) => NumberPuzzleTiles(),
+        child: Scaffold(
+            body: (constraints.maxWidth > constraints.maxHeight)
+                ? const ImageSelectionLayoutLandscape()
+                : const ImageSelectionLayoutPortrait()),
+      );
     });
   }
 }

@@ -10,12 +10,14 @@ class GameBoardTileNumber extends StatelessWidget {
     required this.tileWidth,
     required this.tile,
     this.textOpacityDuration = const Duration(milliseconds: 200),
+    this.alwaysShow = false,
   }) : super(key: key);
 
   final double tileHeight;
   final double tileWidth;
   final Duration textOpacityDuration;
   final PuzzleTile tile;
+  final bool alwaysShow;
 
   @override
   Widget build(BuildContext context) {
@@ -26,18 +28,26 @@ class GameBoardTileNumber extends StatelessWidget {
       width: tileWidth / 2,
       child: FittedBox(
         fit: BoxFit.contain,
-        child: AnimatedOpacity(
-          duration: textOpacityDuration,
-          opacity: (!showingHints || tile.isBlankTile) ? 0 : 1,
-          child: _BorderedText(
-            key: UniqueKey(),
-            text: (tile.tileNumber + 1).toString(),
-            style: const TextStyle(fontFamily: 'JosefinSans'),
-            textColor: Colors.white,
-            strokeColor: Colors.black,
-            strokeWidth: 3,
-          ),
-        ),
+        child: (alwaysShow)
+            ? _BorderedText(
+                text: (tile.tileNumber + 1).toString(),
+                style: const TextStyle(fontFamily: 'JosefinSans'),
+                textColor: Colors.white,
+                strokeColor: Colors.black,
+                strokeWidth: 3,
+              )
+            : AnimatedOpacity(
+                duration: textOpacityDuration,
+                opacity: (!showingHints || tile.isBlankTile) ? 0 : 1,
+                child: _BorderedText(
+                  key: UniqueKey(),
+                  text: (tile.tileNumber + 1).toString(),
+                  style: const TextStyle(fontFamily: 'JosefinSans'),
+                  textColor: Colors.white,
+                  strokeColor: Colors.black,
+                  strokeWidth: 3,
+                ),
+              ),
       ),
     );
   }
@@ -72,12 +82,7 @@ class _BorderedText extends StatelessWidget {
               ..color = strokeColor,
           ),
         ),
-        Text(
-          text,
-          style: style.copyWith(
-            color: textColor,
-          ),
-        ),
+        Text(text, style: style.copyWith(color: textColor)),
       ],
     );
   }

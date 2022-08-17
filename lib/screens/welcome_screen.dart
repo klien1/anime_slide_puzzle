@@ -1,13 +1,12 @@
 import 'package:anime_slide_puzzle/components/image_selection/image_selection_components/circle_transition_button.dart';
 import 'package:anime_slide_puzzle/models/anime_theme_list.dart';
 import 'package:anime_slide_puzzle/screens/image_selection_screen.dart';
-import 'package:anime_slide_puzzle/screens/loading_screen.dart';
 import 'package:provider/provider.dart';
-import 'package:anime_slide_puzzle/utils/responsive_layout_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:anime_slide_puzzle/constants.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class Welcome extends StatefulWidget {
   const Welcome({Key? key}) : super(key: key);
@@ -23,7 +22,7 @@ class _WelcomeState extends State<Welcome> {
 
   Future<void> loadingAssets() async {
     await precacheImage(
-      const AssetImage(welcomeScreenImagePath),
+      const AssetImage(welcomeScreenImage),
       context,
     );
 
@@ -55,76 +54,70 @@ class _WelcomeState extends State<Welcome> {
     loadingAssets();
   }
 
-  Widget _landscapeLayout() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        const Text(
-          'Anime Slide Puzzle',
-          style: kAnimeTitleStyle,
-          textAlign: TextAlign.center,
-        ),
-        Container(
-          constraints: BoxConstraints(
-              maxHeight: MediaQuery.of(context).size.height * .6),
-          width: double.infinity,
-          child: const Image(
-            image: AssetImage(welcomeScreenImagePath),
-          ),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            _linkToGithub(),
-            CircleTransitionButton(
-              destinationScreen: const ImageSelectionScreen(),
-              buttonText: 'Let\'s get started',
-              buttonStyle: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(
-                  kWelcomeScreenCallToActionButtonBackgroundColor,
+  @override
+  Widget build(BuildContext context) {
+    final double screenHeight = MediaQuery.of(context).size.height;
+
+    return Scaffold(
+      backgroundColor: kWelcomeScreenScaffoldColor,
+      body: SafeArea(
+        child: AnimatedSwitcher(
+          duration: const Duration(seconds: 1),
+          child: (isLoading)
+              ? const SpinKitPouringHourGlassRefined(
+                  color: kSpinkitColor,
+                  size: 100,
+                )
+              : Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    const Text(
+                      'Anime Slide Puzzle',
+                      style: kAnimeTitleStyle,
+                      textAlign: TextAlign.center,
+                    ),
+                    Container(
+                      constraints: BoxConstraints(maxHeight: screenHeight * .6),
+                      width: double.infinity,
+                      child: const Image(image: AssetImage(welcomeScreenImage)),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        const _ProjectGithubLink(),
+                        CircleTransitionButton(
+                          destinationScreen: const ImageSelectionScreen(),
+                          buttonText: 'Let\'s get started',
+                          buttonStyle: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                              kWelcomeScreenCallToActionButtonBackgroundColor,
+                            ),
+                          ),
+                          textStyle: const TextStyle(
+                              color: kWelcomeScreenButtonTextColor),
+                        ),
+                      ],
+                    )
+                  ],
                 ),
-              ),
-              textStyle: const TextStyle(color: kWelcomeScreenButtonTextColor),
-            ),
-          ],
         ),
-      ],
+      ),
     );
   }
+}
 
-  Widget _portraitLayout() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        const Text(
-          'Anime Slide Puzzle',
-          style: kAnimeTitleStyle,
-          textAlign: TextAlign.center,
-        ),
-        Container(
-          constraints: BoxConstraints(
-              maxHeight: MediaQuery.of(context).size.height * .6),
-          width: double.infinity,
-          child: const Image(
-            image: AssetImage(welcomeScreenImagePath),
-          ),
-        ),
-        _linkToGithub(),
-        CircleTransitionButton(
-          destinationScreen: const ImageSelectionScreen(),
-          buttonText: 'Let\'s get started',
-          buttonStyle: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all<Color>(
-              kWelcomeScreenCallToActionButtonBackgroundColor,
-            ),
-          ),
-          textStyle: const TextStyle(color: kWelcomeScreenButtonTextColor),
-        ),
-      ],
-    );
+class _ProjectGithubLink extends StatelessWidget {
+  const _ProjectGithubLink({Key? key}) : super(key: key);
+
+  Future<void> _launchUrl(String url) async {
+    final Uri urlPath = Uri.parse(url);
+    if (!await launchUrl(urlPath)) {
+      throw 'Count not launch $urlPath';
+    }
   }
 
-  Widget _linkToGithub() {
+  @override
+  Widget build(BuildContext context) {
     return TextButton.icon(
       style: TextButton.styleFrom(
           backgroundColor: kWelcomeScreenButtonBackgroundColor),
@@ -138,32 +131,6 @@ class _WelcomeState extends State<Welcome> {
         'Github',
         style: TextStyle(color: kWelcomeScreenButtonTextColor),
       ),
-    );
-  }
-
-  Future<void> _launchUrl(String url) async {
-    final Uri urlPath = Uri.parse(url);
-    if (!await launchUrl(urlPath)) {
-      throw 'Count not launch $urlPath';
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedSwitcher(
-      duration: const Duration(seconds: 1),
-      child: (isLoading)
-          ? const LoadingScreen()
-          : Scaffold(
-              backgroundColor: const Color(0xFFc2c2c2),
-              body: SafeArea(
-                child: ResponsiveLayout(
-                  mobile: _portraitLayout(),
-                  tablet: _landscapeLayout(),
-                  web: _landscapeLayout(),
-                ),
-              ),
-            ),
     );
   }
 }

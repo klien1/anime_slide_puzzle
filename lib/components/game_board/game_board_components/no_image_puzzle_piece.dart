@@ -28,6 +28,7 @@ class NoImagePuzzlePiece extends StatelessWidget {
         tile: tile,
         tileHeight: height,
         tileWidth: width,
+        alwaysShow: true,
       ),
     );
   }

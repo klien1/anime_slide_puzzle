@@ -1,4 +1,3 @@
-import 'package:anime_slide_puzzle/models/puzzle_board.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:anime_slide_puzzle/models/number_puzzle_tiles.dart';
@@ -15,7 +14,7 @@ class SelectBoardSize extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    NumberPuzzleTiles selector = context.watch<NumberPuzzleTiles>();
+    NumberPuzzleTiles numTilesProvider = context.watch<NumberPuzzleTiles>();
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -26,11 +25,9 @@ class SelectBoardSize extends StatelessWidget {
           SizedBox(
             width: 60,
             child: ElevatedButton(
-              onPressed: (context.read<PuzzleBoard>().isLookingForSolution)
+              onPressed: (numTilesProvider.currentNumberOfTiles == numTiles)
                   ? null
-                  : (selector.currentNumberOfTiles == numTiles)
-                      ? null
-                      : () => selector.changeNumberOfTiles(numTiles),
+                  : () => numTilesProvider.changeNumberOfTiles(numTiles),
               child: Text('${numTiles}x$numTiles'),
             ),
           ),

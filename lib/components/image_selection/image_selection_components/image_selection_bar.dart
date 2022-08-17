@@ -2,6 +2,7 @@ import 'package:anime_slide_puzzle/components/image_selection/image_selection_co
 import 'package:anime_slide_puzzle/components/image_selection/image_selection_components/game_select_board_size.dart';
 import 'package:anime_slide_puzzle/components/image_selection/image_selection_components/image_selection_icon.dart';
 import 'package:anime_slide_puzzle/models/anime_theme_list.dart';
+import 'package:anime_slide_puzzle/models/number_puzzle_tiles.dart';
 import 'package:anime_slide_puzzle/screens/game_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -50,8 +51,12 @@ class ImageSelectionBar extends StatelessWidget {
           const SizedBox(height: 10),
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 10),
-            child: const CircleTransitionButton(
-              destinationScreen: GameScreen(),
+            child: CircleTransitionButton(
+              destinationScreen:
+                  ChangeNotifierProvider<NumberPuzzleTiles>.value(
+                value: context.read<NumberPuzzleTiles>(),
+                child: const GameScreen(),
+              ),
               buttonText: 'Go to Puzzle',
             ),
           ),

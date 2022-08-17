@@ -43,7 +43,7 @@ const Map<String, Map<String, Object>> animeImageList = {
 };
 
 // const String welcomeScreenImagePath = 'images/chibis.jpg';
-const String welcomeScreenImagePath = 'images/chibis_grey.jpg';
+const String welcomeScreenImage = 'images/chibis_grey.jpg';
 
 const TextStyle kAnimeTitleStyle = TextStyle(
   fontSize: 50,
@@ -54,6 +54,8 @@ const TextStyle kAnimeTitleStyle = TextStyle(
 const Color kWelcomeScreenButtonBackgroundColor = Color(0xFF1b1d29);
 const Color kWelcomeScreenButtonTextColor = Colors.white;
 const Color kWelcomeScreenCallToActionButtonBackgroundColor = Color(0xFFc56b74);
+const Color kSpinkitColor = Colors.black;
+const Color kWelcomeScreenScaffoldColor = Color(0xFFc2c2c2);
 
 const Duration aiTileSpeed = Duration(milliseconds: 200);
 const Duration defaultTileSpeed = Duration(milliseconds: 200);

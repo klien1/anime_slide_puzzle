@@ -1,4 +1,5 @@
 import 'package:anime_slide_puzzle/components/game_board/game_board_components/game_board_tile.dart';
+import 'package:anime_slide_puzzle/models/game_timer.dart';
 import 'package:anime_slide_puzzle/models/number_puzzle_tiles.dart';
 import 'package:anime_slide_puzzle/models/puzzle_board.dart';
 import 'package:anime_slide_puzzle/models/puzzle_tile.dart';
@@ -20,17 +21,21 @@ class GameBoard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    context.watch<NumberPuzzleTiles>();
-
     return Selector<PuzzleBoard, bool>(
       selector: (_, puzzleBoard) => puzzleBoard.isPuzzleCompleted,
       builder: (_, puzzleCompleted, child) {
         if (puzzleCompleted) {
+          int numMoves = context.read<PuzzleBoard>().numberOfMoves;
+          String completionTime =
+              context.read<GameTimer>().totalTimeWithoutHours;
           Future.delayed(
             Duration.zero,
             () => showDialog(
               context: context,
-              builder: (context) => const Congratulations(),
+              builder: (context) => Congratulations(
+                totalTime: completionTime,
+                numMoves: numMoves,
+              ),
             ),
           );
         }
@@ -54,13 +59,15 @@ class GameBoard extends StatelessWidget {
                       Selector<PuzzleBoard, PuzzleTile>(
                         selector: (_, board) =>
                             board.correctTileMatrix[row][col],
-                        builder: (context, tile, child) => GameBoardTile(
-                          tile: tile,
-                          width: width,
-                          height: height,
-                          tilePadding: tilePadding,
-                        ),
-                      )
+                        builder: (context, tile, child) => (tile.isBlankTile)
+                            ? const SizedBox()
+                            : GameBoardTile(
+                                tile: tile,
+                                width: width,
+                                height: height,
+                                tilePadding: tilePadding,
+                              ),
+                      ),
                 ],
               );
             },

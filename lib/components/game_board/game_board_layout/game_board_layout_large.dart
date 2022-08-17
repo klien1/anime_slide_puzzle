@@ -1,6 +1,4 @@
-import 'package:anime_slide_puzzle/components/background_image.dart';
 import 'package:anime_slide_puzzle/components/game_board/game_board_components/countdown.dart';
-import 'package:anime_slide_puzzle/components/game_board/game_board_components/custom_back_button.dart';
 import 'package:anime_slide_puzzle/components/game_board/game_board_components/game_board.dart';
 import 'package:anime_slide_puzzle/components/game_board/game_board_components/game_board_reference_image.dart';
 import 'package:anime_slide_puzzle/components/game_board/game_board_components/game_button_controls.dart';
@@ -32,73 +30,60 @@ class GameBoardLayoutLarge extends StatelessWidget {
     bool isShuffling = context
         .select<PuzzleBoard, bool>((puzzleBoard) => puzzleBoard.isShuffling);
 
-    return Scaffold(
-      body: Stack(
-        children: [
-          BackgroundImage(imagePath: animeTheme.puzzleBackgroundImagePath),
-          const SafeArea(
-            child: Align(
-              alignment: Alignment.topLeft,
-              child: CustomBackButton(),
-            ),
-          ),
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedHeroImage(
-                          animeTheme: animeTheme,
-                          height: (animeTheme.name == 'demon_slayer')
-                              ? MediaQuery.of(context).size.height * .3
-                              : null,
-                          width: (animeTheme.name == 'demon_slayer')
-                              ? null
-                              : MediaQuery.of(context).size.width * .2),
-                      const SizedBox(height: 100),
-                      (isShuffling)
-                          ? const Countdown(textSize: 50)
-                          : Column(
-                              children: const [
-                                GameTimerText(),
-                                SizedBox(height: 20),
-                                NumberOfMoves(),
-                              ],
-                            ),
-                    ],
-                  ),
-                  GameBoard(
-                    width: puzzleWidth,
-                    height: puzzleHeight,
-                    tilePadding: puzzlePadding,
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Flexible(
-                        flex: 2,
-                        child: GameBoardReferenceImage(
-                          width: 200,
-                          height: 200,
-                        ),
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedHeroImage(
+                    animeTheme: animeTheme,
+                    height: (animeTheme.name == 'demon_slayer')
+                        ? MediaQuery.of(context).size.height * .3
+                        : null,
+                    width: (animeTheme.name == 'demon_slayer')
+                        ? null
+                        : MediaQuery.of(context).size.width * .2),
+                const SizedBox(height: 100),
+                (isShuffling)
+                    ? const Countdown(textSize: 50)
+                    : Column(
+                        children: const [
+                          GameTimerText(),
+                          SizedBox(height: 20),
+                          NumberOfMoves(),
+                        ],
                       ),
-                      Flexible(
-                        child: GameButtonControls(
-                          spaceBetween: 30,
-                          useColumn: true,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+              ],
             ),
-          ),
-        ],
+            GameBoard(
+              width: puzzleWidth,
+              height: puzzleHeight,
+              tilePadding: puzzlePadding,
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Flexible(
+                  flex: 2,
+                  child: GameBoardReferenceImage(
+                    width: 200,
+                    height: 200,
+                  ),
+                ),
+                Flexible(
+                  child: GameButtonControls(
+                    spaceBetween: 30,
+                    useColumn: true,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
