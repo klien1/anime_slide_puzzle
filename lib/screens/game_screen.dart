@@ -1,4 +1,5 @@
 import 'package:anime_slide_puzzle/components/background_image.dart';
+import 'package:anime_slide_puzzle/components/game_board/game_board_components/congratulations.dart';
 import 'package:anime_slide_puzzle/components/game_board/game_board_components/custom_back_button.dart';
 import 'package:anime_slide_puzzle/components/game_board/game_board_layout/game_board_layout_large.dart';
 import 'package:anime_slide_puzzle/components/game_board/game_board_layout/game_board_layout_small.dart';
@@ -29,13 +30,13 @@ class GameScreen extends StatelessWidget {
     AnimeThemeList animeThemeList = context.read<AnimeThemeList>();
     AnimeTheme animeTheme = animeThemeList.curAnimeTheme;
 
+    final numTiles = context.read<NumberPuzzleTiles>().currentNumberOfTiles;
+
     final gameProviders = [
       ChangeNotifierProvider<ShowHints>(create: (_) => ShowHints()),
       ChangeNotifierProvider<GameTimer>(create: (_) => GameTimer()),
       ChangeNotifierProvider<PuzzleBoard>(
-        create: (_) => PuzzleBoard(
-            numRowsOrColumns:
-                context.read<NumberPuzzleTiles>().currentNumberOfTiles),
+        create: (_) => PuzzleBoard(numRowsOrColumns: numTiles),
       ),
     ];
 
@@ -85,6 +86,7 @@ class GameScreen extends StatelessWidget {
                     puzzlePadding: 5,
                   ),
           ),
+          const Congratulations(),
         ]),
       ),
     );

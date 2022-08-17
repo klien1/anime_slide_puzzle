@@ -28,19 +28,17 @@ class _ImageSelectionScreenState extends State<ImageSelectionScreen> {
     } else {
       _preloadNoCharacterBackground();
     }
+    _preloadPuzzleImage();
   }
 
-  void _preloadCharacterBackground() async {
-    if (!mounted) return;
+  void _preloadCharacterBackground() {
     final AnimeThemeList animeThemeList = context.watch<AnimeThemeList>();
     for (int i = 0; i < animeThemeList.listLength; ++i) {
-      if (!mounted) break;
       precacheImage(
         AssetImage(animeThemeList.getAnimeThemeAtIndex(i).backgroundImagePath),
         context,
       );
     }
-    if (!mounted) return;
     precacheImage(
       AssetImage(animeThemeList
           .getAnimeThemeAtIndex(animeThemeList.curIndex)
@@ -50,16 +48,19 @@ class _ImageSelectionScreenState extends State<ImageSelectionScreen> {
   }
 
   void _preloadNoCharacterBackground() {
-    if (!mounted) return;
     final AnimeThemeList animeThemeList = context.watch<AnimeThemeList>();
     for (int i = 0; i < animeThemeList.listLength; ++i) {
-      if (!mounted) break;
       precacheImage(
         AssetImage(
             animeThemeList.getAnimeThemeAtIndex(i).puzzleBackgroundImagePath!),
         context,
       );
     }
+  }
+
+  void _preloadPuzzleImage() {
+    final AnimeThemeList animeThemeList = context.watch<AnimeThemeList>();
+    precacheImage(AssetImage(animeThemeList.curPuzzle), context);
   }
 
   @override

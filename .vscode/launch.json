@@ -8,8 +8,8 @@
       "name": "anime_slide_puzzle (profile mode)",
       "request": "launch",
       "type": "dart",
-      "flutterMode": "profile"
-      // "flutterMode": "debug"
+      // "flutterMode": "profile"
+      "flutterMode": "debug"
     }
   ]
 }
