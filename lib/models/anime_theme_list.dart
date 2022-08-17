@@ -2,9 +2,7 @@ import 'package:anime_slide_puzzle/models/anime_theme.dart';
 import 'package:flutter/material.dart';
 
 class AnimeThemeList extends ChangeNotifier {
-  AnimeThemeList({
-    required Map<String, Map<String, Object>> animeImageList,
-  }) {
+  AnimeThemeList({required Map<String, Map<String, Object>> animeImageList}) {
     int i = 0;
     animeImageList.forEach(
       (animeName, animeImage) => _animeThemeList.add(

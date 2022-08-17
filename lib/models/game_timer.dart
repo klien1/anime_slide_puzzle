@@ -38,6 +38,11 @@ class GameTimer extends ChangeNotifier {
     return _shouldAddZero(acutualMinutes);
   }
 
+  String get minutesWithoutHours {
+    int acutualMinutes = _seconds ~/ 60;
+    return _shouldAddZero(acutualMinutes);
+  }
+
   String get hours {
     int acutalHours = _seconds ~/ 3600;
     return _shouldAddZero(acutalHours);
@@ -45,5 +50,9 @@ class GameTimer extends ChangeNotifier {
 
   String get totalTime {
     return '$hours:$minutes:$seconds';
+  }
+
+  String get totalTimeWithoutHours {
+    return '$minutesWithoutHours:$seconds';
   }
 }

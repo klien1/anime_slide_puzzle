@@ -11,37 +11,32 @@ class ImageSelectionLayoutLandscape extends StatelessWidget {
   Widget build(BuildContext context) {
     AnimeThemeList animeThemeList = context.watch<AnimeThemeList>();
 
-    return Scaffold(
-      body: Stack(
-        children: [
-          AnimatedSwitcher(
-            duration: const Duration(seconds: 1),
-            child: BackgroundImage(
-              key: ValueKey(animeThemeList.curAnimeTheme.backgroundImagePath),
-              imagePath: animeThemeList.curBackground,
+    return Stack(
+      children: [
+        AnimatedSwitcher(
+          duration: const Duration(seconds: 1),
+          child: BackgroundImage(
+            key: ValueKey(animeThemeList.curAnimeTheme.backgroundImagePath),
+            imagePath: animeThemeList.curBackground,
+          ),
+        ),
+        SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: TextButton.icon(
+              style: TextButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  backgroundColor:
+                      animeThemeList.curAnimeTheme.elevatedButtonPrimary),
+              onPressed: () => Navigator.pop(context),
+              icon: const Icon(Icons.arrow_back_ios_new),
+              label: const Text('Back'),
             ),
           ),
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: TextButton.icon(
-                style: TextButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
-                    backgroundColor:
-                        animeThemeList.curAnimeTheme.elevatedButtonPrimary),
-                onPressed: () => Navigator.pop(context),
-                icon: const Icon(Icons.arrow_back_ios_new),
-                label: const Text('Back'),
-              ),
-            ),
-          ),
-          const Positioned(
-            right: 0,
-            child: ImageSelectionBar(),
-          ),
-        ],
-      ),
+        ),
+        const Positioned(right: 0, child: ImageSelectionBar()),
+      ],
     );
   }
 }

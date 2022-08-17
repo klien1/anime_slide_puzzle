@@ -1,6 +1,7 @@
 import 'package:anime_slide_puzzle/components/image_selection/image_selection_layout/image_selection_layout_landscape.dart';
 import 'package:anime_slide_puzzle/components/image_selection/image_selection_layout/image_selection_layout_portrait.dart';
 import 'package:anime_slide_puzzle/models/anime_theme_list.dart';
+import 'package:anime_slide_puzzle/models/number_puzzle_tiles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:anime_slide_puzzle/constants.dart';
@@ -27,19 +28,17 @@ class _ImageSelectionScreenState extends State<ImageSelectionScreen> {
     } else {
       _preloadNoCharacterBackground();
     }
+    _preloadPuzzleImage();
   }
 
-  void _preloadCharacterBackground() async {
-    if (!mounted) return;
+  void _preloadCharacterBackground() {
     final AnimeThemeList animeThemeList = context.watch<AnimeThemeList>();
     for (int i = 0; i < animeThemeList.listLength; ++i) {
-      if (!mounted) break;
       precacheImage(
         AssetImage(animeThemeList.getAnimeThemeAtIndex(i).backgroundImagePath),
         context,
       );
     }
-    if (!mounted) return;
     precacheImage(
       AssetImage(animeThemeList
           .getAnimeThemeAtIndex(animeThemeList.curIndex)
@@ -49,10 +48,8 @@ class _ImageSelectionScreenState extends State<ImageSelectionScreen> {
   }
 
   void _preloadNoCharacterBackground() {
-    if (!mounted) return;
     final AnimeThemeList animeThemeList = context.watch<AnimeThemeList>();
     for (int i = 0; i < animeThemeList.listLength; ++i) {
-      if (!mounted) break;
       precacheImage(
         AssetImage(
             animeThemeList.getAnimeThemeAtIndex(i).puzzleBackgroundImagePath!),
@@ -61,14 +58,21 @@ class _ImageSelectionScreenState extends State<ImageSelectionScreen> {
     }
   }
 
+  void _preloadPuzzleImage() {
+    final AnimeThemeList animeThemeList = context.watch<AnimeThemeList>();
+    precacheImage(AssetImage(animeThemeList.curPuzzle), context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
-      if (constraints.maxWidth > constraints.maxHeight) {
-        return const ImageSelectionLayoutLandscape();
-      } else {
-        return const ImageSelectionLayoutPortrait();
-      }
+      return ChangeNotifierProvider<NumberPuzzleTiles>(
+        create: (BuildContext context) => NumberPuzzleTiles(),
+        child: Scaffold(
+            body: (constraints.maxWidth > constraints.maxHeight)
+                ? const ImageSelectionLayoutLandscape()
+                : const ImageSelectionLayoutPortrait()),
+      );
     });
   }
 }

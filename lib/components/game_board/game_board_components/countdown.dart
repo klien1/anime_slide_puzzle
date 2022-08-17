@@ -18,18 +18,19 @@ class Countdown extends StatelessWidget {
         int curCountdown = value.item2;
 
         return (!isShuffling)
-            ? const SizedBox()
+            ? const SizedBox.shrink()
             : AnimatedSwitcher(
                 duration: const Duration(milliseconds: 800),
                 transitionBuilder: (child, animation) => ScaleTransition(
-                      scale: animation,
-                      child: child,
-                    ),
+                  scale: animation,
+                  child: child,
+                ),
                 child: Text(
-                    (curCountdown == 0) ? 'GO!' : curCountdown.toString(),
-                    style: TextStyle(fontSize: textSize)));
+                  (curCountdown == 0) ? 'GO!' : curCountdown.toString(),
+                  style: TextStyle(fontSize: textSize),
+                ),
+              );
       },
-      child: const SizedBox(),
     );
   }
 }

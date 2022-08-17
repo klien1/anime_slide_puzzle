@@ -68,11 +68,9 @@ class _GameBoardTile extends State<GameBoardTile> {
       child: GestureDetector(
         onTap: (puzzleBoard.isLookingForSolution)
             ? null
-            : () {
-                puzzleBoard.moveTile(
+            : () => puzzleBoard.moveTile(
                   correctTileCoordinate: widget.tile.correctCoordinate,
-                );
-              },
+                ),
         child: MouseRegion(
           onEnter: (event) => setState(() => isHovered = true),
           onExit: (event) => setState(() => isHovered = false),

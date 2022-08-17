@@ -11,23 +11,17 @@ class ImageSelectionLayoutPortrait extends StatelessWidget {
   Widget build(BuildContext context) {
     AnimeThemeList animeThemeList = context.watch<AnimeThemeList>();
 
-    return Scaffold(
-      body: Stack(children: [
-        AnimatedSwitcher(
-          duration: const Duration(seconds: 1),
-          child: BackgroundImage(
-            key: ValueKey(
-                animeThemeList.curAnimeTheme.puzzleBackgroundImagePath),
-            imagePath: animeThemeList.curPuzzleBackground,
-            fit: BoxFit.fill,
-          ),
+    return Stack(children: [
+      AnimatedSwitcher(
+        duration: const Duration(seconds: 1),
+        child: BackgroundImage(
+          key: ValueKey(animeThemeList.curAnimeTheme.puzzleBackgroundImagePath),
+          imagePath: animeThemeList.curPuzzleBackground,
+          fit: BoxFit.fill,
         ),
-        const SafeArea(child: BackButton()),
-        const Align(
-          alignment: Alignment.center,
-          child: ImageSelectionBar(),
-        ),
-      ]),
-    );
+      ),
+      const SafeArea(child: BackButton()),
+      const Align(alignment: Alignment.center, child: ImageSelectionBar()),
+    ]);
   }
 }

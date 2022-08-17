@@ -1,8 +1,6 @@
 import 'package:anime_slide_puzzle/components/game_board/game_board_components/game_board_tile.dart';
-import 'package:anime_slide_puzzle/models/number_puzzle_tiles.dart';
 import 'package:anime_slide_puzzle/models/puzzle_board.dart';
 import 'package:anime_slide_puzzle/models/puzzle_tile.dart';
-import 'package:anime_slide_puzzle/screens/congratulations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -20,53 +18,32 @@ class GameBoard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    context.watch<NumberPuzzleTiles>();
-
-    return Selector<PuzzleBoard, bool>(
-      selector: (_, puzzleBoard) => puzzleBoard.isPuzzleCompleted,
-      builder: (_, puzzleCompleted, child) {
-        if (puzzleCompleted) {
-          Future.delayed(
-            Duration.zero,
-            () => showDialog(
-              context: context,
-              builder: (context) => const Congratulations(),
-            ),
-          );
-        }
-        return Container(
-          decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.25),
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: Colors.black)),
-          width: width + tilePadding * 2,
-          height: height + tilePadding * 2,
-          child: Consumer<NumberPuzzleTiles>(
-            builder: (_, value, child) {
-              // watch for dimension changes to
-              // prevent out of range index error when puzzle tile changes
-              List<List<PuzzleTile>> puzzleMatrix =
-                  context.read<PuzzleBoard>().correctTileMatrix;
-              return Stack(
-                children: [
-                  for (int row = 0; row < puzzleMatrix.length; ++row)
-                    for (int col = 0; col < puzzleMatrix[row].length; ++col)
-                      Selector<PuzzleBoard, PuzzleTile>(
-                        selector: (_, board) =>
-                            board.correctTileMatrix[row][col],
-                        builder: (context, tile, child) => GameBoardTile(
-                          tile: tile,
-                          width: width,
-                          height: height,
-                          tilePadding: tilePadding,
-                        ),
-                      )
-                ],
-              );
-            },
-          ),
-        );
-      },
+    List<List<PuzzleTile>> puzzleMatrix =
+        context.read<PuzzleBoard>().correctTileMatrix;
+    return Container(
+      decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.25),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Colors.black)),
+      width: width + tilePadding * 2,
+      height: height + tilePadding * 2,
+      child: Stack(
+        children: [
+          for (int row = 0; row < puzzleMatrix.length; ++row)
+            for (int col = 0; col < puzzleMatrix[row].length; ++col)
+              Selector<PuzzleBoard, PuzzleTile>(
+                selector: (_, board) => board.correctTileMatrix[row][col],
+                builder: (context, tile, child) => (tile.isBlankTile)
+                    ? const SizedBox.shrink()
+                    : GameBoardTile(
+                        tile: tile,
+                        width: width,
+                        height: height,
+                        tilePadding: tilePadding,
+                      ),
+              ),
+        ],
+      ),
     );
   }
 }
