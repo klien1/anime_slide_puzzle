@@ -3,15 +3,18 @@ import 'package:flutter/material.dart';
 
 class GameTimer extends ChangeNotifier {
   GameTimer();
-  GameTimer.initalTime({required int seconds}) : _seconds = seconds;
 
-  Timer? gameTime;
+  Timer? gameTimer;
   int _seconds = 0;
 
   void startTimer() {
-    gameTime = Timer.periodic(const Duration(seconds: 1), (timer) {
-      ++_seconds;
-      notifyListeners();
+    gameTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      try {
+        ++_seconds;
+        notifyListeners();
+      } catch (e) {
+        timer.cancel();
+      }
     });
   }
 
@@ -21,7 +24,7 @@ class GameTimer extends ChangeNotifier {
   }
 
   void endTimer() {
-    gameTime?.cancel();
+    gameTimer?.cancel();
   }
 
   String _shouldAddZero(int num) {

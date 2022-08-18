@@ -212,18 +212,22 @@ class PuzzleBoard extends ChangeNotifier {
   }
 
   Future<void> timedShuffled() async {
-    toggleShuffle();
-    while (_curCountdown > 0) {
-      _shuffleBoard();
-      await Future.delayed(const Duration(seconds: 1));
-      --_curCountdown;
+    try {
+      toggleShuffle();
+      while (_curCountdown > 0) {
+        _shuffleBoard();
+        await Future.delayed(const Duration(seconds: 1));
+        --_curCountdown;
+      }
+
+      // delay isShuffling notification to display start message
+      notifyListeners();
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      toggleShuffle();
+    } catch (e) {
+      _curCountdown = 0;
     }
-
-    // delay isShuffling notification to display start message
-    notifyListeners();
-    await Future.delayed(const Duration(milliseconds: 500));
-
-    toggleShuffle();
   }
 
   void _shuffleBoard() {

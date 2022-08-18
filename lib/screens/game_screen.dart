@@ -18,17 +18,17 @@ class GameScreen extends StatelessWidget {
   const GameScreen({Key? key}) : super(key: key);
 
   static String id = 'game_screen_id';
+
+  static const double smallScreenPercentage = 0.65;
+  static const double mediumScreenPercentage = 0.65;
+  static const double largeScreenPercentage = 0.6;
+
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
-
-    const double smallScreenPercentage = 0.75;
-    const double mediumScreenPercentage = 0.65;
-    const double largeScreenPercentage = 0.6;
-
-    AnimeThemeList animeThemeList = context.read<AnimeThemeList>();
-    AnimeTheme animeTheme = animeThemeList.curAnimeTheme;
+    final AnimeThemeList animeThemeList = context.read<AnimeThemeList>();
+    final AnimeTheme animeTheme = animeThemeList.curAnimeTheme;
 
     final numTiles = context.read<NumberPuzzleTiles>().currentNumberOfTiles;
 

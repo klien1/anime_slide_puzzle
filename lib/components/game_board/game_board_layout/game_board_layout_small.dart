@@ -1,4 +1,3 @@
-import 'package:anime_slide_puzzle/components/game_board/game_board_components/congratulations.dart';
 import 'package:anime_slide_puzzle/components/game_board/game_board_components/countdown.dart';
 import 'package:anime_slide_puzzle/components/game_board/game_board_components/game_board.dart';
 import 'package:anime_slide_puzzle/components/game_board/game_board_components/game_board_reference_image.dart';
@@ -78,9 +77,10 @@ class GameBoardLayoutSmall extends StatelessWidget {
             height: puzzleHeight,
             tilePadding: puzzlePadding,
           ),
-          const SizedBox(height: 20),
-          const GameButtonControls(),
-          const SizedBox(height: 40),
+          const Padding(
+            padding: EdgeInsets.only(bottom: 25, top: 15),
+            child: GameButtonControls(),
+          ),
         ],
       ),
     );

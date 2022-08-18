@@ -1,123 +1,42 @@
-import 'package:anime_slide_puzzle/models/anime_theme.dart';
-import 'package:anime_slide_puzzle/models/anime_theme_list.dart';
-import 'package:anime_slide_puzzle/models/game_timer.dart';
-import 'package:anime_slide_puzzle/models/show_hints.dart';
+import 'package:anime_slide_puzzle/components/game_board/game_board_components/auto_solve_button.dart';
+import 'package:anime_slide_puzzle/components/game_board/game_board_components/show_hints_button.dart';
+import 'package:anime_slide_puzzle/components/game_board/game_board_components/start_game_button.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:anime_slide_puzzle/models/puzzle_board.dart';
 
-class GameButtonControls extends StatefulWidget {
-  const GameButtonControls(
-      {Key? key, this.spaceBetween = 10, this.useColumn = false})
-      : super(key: key);
+class GameButtonControls extends StatelessWidget {
+  const GameButtonControls({
+    Key? key,
+    this.spaceBetween = 10,
+    this.useColumn = false,
+  }) : super(key: key);
 
   final double spaceBetween;
   final bool useColumn;
 
-  @override
-  State<GameButtonControls> createState() => _GameButtonControlsState();
-}
-
-class _GameButtonControlsState extends State<GameButtonControls> {
-  Future<void> shuffleBoard() async {
-    if (!mounted) return;
-    context.read<GameTimer>().resetTimer();
-
-    PuzzleBoard puzzleBoard = context.read<PuzzleBoard>();
-    await puzzleBoard.startGame(3);
-
-    if (!mounted) return;
-    context.read<GameTimer>().startTimer();
-  }
-
-  List<Widget> _generateTextButtonControls(BuildContext context) {
-    PuzzleBoard puzzleBoard = context.watch<PuzzleBoard>();
-    ShowHints showHints = context.watch<ShowHints>();
-
+  List<Widget> _children() {
     return [
-      TextButton(
-        onPressed: (puzzleBoard.isLookingForSolution || puzzleBoard.isShuffling)
-            ? null
-            : () => shuffleBoard(),
-        child: (puzzleBoard.isGameInProgress)
-            ? const Text('Restart Game')
-            : const Text('Start Game'),
-      ),
-      SizedBox(height: widget.spaceBetween, width: widget.spaceBetween),
-      (!puzzleBoard.isGameInProgress || puzzleBoard.isShuffling)
-          ? const SizedBox()
-          : TextButton(
-              onPressed: (puzzleBoard.isLookingForSolution)
-                  ? null
-                  : () => puzzleBoard.autoSolve(),
-              child: const Text('Auto-Solve'),
-            ),
-      SizedBox(height: widget.spaceBetween, width: widget.spaceBetween),
-      if (!context.read<AnimeThemeList>().isLoadingImage)
-        TextButton(
-          onPressed: () => showHints.toggleShowHints(),
-          child: (showHints.isShowingHints)
-              ? const Text('Hide Hints')
-              : const Text('Show Hints'),
-        ),
-    ];
-  }
-
-  List<Widget> _generateElevatedButtonControls(BuildContext context) {
-    ShowHints showHints = context.watch<ShowHints>();
-    bool isLookingForSolution = context.select<PuzzleBoard, bool>(
-        (puzzleBoard) => puzzleBoard.isLookingForSolution);
-    bool isShuffling = context
-        .select<PuzzleBoard, bool>((puzzleBoard) => puzzleBoard.isShuffling);
-    bool isGameInProgress = context.select<PuzzleBoard, bool>(
-        (puzzleBoard) => puzzleBoard.isGameInProgress);
-
-    return [
-      ElevatedButton(
-        onPressed:
-            (isLookingForSolution || isShuffling) ? null : () => shuffleBoard(),
-        child: (isGameInProgress)
-            ? const Text('Restart Game')
-            : const Text('Start Game'),
-      ),
-      SizedBox(height: widget.spaceBetween, width: widget.spaceBetween),
-      (!isGameInProgress || isShuffling)
-          ? const SizedBox()
-          : ElevatedButton(
-              onPressed: (isLookingForSolution)
-                  ? null
-                  : () => context.read<PuzzleBoard>().autoSolve(),
-              child: const Text('Auto-Solve'),
-            ),
-      SizedBox(height: widget.spaceBetween, width: widget.spaceBetween),
-      if (!context.read<AnimeThemeList>().isLoadingImage)
-        ElevatedButton(
-          onPressed: () => showHints.toggleShowHints(),
-          child: (showHints.isShowingHints)
-              ? const Text('Hide Hints')
-              : const Text('Show Hints'),
-        ),
+      const StartGameButton(),
+      SizedBox(width: spaceBetween, height: spaceBetween),
+      const AutoSolveButton(),
+      SizedBox(width: spaceBetween, height: spaceBetween),
+      const ShowHintsButton(),
     ];
   }
 
   @override
   Widget build(BuildContext context) {
-    AnimeTheme animeTheme = context.read<AnimeThemeList>().curAnimeTheme;
-
-    return LayoutBuilder(builder: (context, constraints) {
-      return (widget.useColumn || constraints.maxWidth < 340)
-          ? Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: (animeTheme.name == 'jujutsu_kaisen')
-                  ? _generateElevatedButtonControls(context)
-                  : _generateTextButtonControls(context),
-            )
-          : Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: (animeTheme.name == 'jujutsu_kaisen')
-                  ? _generateElevatedButtonControls(context)
-                  : _generateTextButtonControls(context),
-            );
-    });
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return (useColumn || constraints.maxWidth < 340)
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: _children(),
+              )
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: _children(),
+              );
+      },
+    );
   }
 }
