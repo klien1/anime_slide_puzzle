@@ -2,8 +2,8 @@ import 'package:anime_slide_puzzle/components/game_board/game_board_components/g
 import 'package:anime_slide_puzzle/models/puzzle_tile.dart';
 import 'package:flutter/material.dart';
 
-class NoImagePuzzlePiece extends StatelessWidget {
-  const NoImagePuzzlePiece({
+class PuzzlePieceImageless extends StatelessWidget {
+  const PuzzlePieceImageless({
     Key? key,
     required this.width,
     required this.height,

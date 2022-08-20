@@ -57,16 +57,19 @@ class GameBoardLayoutMedium extends StatelessWidget {
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                (isShuffling)
-                    ? const Countdown(textSize: 50)
-                    : Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: const [
-                          GameTimerText(),
-                          Text(' | '),
-                          NumberOfMoves(),
-                        ],
-                      ),
+                SizedBox(
+                  width: puzzleWidth,
+                  child: (isShuffling)
+                      ? const Countdown(textSize: 50)
+                      : OverflowBar(
+                          overflowAlignment: OverflowBarAlignment.center,
+                          children: const [
+                            GameTimerText(),
+                            SizedBox(height: 10),
+                            NumberOfMoves(),
+                          ],
+                        ),
+                ),
                 const SizedBox(height: 20),
                 GameBoard(
                   width: puzzleWidth,
@@ -75,7 +78,7 @@ class GameBoardLayoutMedium extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(width: 40),
+            const SizedBox(width: 20),
           ],
         ),
       ),

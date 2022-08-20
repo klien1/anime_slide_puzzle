@@ -25,10 +25,10 @@ class ImageSelectionLayoutLandscape extends StatelessWidget {
             padding: const EdgeInsets.all(10.0),
             child: TextButton.icon(
               style: TextButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  backgroundColor:
-                      animeThemeList.curAnimeTheme.elevatedButtonPrimary),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
               onPressed: () => Navigator.pop(context),
               icon: const Icon(Icons.arrow_back_ios_new),
               label: const Text('Back'),

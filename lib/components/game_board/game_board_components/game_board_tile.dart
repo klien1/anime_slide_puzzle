@@ -1,5 +1,5 @@
-import 'package:anime_slide_puzzle/components/game_board/game_board_components/no_image_puzzle_piece.dart';
-import 'package:anime_slide_puzzle/components/game_board/game_board_components/background_puzzle_piece.dart';
+import 'package:anime_slide_puzzle/components/game_board/game_board_components/puzzle_piece_imageless.dart';
+import 'package:anime_slide_puzzle/components/game_board/game_board_components/puzzle_piece_background_image.dart';
 import 'package:anime_slide_puzzle/models/anime_theme_list.dart';
 import 'package:anime_slide_puzzle/models/coordinate.dart';
 import 'package:anime_slide_puzzle/models/puzzle_tile.dart';
@@ -18,7 +18,6 @@ class GameBoardTile extends StatefulWidget {
     this.tileBorderRadius = 10,
     this.positionDuration = defaultTileSpeed,
     this.scaleDuration = defaultTileSpeed,
-    this.textOpacityDuration = defaultTileSpeed,
   }) : super(key: key);
 
   final PuzzleTile tile;
@@ -28,7 +27,6 @@ class GameBoardTile extends StatefulWidget {
   final double tileBorderRadius;
   final Duration positionDuration;
   final Duration scaleDuration;
-  final Duration textOpacityDuration;
 
   @override
   State<GameBoardTile> createState() => _GameBoardTile();
@@ -36,28 +34,36 @@ class GameBoardTile extends StatefulWidget {
 
 class _GameBoardTile extends State<GameBoardTile> {
   bool isHovered = false;
+  late double animatedPositionLeft;
+  late double animatedPositionTop;
+  late double tileWidth;
+  late double tileHeight;
 
-  @override
-  Widget build(BuildContext context) {
-    final PuzzleBoard puzzleBoard = context.read<PuzzleBoard>();
-    final AnimeThemeList animeThemeList = context.read<AnimeThemeList>();
-
+  void _calculationTileDimensions(puzzleBoard) {
     // To calculate the dimensions of the tile, we divide the board width or height
     // we subtract the padding to have padding for right and bottom
-    final double tileWidth =
+    tileWidth =
         widget.width / puzzleBoard.numRowsOrColumns - widget.tilePadding;
-    final double tileHeight =
+    tileHeight =
         widget.height / puzzleBoard.numRowsOrColumns - widget.tilePadding;
 
     // To calculate the position of each tile we need to calculate the size of the tile with the padding
     // we also add an additional padding for the top and left
     final Coordinate curTileCoordiante = widget.tile.currentCoordinate;
 
-    final double animatedPositionLeft = widget.tilePadding +
+    animatedPositionLeft = widget.tilePadding +
         (tileWidth + widget.tilePadding) * curTileCoordiante.col;
 
-    final double animatedPositionTop = widget.tilePadding +
+    animatedPositionTop = widget.tilePadding +
         (tileHeight + widget.tilePadding) * curTileCoordiante.row;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final PuzzleBoard puzzleBoard = context.read<PuzzleBoard>();
+    final AnimeThemeList animeThemeList = context.read<AnimeThemeList>();
+
+    _calculationTileDimensions(puzzleBoard);
 
     return AnimatedPositioned(
       left: animatedPositionLeft,
@@ -65,34 +71,34 @@ class _GameBoardTile extends State<GameBoardTile> {
       duration: (puzzleBoard.isShuffling)
           ? const Duration(milliseconds: 800)
           : widget.positionDuration,
-      child: GestureDetector(
-        onTap: (puzzleBoard.isLookingForSolution)
-            ? null
-            : () => puzzleBoard.moveTile(
-                  correctTileCoordinate: widget.tile.correctCoordinate,
-                ),
-        child: MouseRegion(
-          onEnter: (event) => setState(() => isHovered = true),
-          onExit: (event) => setState(() => isHovered = false),
-          child: AnimatedScale(
-            duration: widget.scaleDuration,
-            scale: isHovered ? .90 : 1,
-            child: Opacity(
-              opacity: (widget.tile.isBlankTile) ? 0 : 1,
+      child: RepaintBoundary(
+        child: GestureDetector(
+          onTap: (puzzleBoard.isLookingForSolution)
+              ? null
+              : () => puzzleBoard.moveTile(
+                    correctTileCoordinate: widget.tile.correctCoordinate,
+                  ),
+          child: MouseRegion(
+            onEnter: (event) => setState(() => isHovered = true),
+            onExit: (event) => setState(() => isHovered = false),
+            child: AnimatedScale(
+              duration: widget.scaleDuration,
+              scale: isHovered ? .90 : 1,
               child: Material(
-                elevation: 10,
+                elevation: 5,
                 color: Colors.white.withOpacity(0),
                 child: (animeThemeList.isLoadingImage)
-                    ? NoImagePuzzlePiece(
+                    ? PuzzlePieceImageless(
                         height: tileHeight,
                         width: tileWidth,
                         tile: widget.tile,
                       )
-                    : BackgroundPuzzlePiece(
+                    : PuzzlePieceBackground(
                         tile: widget.tile,
                         tileHeight: tileHeight,
                         tileWidth: tileWidth,
                         curImagePath: animeThemeList.curPuzzle,
+                        numRowsOrColumn: puzzleBoard.numRowsOrColumns,
                       ),
               ),
             ),

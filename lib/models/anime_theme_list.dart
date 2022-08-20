@@ -11,7 +11,7 @@ class AnimeThemeList extends ChangeNotifier {
           logoImagePath: animeImage['logo'].toString(),
           backgroundImagePath: animeImage['background'].toString(),
           puzzleImagePath: animeImage['puzzle'].toString(),
-          puzzleBackgroundImagePath: animeImage['puzzleBackground']?.toString(),
+          puzzleBackgroundImagePath: animeImage['puzzleBackground'].toString(),
           primarySwatch: animeImage['primarySwatch'] as MaterialColor,
           backgroundColor: _tryToCast<Color>(animeImage['backgroundColor']),
           textButtonPrimary: _tryToCast<Color>(animeImage['textButtonPrimary']),
@@ -40,7 +40,7 @@ class AnimeThemeList extends ChangeNotifier {
   late String _curLogo;
   late String _curBackground;
   late String _curPuzzle;
-  String? _curPuzzleBackground;
+  late String _curPuzzleBackground;
 
   void changeTheme(int index) {
     if (index < 0 || index >= _animeThemeList.length) return;
@@ -78,7 +78,7 @@ class AnimeThemeList extends ChangeNotifier {
     return _curPuzzle;
   }
 
-  String? get curPuzzleBackground {
+  String get curPuzzleBackground {
     return _curPuzzleBackground;
   }
 

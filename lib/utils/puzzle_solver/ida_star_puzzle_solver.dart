@@ -1,7 +1,7 @@
 import 'dart:collection';
 import 'package:anime_slide_puzzle/models/coordinate.dart';
-import 'package:anime_slide_puzzle/puzzle_solver/ida_star_node.dart';
-import 'package:anime_slide_puzzle/puzzle_solver/puzzle_solver_helper.dart';
+import 'package:anime_slide_puzzle/utils/puzzle_solver/ida_star_node.dart';
+import 'package:anime_slide_puzzle/utils/puzzle_solver/puzzle_solver_helper.dart';
 import 'package:collection/collection.dart';
 
 class IDAStarPuzzleSolver {

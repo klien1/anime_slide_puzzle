@@ -5,7 +5,7 @@ import 'package:anime_slide_puzzle/models/coordinate.dart';
 void main() {
   test('tile number 11 should return (2,3)', () {
     Coordinate curCoord =
-        findCorrectTileCoordinate(index: 11, numRowOrColCount: 4);
+        findCorrectTileCoordinate(index: 11, numRowsOrColumns: 4);
     expect(curCoord, const Coordinate(row: 2, col: 3));
   });
 

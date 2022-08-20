@@ -2,8 +2,8 @@ import 'dart:math';
 
 import 'package:anime_slide_puzzle/models/puzzle_board.dart';
 import 'package:anime_slide_puzzle/models/coordinate.dart';
-import 'package:anime_slide_puzzle/puzzle_solver/ida_star_puzzle_solver.dart';
-import 'package:anime_slide_puzzle/puzzle_solver/puzzle_solver_helper.dart';
+import 'package:anime_slide_puzzle/utils/puzzle_solver/ida_star_puzzle_solver.dart';
+import 'package:anime_slide_puzzle/utils/puzzle_solver/puzzle_solver_helper.dart';
 import 'package:anime_slide_puzzle/utils/puzzle_board_helper.dart';
 import 'dart:collection';
 import 'package:anime_slide_puzzle/constants.dart';
@@ -56,7 +56,7 @@ class AutoSolver {
 
       final Coordinate correctPosition = findCorrectTileCoordinate(
         index: tileNum,
-        numRowOrColCount: puzzleBoard.numRowsOrColumns,
+        numRowsOrColumns: puzzleBoard.numRowsOrColumns,
       );
       final Coordinate curPos = puzzleBoard.findCurrentTileCoordiante(tileNum);
 

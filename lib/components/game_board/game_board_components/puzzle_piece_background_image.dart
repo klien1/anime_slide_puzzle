@@ -1,16 +1,15 @@
-import 'package:anime_slide_puzzle/models/puzzle_board.dart';
 import 'package:flutter/material.dart';
 import 'package:anime_slide_puzzle/models/puzzle_tile.dart';
 import 'package:anime_slide_puzzle/components/game_board/game_board_components/game_board_tile_number.dart';
-import 'package:provider/provider.dart';
 
-class BackgroundPuzzlePiece extends StatelessWidget {
-  const BackgroundPuzzlePiece({
+class PuzzlePieceBackground extends StatelessWidget {
+  const PuzzlePieceBackground({
     Key? key,
     required this.tile,
     required this.tileHeight,
     required this.tileWidth,
     required this.curImagePath,
+    required this.numRowsOrColumn,
     this.tileBorderRadius = 10,
   }) : super(key: key);
 
@@ -19,16 +18,9 @@ class BackgroundPuzzlePiece extends StatelessWidget {
   final double tileWidth;
   final double tileBorderRadius;
   final String curImagePath;
+  final int numRowsOrColumn;
 
-  Widget fullImage() {
-    return SizedBox(
-      height: tileHeight,
-      width: tileWidth,
-      child: Image(fit: BoxFit.cover, image: AssetImage(curImagePath)),
-    );
-  }
-
-  Widget dividedImage(int numRowsOrColumn) {
+  Offset _calcTileOffset() {
     final int curRow = tile.correctCoordinate.row;
     final int curCol = tile.correctCoordinate.col;
 
@@ -42,11 +34,14 @@ class BackgroundPuzzlePiece extends StatelessWidget {
     final topOffset = tileHeight / (numRowsOrColumn - 1);
     final leftOffset = tileWidth / (numRowsOrColumn - 1);
 
-    final originOffset = Offset(
+    return Offset(
       leftPosition + leftOffset * curCol,
       topPosition + topOffset * curRow,
     );
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Stack(
       alignment: Alignment.center,
       children: [
@@ -60,7 +55,7 @@ class BackgroundPuzzlePiece extends StatelessWidget {
               maxWidth: double.infinity,
               child: Transform.scale(
                 scale: numRowsOrColumn.toDouble(),
-                origin: originOffset,
+                origin: _calcTileOffset(),
                 child: SizedBox(
                   height: double.minPositive,
                   width: double.minPositive,
@@ -83,14 +78,5 @@ class BackgroundPuzzlePiece extends StatelessWidget {
         )
       ],
     );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // check if numTilesPerRowOrColumn == 1 to avoid divide by zero error
-    // we will return the full image if there is only 1 tile
-    int numRowsOrColumn =
-        context.select<PuzzleBoard, int>((value) => value.numRowsOrColumns);
-    return (numRowsOrColumn == 1) ? fullImage() : dividedImage(numRowsOrColumn);
   }
 }

@@ -36,9 +36,9 @@ const Map<String, Map<String, Object>> animeImageList = {
     'background': 'images/jujutsu_kaisen_background2_flipped.jpg',
     'puzzleBackground': 'images/jujutsu_kaisen_background2_no_characters.png',
     'primarySwatch': Colors.red,
-    'elevatedButtonPrimary': Color(0xFF8b0508),
+    'elevatedButtonPrimary': Colors.black,
     'textButtonPrimary': Colors.white,
-    'textButtonBackgroundColor': Colors.black,
+    'textButtonBackgroundColor': Color(0xFF8b0508),
   },
 };
 

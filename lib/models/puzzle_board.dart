@@ -3,7 +3,7 @@ import 'dart:math';
 
 import 'package:anime_slide_puzzle/models/coordinate.dart';
 import 'package:anime_slide_puzzle/models/puzzle_tile.dart';
-import 'package:anime_slide_puzzle/puzzle_solver/auto_solver.dart';
+import 'package:anime_slide_puzzle/utils/puzzle_solver/auto_solver.dart';
 import 'package:anime_slide_puzzle/utils/puzzle_board_helper.dart';
 import 'package:flutter/material.dart';
 
@@ -20,13 +20,15 @@ class PuzzleBoard extends ChangeNotifier {
 
   // initializes puzzle with number of rows or columns
   PuzzleBoard({required numRowsOrColumns})
-      : _numRowsOrColumns = numRowsOrColumns {
+      : assert(numRowsOrColumns > 1),
+        _numRowsOrColumns = numRowsOrColumns {
     resetBoard();
   }
 
   // initializes puzzle board with 2d matrix
   PuzzleBoard.intBoard({required List<List<int>> board})
-      : _numRowsOrColumns = board.length {
+      : assert(board.length > 1),
+        _numRowsOrColumns = board.length {
     _curPositionMatrix = board;
     _correctTileMatrix = _generatePuzzleMatrix(numRowsOrColumns);
     for (int row = 0; row < board.length; ++row) {
@@ -34,7 +36,7 @@ class PuzzleBoard extends ChangeNotifier {
         final curTileNumber = board[row][col];
         final Coordinate correctCoordinate = findCorrectTileCoordinate(
           index: curTileNumber,
-          numRowOrColCount: numRowsOrColumns,
+          numRowsOrColumns: numRowsOrColumns,
         );
         _correctTileMatrix[correctCoordinate.row][correctCoordinate.col] =
             PuzzleTile(
@@ -48,13 +50,19 @@ class PuzzleBoard extends ChangeNotifier {
 
   // solves the puzzle
   Future<void> autoSolve() async {
-    _toggleSolutionInProgress(true);
+    try {
+      _solutionInProgress = true;
+      notifyListeners();
 
-    AutoSolver autoSolve = AutoSolver(puzzleBoard: this);
-    await autoSolve.solve();
+      AutoSolver autoSolve = AutoSolver(puzzleBoard: this);
+      await autoSolve.solve();
 
-    _toggleSolutionInProgress(false);
-    _isPuzzleCompleted = false;
+      _solutionInProgress = false;
+      _isPuzzleCompleted = false;
+      notifyListeners();
+    } catch (e) {
+      // puzzle board destroyed
+    }
   }
 
   void resetBoard() {
@@ -70,6 +78,7 @@ class PuzzleBoard extends ChangeNotifier {
     }
   }
 
+  // generates a matrix with tiles current position
   List<List<int>> _generateTileNumberMatrix(int numRowsOrCols) {
     return List.generate(
         _numRowsOrColumns,
@@ -79,6 +88,7 @@ class PuzzleBoard extends ChangeNotifier {
         growable: false);
   }
 
+  // generates a matrix with the tiles correct posiion for animation
   List<List<PuzzleTile>> _generatePuzzleMatrix(int numRowsOrCols) {
     return List.generate(
         _numRowsOrColumns,
@@ -100,12 +110,6 @@ class PuzzleBoard extends ChangeNotifier {
   // tries to swap values for 2d matrix if it is within boundary
   // returns true if swap was successful
   bool swapPosMatrix({required Coordinate first, required Coordinate second}) {
-    // check if coordinates are within boundary
-    if (isOutOfBoundsMatrix(matrix: _curPositionMatrix, curPoint: first) ||
-        isOutOfBoundsMatrix(matrix: _curPositionMatrix, curPoint: second)) {
-      return false;
-    }
-
     final int tempVal = _curPositionMatrix[first.row][first.col];
     _curPositionMatrix[first.row][first.col] =
         _curPositionMatrix[second.row][second.col];
@@ -113,6 +117,7 @@ class PuzzleBoard extends ChangeNotifier {
     return true;
   }
 
+  // checks to see if the puzzle can be solved
   bool isPuzzleIsSolvable() {
     int numInversions = countTotalInversion(matrix: _curPositionMatrix);
 
@@ -124,18 +129,12 @@ class PuzzleBoard extends ChangeNotifier {
     return false;
   }
 
-  void _toggleSolutionInProgress(bool status) {
-    _solutionInProgress = status;
-    notifyListeners();
-  }
-
   void moveTilesUsingCurrentCoordinates({required Coordinate curCoord}) {
     final int tileNum = _curPositionMatrix[curCoord.row][curCoord.col];
     final Coordinate correctPosition = findCorrectTileCoordinate(
       index: tileNum,
-      numRowOrColCount: _numRowsOrColumns,
+      numRowsOrColumns: _numRowsOrColumns,
     );
-
     moveTile(correctTileCoordinate: correctPosition);
   }
 
@@ -157,18 +156,15 @@ class PuzzleBoard extends ChangeNotifier {
       ++_numberOfMoves;
 
       if (_isPuzzleTileInCorrectPosition() && _gameInProgress) {
-        _puzzleCompleted();
+        _isPuzzleCompleted = true;
+        _gameInProgress = false;
       }
 
       notifyListeners();
     }
   }
 
-  void _puzzleCompleted() {
-    _isPuzzleCompleted = true;
-    _gameInProgress = false;
-  }
-
+  // flattens matrix into 1-dimensional array to solve puzzle
   List<int> flattenPositionMatrix() {
     List<int> flatten = [];
     for (List<int> element in _curPositionMatrix) {
@@ -181,51 +177,57 @@ class PuzzleBoard extends ChangeNotifier {
   Coordinate findCurrentTileCoordiante(int tileNum) {
     Coordinate correctCoord = findCorrectTileCoordinate(
       index: tileNum,
-      numRowOrColCount: _numRowsOrColumns,
+      numRowsOrColumns: _numRowsOrColumns,
     );
-    Coordinate curTileCoordinate = _correctTileMatrix[correctCoord.row]
+    Coordinate currentTileCoordinate = _correctTileMatrix[correctCoord.row]
             [correctCoord.col]
         .currentCoordinate;
 
-    return curTileCoordinate;
+    return currentTileCoordinate;
   }
 
-  bool isAdjacentToEmptyTile(Coordinate curTileCoordinate) {
-    Coordinate curBlankPos = currentBlankTileCoordiante;
+  // checks to see if current coordinate is adjacent to blank tile
+  bool isAdjacentToEmptyTile(Coordinate curCoord) {
+    Coordinate blankPos = currentBlankTileCoordiante;
 
-    return curTileCoordinate ==
-            curBlankPos.calculateAdjacent(direction: Direction.right) ||
-        curTileCoordinate ==
-            curBlankPos.calculateAdjacent(direction: Direction.left) ||
-        curTileCoordinate ==
-            curBlankPos.calculateAdjacent(direction: Direction.bottom) ||
-        curTileCoordinate ==
-            curBlankPos.calculateAdjacent(direction: Direction.top);
+    return curCoord == blankPos.calculateAdjacent(direction: Direction.right) ||
+        curCoord == blankPos.calculateAdjacent(direction: Direction.left) ||
+        curCoord == blankPos.calculateAdjacent(direction: Direction.bottom) ||
+        curCoord == blankPos.calculateAdjacent(direction: Direction.top);
   }
 
+  // initializes gameboard and shuffles the board
   Future<void> startGame(int countdown) async {
     _numberOfMoves = 0;
     _gameInProgress = true;
     _isPuzzleCompleted = false;
-    _curCountdown = countdown;
-    await timedShuffled();
+    await timedShuffled(countdown);
   }
 
-  Future<void> timedShuffled() async {
-    toggleShuffle();
-    while (_curCountdown > 0) {
-      _shuffleBoard();
-      await Future.delayed(const Duration(seconds: 1));
-      --_curCountdown;
+  // shuffles the game board counting down from initialCountdown
+  Future<void> timedShuffled(int initialCountdown) async {
+    _curCountdown = initialCountdown;
+    try {
+      _isShuffling = !_isShuffling;
+      notifyListeners();
+      while (_curCountdown > 0) {
+        _shuffleBoard();
+        await Future.delayed(const Duration(seconds: 1));
+        --_curCountdown;
+      }
+
+      // delay isShuffling notification to display message before game starts
+      notifyListeners();
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      _isShuffling = !_isShuffling;
+      notifyListeners();
+    } catch (e) {
+      _curCountdown = 0;
     }
-
-    // delay isShuffling notification to display start message
-    notifyListeners();
-    await Future.delayed(const Duration(milliseconds: 500));
-
-    toggleShuffle();
   }
 
+  // shuffles the game board until board is solvable and not in the starting position
   void _shuffleBoard() {
     notifyListeners();
     do {
@@ -238,6 +240,7 @@ class PuzzleBoard extends ChangeNotifier {
     notifyListeners();
   }
 
+  // checks if all tiles are in the correct position
   bool _isPuzzleTileInCorrectPosition() {
     for (List<PuzzleTile> puzzleList in _correctTileMatrix) {
       for (PuzzleTile tile in puzzleList) {
@@ -247,17 +250,14 @@ class PuzzleBoard extends ChangeNotifier {
     return true;
   }
 
-  void toggleShuffle() {
-    _isShuffling = !_isShuffling;
-    notifyListeners();
-  }
-
+  // randomly selects a puzzle tile
   PuzzleTile _getRandomTile() {
     Random rng = Random();
     return _correctTileMatrix[rng.nextInt(_numRowsOrColumns)]
         [rng.nextInt(_numRowsOrColumns)];
   }
 
+  // swap two tile's current position
   void _swapTiles(PuzzleTile firstTile, PuzzleTile secondTile) {
     if (firstTile == secondTile ||
         isOutOfBoundsMatrix(

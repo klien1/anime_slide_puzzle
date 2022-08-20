@@ -1,4 +1,4 @@
-import 'package:anime_slide_puzzle/components/image_selection/image_selection_components/circle_transition_button.dart';
+import 'package:anime_slide_puzzle/components/circle_transition_button.dart';
 import 'package:anime_slide_puzzle/components/image_selection/image_selection_components/game_select_board_size.dart';
 import 'package:anime_slide_puzzle/components/image_selection/image_selection_components/image_selection_icon.dart';
 import 'package:anime_slide_puzzle/models/anime_theme_list.dart';

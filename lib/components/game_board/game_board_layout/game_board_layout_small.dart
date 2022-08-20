@@ -1,4 +1,3 @@
-import 'package:anime_slide_puzzle/components/game_board/game_board_components/congratulations.dart';
 import 'package:anime_slide_puzzle/components/game_board/game_board_components/countdown.dart';
 import 'package:anime_slide_puzzle/components/game_board/game_board_components/game_board.dart';
 import 'package:anime_slide_puzzle/components/game_board/game_board_components/game_board_reference_image.dart';
@@ -26,16 +25,19 @@ class GameBoardLayoutSmall extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AnimeThemeList animeThemeList = context.read<AnimeThemeList>();
-    AnimeTheme animeTheme = animeThemeList.curAnimeTheme;
-    bool isShuffling = context
+    final AnimeThemeList animeThemeList = context.read<AnimeThemeList>();
+    final AnimeTheme animeTheme = animeThemeList.curAnimeTheme;
+    final bool isShuffling = context
         .select<PuzzleBoard, bool>((puzzleBoard) => puzzleBoard.isShuffling);
+
+    final double screenHeightThreshold =
+        MediaQuery.of(context).size.height * .5;
 
     return SafeArea(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          const SizedBox(height: 30),
+          const SizedBox(height: 20),
           Flexible(
             child: SizedHeroImage(
               animeTheme: animeTheme,
@@ -74,13 +76,18 @@ class GameBoardLayoutSmall extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           GameBoard(
-            width: puzzleWidth,
-            height: puzzleHeight,
+            width: (puzzleHeight > screenHeightThreshold)
+                ? screenHeightThreshold
+                : puzzleWidth,
+            height: (puzzleHeight > screenHeightThreshold)
+                ? screenHeightThreshold
+                : puzzleHeight,
             tilePadding: puzzlePadding,
           ),
-          const SizedBox(height: 20),
-          const GameButtonControls(),
-          const SizedBox(height: 40),
+          const Padding(
+            padding: EdgeInsets.only(bottom: 25, top: 15),
+            child: GameButtonControls(),
+          ),
         ],
       ),
     );

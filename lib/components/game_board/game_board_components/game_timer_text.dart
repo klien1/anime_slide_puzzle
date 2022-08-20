@@ -12,6 +12,7 @@ class GameTimerText extends StatelessWidget {
   Widget build(BuildContext context) {
     bool isPuzzleCompleted = context.select<PuzzleBoard, bool>(
         (puzzleBoard) => puzzleBoard.isPuzzleCompleted);
+
     GameTimer gameTimer = context.watch<GameTimer>();
 
     if (isPuzzleCompleted) gameTimer.endTimer();

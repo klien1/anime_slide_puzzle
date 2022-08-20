@@ -69,16 +69,10 @@ class GameBoardLayoutLarge extends StatelessWidget {
               children: const [
                 Flexible(
                   flex: 2,
-                  child: GameBoardReferenceImage(
-                    width: 200,
-                    height: 200,
-                  ),
+                  child: GameBoardReferenceImage(width: 200, height: 200),
                 ),
                 Flexible(
-                  child: GameButtonControls(
-                    spaceBetween: 30,
-                    useColumn: true,
-                  ),
+                  child: GameButtonControls(spaceBetween: 30, useColumn: true),
                 ),
               ],
             ),

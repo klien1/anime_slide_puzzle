@@ -33,7 +33,7 @@ int findManhattanDistanceWithTileNumber({
 }) {
   Coordinate correctCoord = findCorrectTileCoordinate(
     index: tileNum,
-    numRowOrColCount: numRowsOrColumns,
+    numRowsOrColumns: numRowsOrColumns,
   );
 
   return calcManhattanDist(first: correctCoord, second: currentCoordinate);
