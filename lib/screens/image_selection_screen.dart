@@ -42,7 +42,7 @@ class _ImageSelectionScreenState extends State<ImageSelectionScreen> {
     precacheImage(
       AssetImage(animeThemeList
           .getAnimeThemeAtIndex(animeThemeList.curIndex)
-          .puzzleBackgroundImagePath!),
+          .puzzleBackgroundImagePath),
       context,
     );
   }
@@ -52,7 +52,7 @@ class _ImageSelectionScreenState extends State<ImageSelectionScreen> {
     for (int i = 0; i < animeThemeList.listLength; ++i) {
       precacheImage(
         AssetImage(
-            animeThemeList.getAnimeThemeAtIndex(i).puzzleBackgroundImagePath!),
+            animeThemeList.getAnimeThemeAtIndex(i).puzzleBackgroundImagePath),
         context,
       );
     }
@@ -69,9 +69,10 @@ class _ImageSelectionScreenState extends State<ImageSelectionScreen> {
       return ChangeNotifierProvider<NumberPuzzleTiles>(
         create: (BuildContext context) => NumberPuzzleTiles(),
         child: Scaffold(
-            body: (constraints.maxWidth > constraints.maxHeight)
-                ? const ImageSelectionLayoutLandscape()
-                : const ImageSelectionLayoutPortrait()),
+          body: (constraints.maxWidth > constraints.maxHeight)
+              ? const ImageSelectionLayoutLandscape()
+              : const ImageSelectionLayoutPortrait(),
+        ),
       );
     });
   }

@@ -22,9 +22,7 @@ class ImageSelectionIcon extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Hero(
           tag: themeName,
-          child: Image(
-            image: AssetImage(imagePath),
-          ),
+          child: Image(image: AssetImage(imagePath)),
         ),
       ),
     );

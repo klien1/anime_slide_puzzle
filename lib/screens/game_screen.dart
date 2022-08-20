@@ -18,8 +18,7 @@ class GameScreen extends StatelessWidget {
   const GameScreen({Key? key}) : super(key: key);
 
   static String id = 'game_screen_id';
-
-  static const double smallScreenPercentage = 0.65;
+  static const double smallScreenPercentage = 0.7;
   static const double mediumScreenPercentage = 0.65;
   static const double largeScreenPercentage = 0.6;
 

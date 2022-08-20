@@ -1,10 +1,10 @@
 import 'dart:collection';
 import 'package:anime_slide_puzzle/models/coordinate.dart';
 import 'package:anime_slide_puzzle/models/puzzle_board.dart';
-import 'package:anime_slide_puzzle/puzzle_solver/auto_solver.dart';
-import 'package:anime_slide_puzzle/puzzle_solver/ida_star_puzzle_solver.dart';
+import 'package:anime_slide_puzzle/utils/puzzle_solver/auto_solver.dart';
+import 'package:anime_slide_puzzle/utils/puzzle_solver/ida_star_puzzle_solver.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:anime_slide_puzzle/puzzle_solver/puzzle_solver_helper.dart';
+import 'package:anime_slide_puzzle/utils/puzzle_solver/puzzle_solver_helper.dart';
 
 void main() {
   test('getTotalManhattanDistance should be 5', () {

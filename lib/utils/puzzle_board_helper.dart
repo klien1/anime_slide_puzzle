@@ -2,10 +2,10 @@ import 'package:anime_slide_puzzle/models/coordinate.dart';
 
 Coordinate findCorrectTileCoordinate({
   required int index,
-  required int numRowOrColCount,
+  required int numRowsOrColumns,
 }) {
-  final int row = index ~/ numRowOrColCount;
-  final int col = index % numRowOrColCount;
+  final int row = index ~/ numRowsOrColumns;
+  final int col = index % numRowsOrColumns;
   return Coordinate(row: row, col: col);
 }
 

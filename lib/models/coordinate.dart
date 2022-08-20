@@ -15,10 +15,8 @@ class Coordinate extends Equatable {
   final int _row;
   final int _col;
 
-  const Coordinate({
-    required int row,
-    required int col,
-  })  : _row = row,
+  const Coordinate({required int row, required int col})
+      : _row = row,
         _col = col;
 
   int get row {

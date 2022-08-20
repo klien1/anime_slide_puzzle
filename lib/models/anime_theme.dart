@@ -7,7 +7,7 @@ class AnimeTheme {
     required this.backgroundImagePath,
     required this.puzzleImagePath,
     required this.index,
-    this.puzzleBackgroundImagePath,
+    required this.puzzleBackgroundImagePath,
     this.primarySwatch,
     this.backgroundColor,
     this.elevatedButtonPrimary,
@@ -22,11 +22,10 @@ class AnimeTheme {
   final String backgroundImagePath;
   final String puzzleImagePath;
   final int index;
+  final String puzzleBackgroundImagePath;
 
-  final String? puzzleBackgroundImagePath;
   final MaterialColor? primarySwatch;
   final Color? backgroundColor;
-
   final Color? elevatedButtonPrimary;
   final Color? elevatedButtonOnPrimary;
   final Color? textButtonPrimary;

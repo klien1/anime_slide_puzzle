@@ -1,4 +1,4 @@
-import 'package:anime_slide_puzzle/components/image_selection/image_selection_components/circle_transition_button.dart';
+import 'package:anime_slide_puzzle/components/circle_transition_button.dart';
 import 'package:anime_slide_puzzle/models/anime_theme_list.dart';
 import 'package:anime_slide_puzzle/screens/image_selection_screen.dart';
 import 'package:provider/provider.dart';
@@ -41,7 +41,7 @@ class _WelcomeState extends State<Welcome> {
     await precacheImage(
       AssetImage(animeThemeList
           .getAnimeThemeAtIndex(curIndex)
-          .puzzleBackgroundImagePath!),
+          .puzzleBackgroundImagePath),
       context,
     );
 
@@ -94,7 +94,8 @@ class _WelcomeState extends State<Welcome> {
                             ),
                           ),
                           textStyle: const TextStyle(
-                              color: kWelcomeScreenButtonTextColor),
+                            color: kWelcomeScreenButtonTextColor,
+                          ),
                         ),
                       ],
                     )
