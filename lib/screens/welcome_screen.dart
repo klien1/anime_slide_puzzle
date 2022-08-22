@@ -11,8 +11,6 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 class Welcome extends StatefulWidget {
   const Welcome({Key? key}) : super(key: key);
 
-  static String id = 'welcome_screen';
-
   @override
   State<Welcome> createState() => _WelcomeState();
 }

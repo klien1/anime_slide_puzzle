@@ -10,22 +10,45 @@ class GameTimerText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool isPuzzleCompleted = context.select<PuzzleBoard, bool>(
-        (puzzleBoard) => puzzleBoard.isPuzzleCompleted);
-
-    GameTimer gameTimer = context.watch<GameTimer>();
-
-    if (isPuzzleCompleted) gameTimer.endTimer();
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(bottom: 5),
-          child: Icon(Icons.alarm_rounded, size: size),
-        ),
+        Icon(Icons.alarm_rounded, size: size),
         const SizedBox(width: 5),
-        Text(gameTimer.totalTimeWithoutHours, style: TextStyle(fontSize: size)),
+        _TimerText(size: size)
       ],
+    );
+  }
+}
+
+class _TimerText extends StatefulWidget {
+  const _TimerText({Key? key, this.size}) : super(key: key);
+
+  final double? size;
+
+  @override
+  State<_TimerText> createState() => _TimerTextState();
+}
+
+class _TimerTextState extends State<_TimerText> {
+  GameTimer? gameTimer;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    gameTimer = Provider.of<GameTimer>(context, listen: true);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    bool isPuzzleCompleted = context.select<PuzzleBoard, bool>(
+        (puzzleBoard) => puzzleBoard.isPuzzleCompleted);
+
+    if (isPuzzleCompleted) gameTimer?.endTimer();
+
+    return Text(
+      gameTimer?.elapsedTime ?? '00:00',
+      style: TextStyle(fontSize: widget.size),
     );
   }
 }

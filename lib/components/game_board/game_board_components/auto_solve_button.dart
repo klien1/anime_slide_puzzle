@@ -26,7 +26,7 @@ class AutoSolveButton extends StatelessWidget {
         : TextButton(
             onPressed: (isLookingForSolution)
                 ? null
-                : () => context.read<PuzzleBoard>().autoSolve(),
+                : context.read<PuzzleBoard>().autoSolve,
             child: const Text('Auto-Solve'),
           );
   }

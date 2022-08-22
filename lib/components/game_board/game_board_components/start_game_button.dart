@@ -13,14 +13,11 @@ class StartGameButton extends StatefulWidget {
 
 class _StartGameButtonState extends State<StartGameButton> {
   Future<void> shuffleBoard() async {
-    if (!mounted) return;
-    context.read<GameTimer>().resetTimer();
-
     PuzzleBoard puzzleBoard = context.read<PuzzleBoard>();
     await puzzleBoard.startGame(3);
 
     if (!mounted) return;
-    context.read<GameTimer>().startTimer();
+    context.read<GameTimer>().startStream();
   }
 
   @override
@@ -39,8 +36,7 @@ class _StartGameButtonState extends State<StartGameButton> {
     final bool isGameInProgress = boardStatus.item3;
 
     return TextButton(
-      onPressed:
-          (isLookingForSolution || isShuffling) ? null : () => shuffleBoard(),
+      onPressed: (isLookingForSolution || isShuffling) ? null : shuffleBoard,
       child: (isGameInProgress)
           ? const Text('Restart Game')
           : const Text('Start Game'),

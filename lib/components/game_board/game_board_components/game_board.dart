@@ -40,7 +40,7 @@ class GameBoard extends StatelessWidget {
                         width: width,
                         height: height,
                         tilePadding: tilePadding,
-                      ),
+                        numRowsOrColumns: puzzleMatrix.length),
               ),
         ],
       ),

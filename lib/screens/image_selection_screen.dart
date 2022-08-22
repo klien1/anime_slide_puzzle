@@ -9,8 +9,6 @@ import 'package:anime_slide_puzzle/constants.dart';
 class ImageSelectionScreen extends StatefulWidget {
   const ImageSelectionScreen({Key? key}) : super(key: key);
 
-  static const String id = 'image_selection_id';
-
   @override
   State<ImageSelectionScreen> createState() => _ImageSelectionScreenState();
 }

@@ -52,10 +52,9 @@ class ImageSelectionBar extends StatelessWidget {
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 10),
             child: CircleTransitionButton(
-              destinationScreen:
-                  ChangeNotifierProvider<NumberPuzzleTiles>.value(
-                value: context.read<NumberPuzzleTiles>(),
-                child: const GameScreen(),
+              destinationScreen: GameScreen(
+                numTiles:
+                    context.read<NumberPuzzleTiles>().currentNumberOfTiles,
               ),
               buttonText: 'Go to Puzzle',
             ),

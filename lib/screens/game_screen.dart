@@ -7,7 +7,6 @@ import 'package:anime_slide_puzzle/components/game_board/game_board_layout/game_
 import 'package:anime_slide_puzzle/models/anime_theme.dart';
 import 'package:anime_slide_puzzle/models/anime_theme_list.dart';
 import 'package:anime_slide_puzzle/models/game_timer.dart';
-import 'package:anime_slide_puzzle/models/number_puzzle_tiles.dart';
 import 'package:anime_slide_puzzle/models/puzzle_board.dart';
 import 'package:anime_slide_puzzle/models/show_hints.dart';
 import 'package:anime_slide_puzzle/utils/responsive_layout_helper.dart';
@@ -15,9 +14,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class GameScreen extends StatelessWidget {
-  const GameScreen({Key? key}) : super(key: key);
+  const GameScreen({Key? key, required this.numTiles}) : super(key: key);
 
-  static String id = 'game_screen_id';
+  final int numTiles;
+
   static const double smallScreenPercentage = 0.7;
   static const double mediumScreenPercentage = 0.65;
   static const double largeScreenPercentage = 0.6;
@@ -28,8 +28,6 @@ class GameScreen extends StatelessWidget {
     final double screenHeight = MediaQuery.of(context).size.height;
     final AnimeThemeList animeThemeList = context.read<AnimeThemeList>();
     final AnimeTheme animeTheme = animeThemeList.curAnimeTheme;
-
-    final numTiles = context.read<NumberPuzzleTiles>().currentNumberOfTiles;
 
     final gameProviders = [
       ChangeNotifierProvider<ShowHints>(create: (_) => ShowHints()),

@@ -17,7 +17,7 @@ class Congratulations extends StatelessWidget {
               () => showDialog(
                 context: context,
                 builder: (_) => _CongratulationsDialog(
-                  totalTime: context.read<GameTimer>().totalTimeWithoutHours,
+                  totalTime: context.read<GameTimer>().elapsedTime,
                   numMoves: context.read<PuzzleBoard>().numberOfMoves,
                 ),
               ),
