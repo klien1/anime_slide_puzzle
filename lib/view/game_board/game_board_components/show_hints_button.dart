@@ -1,4 +1,4 @@
-import 'package:anime_slide_puzzle/models/anime_theme_list.dart';
+import 'package:anime_slide_puzzle/repository/models/anime_theme_list.dart';
 import 'package:anime_slide_puzzle/models/show_hints.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

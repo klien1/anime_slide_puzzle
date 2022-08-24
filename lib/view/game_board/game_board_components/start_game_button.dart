@@ -4,20 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
-class StartGameButton extends StatefulWidget {
+class StartGameButton extends StatelessWidget {
   const StartGameButton({Key? key}) : super(key: key);
 
-  @override
-  State<StartGameButton> createState() => _StartGameButtonState();
-}
-
-class _StartGameButtonState extends State<StartGameButton> {
-  Future<void> shuffleBoard() async {
-    PuzzleBoard puzzleBoard = context.read<PuzzleBoard>();
-    await puzzleBoard.startGame(3);
-
-    if (!mounted) return;
-    context.read<GameTimer>().startStream();
+  void _startGame(BuildContext context) {
+    context.read<GameTimer>().endTimer();
+    context.read<PuzzleBoard>().startGame(3);
   }
 
   @override
@@ -36,7 +28,9 @@ class _StartGameButtonState extends State<StartGameButton> {
     final bool isGameInProgress = boardStatus.item3;
 
     return TextButton(
-      onPressed: (isLookingForSolution || isShuffling) ? null : shuffleBoard,
+      onPressed: (isLookingForSolution || isShuffling)
+          ? null
+          : () => _startGame(context),
       child: (isGameInProgress)
           ? const Text('Restart Game')
           : const Text('Start Game'),

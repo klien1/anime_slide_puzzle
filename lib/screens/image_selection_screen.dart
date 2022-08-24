@@ -1,6 +1,6 @@
-import 'package:anime_slide_puzzle/components/image_selection/image_selection_layout/image_selection_layout_landscape.dart';
-import 'package:anime_slide_puzzle/components/image_selection/image_selection_layout/image_selection_layout_portrait.dart';
-import 'package:anime_slide_puzzle/models/anime_theme_list.dart';
+import 'package:anime_slide_puzzle/view/image_selection/image_selection_layout/image_selection_layout_landscape.dart';
+import 'package:anime_slide_puzzle/view/image_selection/image_selection_layout/image_selection_layout_portrait.dart';
+import 'package:anime_slide_puzzle/repository/models/anime_theme_list.dart';
 import 'package:anime_slide_puzzle/models/number_puzzle_tiles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

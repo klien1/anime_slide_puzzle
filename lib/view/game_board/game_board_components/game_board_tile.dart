@@ -1,6 +1,6 @@
-import 'package:anime_slide_puzzle/components/game_board/game_board_components/puzzle_piece_imageless.dart';
-import 'package:anime_slide_puzzle/components/game_board/game_board_components/puzzle_piece_background_image.dart';
-import 'package:anime_slide_puzzle/models/anime_theme_list.dart';
+import 'package:anime_slide_puzzle/view/game_board/game_board_components/puzzle_piece_imageless.dart';
+import 'package:anime_slide_puzzle/view/game_board/game_board_components/puzzle_piece_background_image.dart';
+import 'package:anime_slide_puzzle/repository/models/anime_theme_list.dart';
 import 'package:anime_slide_puzzle/models/coordinate.dart';
 import 'package:anime_slide_puzzle/models/puzzle_tile.dart';
 import 'package:provider/provider.dart';

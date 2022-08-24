@@ -7,17 +7,15 @@ class GameTimer extends ChangeNotifier {
   int _seconds = 0;
   int _minutes = 0;
   StreamSubscription<int>? _streamSubscription;
-
-  void startTimer() {
-    _resetTimer();
-    startStream();
-  }
+  bool _isTimerInProgress = false;
 
   void endTimer() {
     _streamSubscription?.cancel();
+    _isTimerInProgress = false;
   }
 
   void startStream() {
+    _isTimerInProgress = true;
     _streamSubscription?.cancel();
     _resetTimer();
     _streamSubscription = Stream.periodic(const Duration(seconds: 1), (_) {
@@ -30,7 +28,7 @@ class GameTimer extends ChangeNotifier {
       try {
         notifyListeners();
       } catch (e) {
-        _streamSubscription?.cancel();
+        endTimer();
       }
     });
   }
@@ -38,6 +36,10 @@ class GameTimer extends ChangeNotifier {
   void _resetTimer() {
     _seconds = 0;
     _minutes = 0;
+  }
+
+  bool get isTimerInProgress {
+    return _isTimerInProgress;
   }
 
   String _shouldAddZero(int num) {

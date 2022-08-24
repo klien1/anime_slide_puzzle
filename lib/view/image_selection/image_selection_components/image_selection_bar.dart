@@ -1,7 +1,7 @@
-import 'package:anime_slide_puzzle/components/circle_transition_button.dart';
-import 'package:anime_slide_puzzle/components/image_selection/image_selection_components/game_select_board_size.dart';
-import 'package:anime_slide_puzzle/components/image_selection/image_selection_components/image_selection_icon.dart';
-import 'package:anime_slide_puzzle/models/anime_theme_list.dart';
+import 'package:anime_slide_puzzle/view/circle_transition_button.dart';
+import 'package:anime_slide_puzzle/view/image_selection/image_selection_components/game_select_board_size.dart';
+import 'package:anime_slide_puzzle/view/image_selection/image_selection_components/image_selection_icon.dart';
+import 'package:anime_slide_puzzle/repository/models/anime_theme_list.dart';
 import 'package:anime_slide_puzzle/models/number_puzzle_tiles.dart';
 import 'package:anime_slide_puzzle/screens/game_screen.dart';
 import 'package:flutter/material.dart';
@@ -54,7 +54,7 @@ class ImageSelectionBar extends StatelessWidget {
             child: CircleTransitionButton(
               destinationScreen: GameScreen(
                 numTiles:
-                    context.read<NumberPuzzleTiles>().currentNumberOfTiles,
+                    context.watch<NumberPuzzleTiles>().currentNumberOfTiles,
               ),
               buttonText: 'Go to Puzzle',
             ),

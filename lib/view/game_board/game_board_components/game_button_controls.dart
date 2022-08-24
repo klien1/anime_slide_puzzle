@@ -1,6 +1,6 @@
-import 'package:anime_slide_puzzle/components/game_board/game_board_components/auto_solve_button.dart';
-import 'package:anime_slide_puzzle/components/game_board/game_board_components/show_hints_button.dart';
-import 'package:anime_slide_puzzle/components/game_board/game_board_components/start_game_button.dart';
+import 'package:anime_slide_puzzle/view/game_board/game_board_components/auto_solve_button.dart';
+import 'package:anime_slide_puzzle/view/game_board/game_board_components/show_hints_button.dart';
+import 'package:anime_slide_puzzle/view/game_board/game_board_components/start_game_button.dart';
 import 'package:flutter/material.dart';
 
 class GameButtonControls extends StatelessWidget {

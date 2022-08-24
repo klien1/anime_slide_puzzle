@@ -1,11 +1,8 @@
-import 'package:anime_slide_puzzle/constants.dart';
 import 'package:anime_slide_puzzle/models/anime_theme.dart';
-import 'package:anime_slide_puzzle/models/anime_theme_list.dart';
-import 'package:anime_slide_puzzle/screens/game_screen.dart';
-import 'package:anime_slide_puzzle/screens/image_selection_screen.dart';
 import 'package:anime_slide_puzzle/screens/welcome_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:anime_slide_puzzle/repository/models/anime_theme_list.dart';
 
 void main() {
   runApp(const MyApp());
@@ -51,7 +48,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final globalProviers = [
       ChangeNotifierProvider<AnimeThemeList>(
-          create: (context) => AnimeThemeList(animeImageList: animeImageList),
+          create: (context) => AnimeThemeList(),
           builder: (context, child) {
             final AnimeTheme animeTheme =
                 context.select<AnimeThemeList, AnimeTheme>(

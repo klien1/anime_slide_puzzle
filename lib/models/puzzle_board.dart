@@ -208,8 +208,9 @@ class PuzzleBoard extends ChangeNotifier {
 
   // initializes gameboard and shuffles the board
   Future<void> startGame(int countdown) async {
+    _gameInProgress = false;
+    notifyListeners();
     _numberOfMoves = 0;
-    _gameInProgress = true;
     _isPuzzleCompleted = false;
     await timedShuffled(countdown);
   }
@@ -231,6 +232,7 @@ class PuzzleBoard extends ChangeNotifier {
       await Future.delayed(const Duration(milliseconds: 500));
 
       _isShuffling = !_isShuffling;
+      _gameInProgress = true;
       notifyListeners();
     } catch (e) {
       _curCountdown = 0;
@@ -287,22 +289,18 @@ class PuzzleBoard extends ChangeNotifier {
     // assign first tile
     int firstRow = firstTile.correctCoordinate.row;
     int firstCol = firstTile.correctCoordinate.col;
-    _correctTileMatrix[firstRow][firstCol] = PuzzleTile(
-      correctCoordinate: firstTile.correctCoordinate,
-      currentCoordinate: secondTile.currentCoordinate,
-      tileNumber: firstTile.tileNumber,
-      isBlank: firstTile.isBlankTile,
-    );
+
+    _correctTileMatrix[firstRow][firstCol] = _correctTileMatrix[firstRow]
+            [firstCol]
+        .copyWith(currentCoordinate: secondTile.currentCoordinate);
 
     // assign second tile
     int secondRow = secondTile.correctCoordinate.row;
     int secondCol = secondTile.correctCoordinate.col;
-    _correctTileMatrix[secondRow][secondCol] = PuzzleTile(
-      correctCoordinate: secondTile.correctCoordinate,
-      currentCoordinate: temp,
-      tileNumber: secondTile.tileNumber,
-      isBlank: secondTile.isBlankTile,
-    );
+
+    _correctTileMatrix[secondRow][secondCol] = _correctTileMatrix[secondRow]
+            [secondCol]
+        .copyWith(currentCoordinate: temp);
 
     swapPosMatrix(
       first: firstTile.currentCoordinate,
