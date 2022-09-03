@@ -39,11 +39,8 @@ class PuzzleBoard extends ChangeNotifier {
           numRowsOrColumns: numRowsOrColumns,
         );
         _correctTileMatrix[correctCoordinate.row][correctCoordinate.col] =
-            PuzzleTile(
-          correctCoordinate: correctCoordinate,
-          currentCoordinate: Coordinate(row: row, col: col),
-          tileNumber: curTileNumber,
-        );
+            _correctTileMatrix[correctCoordinate.row][correctCoordinate.col]
+                .copyWith(currentCoordinate: Coordinate(row: row, col: col));
       }
     }
   }

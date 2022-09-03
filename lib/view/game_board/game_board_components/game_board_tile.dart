@@ -42,12 +42,6 @@ class _GameBoardTile extends State<GameBoardTile> {
   late double animatedPositionLeft;
   late double animatedPositionTop;
 
-  @override
-  void initState() {
-    super.initState();
-    _calculateTileSize();
-  }
-
   void _calculateTileSize() {
     // To calculate the dimensions of the tile, we divide the board width or height
     // we subtract the padding to have padding for right and bottom
@@ -69,6 +63,7 @@ class _GameBoardTile extends State<GameBoardTile> {
 
   @override
   Widget build(BuildContext context) {
+    _calculateTileSize();
     // check current puzzle state
     final Tuple2 boardState = context.select<PuzzleBoard, Tuple2>(
         (puzzleBoard) =>
