@@ -1,3 +1,4 @@
+[![Codemagic build status](https://api.codemagic.io/apps/635363b34fab559e607d46c4/635363b34fab559e607d46c3/status_badge.svg)](https://codemagic.io/apps/635363b34fab559e607d46c4/635363b34fab559e607d46c3/latest_build)
 ## Anime Slide Puzzle
 
 A responsive slide puzzle game built using flutter.
