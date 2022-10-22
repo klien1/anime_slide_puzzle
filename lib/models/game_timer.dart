@@ -4,58 +4,49 @@ import 'package:flutter/material.dart';
 class GameTimer extends ChangeNotifier {
   GameTimer();
 
-  Timer? gameTimer;
   int _seconds = 0;
+  int _minutes = 0;
+  StreamSubscription<int>? _streamSubscription;
+  bool _isTimerInProgress = false;
 
-  void startTimer() {
-    gameTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+  void endTimer() {
+    _streamSubscription?.cancel();
+    _isTimerInProgress = false;
+  }
+
+  void startStream() {
+    _isTimerInProgress = true;
+    _streamSubscription?.cancel();
+    _resetTimer();
+    _streamSubscription = Stream.periodic(const Duration(seconds: 1), (_) {
+      return ++_seconds;
+    }).listen((seconds) {
+      if (seconds >= 60) {
+        _seconds = 0;
+        ++_minutes;
+      }
       try {
-        ++_seconds;
         notifyListeners();
       } catch (e) {
-        timer.cancel();
+        endTimer();
       }
     });
   }
 
-  void resetTimer() {
-    endTimer();
+  void _resetTimer() {
     _seconds = 0;
+    _minutes = 0;
   }
 
-  void endTimer() {
-    gameTimer?.cancel();
+  bool get isTimerInProgress {
+    return _isTimerInProgress;
   }
 
   String _shouldAddZero(int num) {
     return (num < 10) ? '0$num' : num.toString();
   }
 
-  String get seconds {
-    int actualSeconds = _seconds % 60;
-    return _shouldAddZero(actualSeconds);
-  }
-
-  String get minutes {
-    int acutualMinutes = (_seconds ~/ 60) % 60;
-    return _shouldAddZero(acutualMinutes);
-  }
-
-  String get minutesWithoutHours {
-    int acutualMinutes = _seconds ~/ 60;
-    return _shouldAddZero(acutualMinutes);
-  }
-
-  String get hours {
-    int acutalHours = _seconds ~/ 3600;
-    return _shouldAddZero(acutalHours);
-  }
-
-  String get totalTime {
-    return '$hours:$minutes:$seconds';
-  }
-
-  String get totalTimeWithoutHours {
-    return '$minutesWithoutHours:$seconds';
+  String get elapsedTime {
+    return '${_shouldAddZero(_minutes)}:${_shouldAddZero(_seconds)}';
   }
 }

@@ -21,7 +21,8 @@ class GameBoardTileNumber extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool showingHints = context.watch<ShowHints>().isShowingHints;
+    bool showingHints = context
+        .select<ShowHints, bool>((showHints) => showHints.isShowingHints);
 
     return SizedBox(
       height: tileHeight / 2,
@@ -40,7 +41,7 @@ class GameBoardTileNumber extends StatelessWidget {
                 duration: textOpacityDuration,
                 opacity: (!showingHints || tile.isBlankTile) ? 0 : 1,
                 child: _BorderedText(
-                  key: UniqueKey(),
+                  // key: UniqueKey(),
                   text: (tile.tileNumber + 1).toString(),
                   style: const TextStyle(fontFamily: 'JosefinSans'),
                   textColor: Colors.white,

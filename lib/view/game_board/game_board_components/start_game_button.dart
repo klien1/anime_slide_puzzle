@@ -1,10 +1,16 @@
+import 'package:anime_slide_puzzle/models/game_timer.dart';
 import 'package:anime_slide_puzzle/models/puzzle_board.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
-class AutoSolveButton extends StatelessWidget {
-  const AutoSolveButton({Key? key}) : super(key: key);
+class StartGameButton extends StatelessWidget {
+  const StartGameButton({Key? key}) : super(key: key);
+
+  void _startGame(BuildContext context) {
+    context.read<GameTimer>().endTimer();
+    context.read<PuzzleBoard>().startGame(3);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,13 +27,13 @@ class AutoSolveButton extends StatelessWidget {
     final bool isShuffling = boardStatus.item2;
     final bool isGameInProgress = boardStatus.item3;
 
-    return (!isGameInProgress || isShuffling)
-        ? const SizedBox.shrink()
-        : TextButton(
-            onPressed: (isLookingForSolution)
-                ? null
-                : () => context.read<PuzzleBoard>().autoSolve(),
-            child: const Text('Auto-Solve'),
-          );
+    return TextButton(
+      onPressed: (isLookingForSolution || isShuffling)
+          ? null
+          : () => _startGame(context),
+      child: (isGameInProgress)
+          ? const Text('Restart Game')
+          : const Text('Start Game'),
+    );
   }
 }

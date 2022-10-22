@@ -1,5 +1,5 @@
-import 'package:anime_slide_puzzle/components/circle_transition_button.dart';
-import 'package:anime_slide_puzzle/models/anime_theme_list.dart';
+import 'package:anime_slide_puzzle/view/circle_transition_button.dart';
+import 'package:anime_slide_puzzle/repository/models/anime_theme_list.dart';
 import 'package:anime_slide_puzzle/screens/image_selection_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
@@ -10,8 +10,6 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class Welcome extends StatefulWidget {
   const Welcome({Key? key}) : super(key: key);
-
-  static String id = 'welcome_screen';
 
   @override
   State<Welcome> createState() => _WelcomeState();

@@ -1,13 +1,12 @@
-import 'package:anime_slide_puzzle/components/background_image.dart';
-import 'package:anime_slide_puzzle/components/game_board/game_board_components/congratulations.dart';
-import 'package:anime_slide_puzzle/components/game_board/game_board_components/custom_back_button.dart';
-import 'package:anime_slide_puzzle/components/game_board/game_board_layout/game_board_layout_large.dart';
-import 'package:anime_slide_puzzle/components/game_board/game_board_layout/game_board_layout_small.dart';
-import 'package:anime_slide_puzzle/components/game_board/game_board_layout/game_board_layout_medium.dart';
+import 'package:anime_slide_puzzle/view/background_image.dart';
+import 'package:anime_slide_puzzle/view/game_board/game_board_components/congratulations.dart';
+import 'package:anime_slide_puzzle/view/game_board/game_board_components/custom_back_button.dart';
+import 'package:anime_slide_puzzle/view/game_board/game_board_layout/game_board_layout_large.dart';
+import 'package:anime_slide_puzzle/view/game_board/game_board_layout/game_board_layout_small.dart';
+import 'package:anime_slide_puzzle/view/game_board/game_board_layout/game_board_layout_medium.dart';
 import 'package:anime_slide_puzzle/models/anime_theme.dart';
-import 'package:anime_slide_puzzle/models/anime_theme_list.dart';
+import 'package:anime_slide_puzzle/repository/models/anime_theme_list.dart';
 import 'package:anime_slide_puzzle/models/game_timer.dart';
-import 'package:anime_slide_puzzle/models/number_puzzle_tiles.dart';
 import 'package:anime_slide_puzzle/models/puzzle_board.dart';
 import 'package:anime_slide_puzzle/models/show_hints.dart';
 import 'package:anime_slide_puzzle/utils/responsive_layout_helper.dart';
@@ -15,9 +14,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class GameScreen extends StatelessWidget {
-  const GameScreen({Key? key}) : super(key: key);
+  const GameScreen({Key? key, required this.numTiles}) : super(key: key);
 
-  static String id = 'game_screen_id';
+  final int numTiles;
+
   static const double smallScreenPercentage = 0.7;
   static const double mediumScreenPercentage = 0.65;
   static const double largeScreenPercentage = 0.6;
@@ -29,14 +29,20 @@ class GameScreen extends StatelessWidget {
     final AnimeThemeList animeThemeList = context.read<AnimeThemeList>();
     final AnimeTheme animeTheme = animeThemeList.curAnimeTheme;
 
-    final numTiles = context.read<NumberPuzzleTiles>().currentNumberOfTiles;
-
     final gameProviders = [
       ChangeNotifierProvider<ShowHints>(create: (_) => ShowHints()),
-      ChangeNotifierProvider<GameTimer>(create: (_) => GameTimer()),
       ChangeNotifierProvider<PuzzleBoard>(
         create: (_) => PuzzleBoard(numRowsOrColumns: numTiles),
       ),
+      ChangeNotifierProxyProvider<PuzzleBoard, GameTimer>(
+          create: (_) => GameTimer(),
+          update: (_, puzzleBoard, gameTimer) {
+            if (gameTimer == null) return GameTimer();
+            if (puzzleBoard.isGameInProgress && !gameTimer.isTimerInProgress) {
+              gameTimer.startStream();
+            }
+            return gameTimer;
+          }),
     ];
 
     return MultiProvider(

@@ -39,11 +39,8 @@ class PuzzleBoard extends ChangeNotifier {
           numRowsOrColumns: numRowsOrColumns,
         );
         _correctTileMatrix[correctCoordinate.row][correctCoordinate.col] =
-            PuzzleTile(
-          correctCoordinate: correctCoordinate,
-          currentCoordinate: Coordinate(row: row, col: col),
-          tileNumber: curTileNumber,
-        );
+            _correctTileMatrix[correctCoordinate.row][correctCoordinate.col]
+                .copyWith(currentCoordinate: Coordinate(row: row, col: col));
       }
     }
   }
@@ -109,7 +106,12 @@ class PuzzleBoard extends ChangeNotifier {
 
   // tries to swap values for 2d matrix if it is within boundary
   // returns true if swap was successful
+  @visibleForTesting
   bool swapPosMatrix({required Coordinate first, required Coordinate second}) {
+    if (isOutOfBoundsMatrix(matrix: _curPositionMatrix, curPoint: first) ||
+        isOutOfBoundsMatrix(matrix: _curPositionMatrix, curPoint: second)) {
+      return false;
+    }
     final int tempVal = _curPositionMatrix[first.row][first.col];
     _curPositionMatrix[first.row][first.col] =
         _curPositionMatrix[second.row][second.col];
@@ -118,9 +120,13 @@ class PuzzleBoard extends ChangeNotifier {
   }
 
   // checks to see if the puzzle can be solved
+  @visibleForTesting
   bool isPuzzleIsSolvable() {
     int numInversions = countTotalInversion(matrix: _curPositionMatrix);
 
+    // puzzle is solvable if
+    // - board size is odd and number of inversions is even
+    // - board size is even and number of inversions + blank tile row is odd
     if ((!isEven(num: _numRowsOrColumns) && isEven(num: numInversions)) ||
         isEven(num: _numRowsOrColumns) &&
             !isEven(num: numInversions + currentBlankTileCoordiante.row)) {
@@ -135,42 +141,43 @@ class PuzzleBoard extends ChangeNotifier {
       index: tileNum,
       numRowsOrColumns: _numRowsOrColumns,
     );
-    moveTile(correctTileCoordinate: correctPosition);
+    moveTileUsingCorrectCoordinate(correctCoord: correctPosition);
   }
 
-  // moves tiles using tile correct coordinate and NOT current coordinate
-  void moveTile({required Coordinate correctTileCoordinate}) {
+  // moves tiles using correct tile coordinate and NOT current tile coordinate
+  void moveTileUsingCorrectCoordinate({required Coordinate correctCoord}) {
     if (isOutOfBoundsMatrix(
       matrix: _curPositionMatrix,
-      curPoint: correctTileCoordinate,
+      curPoint: correctCoord,
     )) return;
-    final PuzzleTile clickedTile = _correctTileMatrix[correctTileCoordinate.row]
-        [correctTileCoordinate.col];
+
+    final PuzzleTile clickedTile =
+        _correctTileMatrix[correctCoord.row][correctCoord.col];
+
+    if (!isAdjacentToEmptyTile(clickedTile.currentCoordinate)) return;
 
     final PuzzleTile blankTile =
         _correctTileMatrix[_correctBlankTileCoordinate.row]
             [_correctBlankTileCoordinate.col];
 
-    if (isAdjacentToEmptyTile(clickedTile.currentCoordinate)) {
-      _swapTiles(clickedTile, blankTile);
-      ++_numberOfMoves;
+    _swapTiles(clickedTile, blankTile);
+    ++_numberOfMoves;
 
-      if (_isPuzzleTileInCorrectPosition() && _gameInProgress) {
-        _isPuzzleCompleted = true;
-        _gameInProgress = false;
-      }
-
-      notifyListeners();
+    if (_isPuzzleTileInCorrectPosition() && _gameInProgress) {
+      _isPuzzleCompleted = true;
+      _gameInProgress = false;
     }
+
+    notifyListeners();
   }
 
   // flattens matrix into 1-dimensional array to solve puzzle
-  List<int> flattenPositionMatrix() {
-    List<int> flatten = [];
+  List<int> flattenCorrectPositionMatrix() {
+    List<int> flattenMatrix = [];
     for (List<int> element in _curPositionMatrix) {
-      flatten.addAll(element);
+      flattenMatrix.addAll(element);
     }
-    return flatten;
+    return flattenMatrix;
   }
 
   /// returns current position of given tile number
@@ -198,8 +205,9 @@ class PuzzleBoard extends ChangeNotifier {
 
   // initializes gameboard and shuffles the board
   Future<void> startGame(int countdown) async {
+    _gameInProgress = false;
+    notifyListeners();
     _numberOfMoves = 0;
-    _gameInProgress = true;
     _isPuzzleCompleted = false;
     await timedShuffled(countdown);
   }
@@ -221,6 +229,7 @@ class PuzzleBoard extends ChangeNotifier {
       await Future.delayed(const Duration(milliseconds: 500));
 
       _isShuffling = !_isShuffling;
+      _gameInProgress = true;
       notifyListeners();
     } catch (e) {
       _curCountdown = 0;
@@ -253,8 +262,9 @@ class PuzzleBoard extends ChangeNotifier {
   // randomly selects a puzzle tile
   PuzzleTile _getRandomTile() {
     Random rng = Random();
-    return _correctTileMatrix[rng.nextInt(_numRowsOrColumns)]
-        [rng.nextInt(_numRowsOrColumns)];
+    int randomRow = rng.nextInt(_numRowsOrColumns);
+    int randomCol = rng.nextInt(_numRowsOrColumns);
+    return _correctTileMatrix[randomRow][randomCol];
   }
 
   // swap two tile's current position
@@ -273,26 +283,21 @@ class PuzzleBoard extends ChangeNotifier {
 
     final Coordinate temp = firstTile.currentCoordinate;
 
+    // assign first tile
     int firstRow = firstTile.correctCoordinate.row;
     int firstCol = firstTile.correctCoordinate.col;
 
-    // assign first tile
-    _correctTileMatrix[firstRow][firstCol] = PuzzleTile(
-      correctCoordinate: firstTile.correctCoordinate,
-      currentCoordinate: secondTile.currentCoordinate,
-      tileNumber: firstTile.tileNumber,
-      isBlank: firstTile.isBlankTile,
-    );
+    _correctTileMatrix[firstRow][firstCol] = _correctTileMatrix[firstRow]
+            [firstCol]
+        .copyWith(currentCoordinate: secondTile.currentCoordinate);
 
     // assign second tile
     int secondRow = secondTile.correctCoordinate.row;
     int secondCol = secondTile.correctCoordinate.col;
-    _correctTileMatrix[secondRow][secondCol] = PuzzleTile(
-      correctCoordinate: secondTile.correctCoordinate,
-      currentCoordinate: temp,
-      tileNumber: secondTile.tileNumber,
-      isBlank: secondTile.isBlankTile,
-    );
+
+    _correctTileMatrix[secondRow][secondCol] = _correctTileMatrix[secondRow]
+            [secondCol]
+        .copyWith(currentCoordinate: temp);
 
     swapPosMatrix(
       first: firstTile.currentCoordinate,
@@ -301,13 +306,15 @@ class PuzzleBoard extends ChangeNotifier {
   }
 
   Coordinate get _correctBlankTileCoordinate {
-    return _correctTileMatrix[_numRowsOrColumns - 1][_numRowsOrColumns - 1]
-        .correctCoordinate;
+    final PuzzleTile blankTile =
+        _correctTileMatrix[_numRowsOrColumns - 1][_numRowsOrColumns - 1];
+    return blankTile.correctCoordinate;
   }
 
   Coordinate get currentBlankTileCoordiante {
-    return _correctTileMatrix[_numRowsOrColumns - 1][_numRowsOrColumns - 1]
-        .currentCoordinate;
+    final PuzzleTile blankTile =
+        _correctTileMatrix[_numRowsOrColumns - 1][_numRowsOrColumns - 1];
+    return blankTile.currentCoordinate;
   }
 
   int get numRowsOrColumns {

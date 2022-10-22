@@ -8,15 +8,10 @@ class CustomBackButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    GameTimer gameTimer = context.read<GameTimer>();
-    PuzzleBoard puzzleBoard = context.read<PuzzleBoard>();
-
     return BackButton(
       onPressed: () {
-        gameTimer
-          ..resetTimer()
-          ..endTimer();
-        puzzleBoard.resetBoard();
+        context.read<GameTimer>().endTimer();
+        context.read<PuzzleBoard>().resetBoard();
         Navigator.pop(context);
       },
     );

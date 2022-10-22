@@ -11,9 +11,7 @@ import 'package:anime_slide_puzzle/constants.dart';
 enum CornerCase { topRight, bottomLeft }
 
 class AutoSolver {
-  AutoSolver({
-    required this.puzzleBoard,
-  });
+  AutoSolver({required this.puzzleBoard});
   final PuzzleBoard puzzleBoard;
   final Queue<Direction> _clockwise = Queue.from([
     Direction.top,
@@ -123,8 +121,10 @@ class AutoSolver {
     }
   }
 
-  Future<void> _moveTileInDirection(
-      {required int tileNum, required Direction moveDirection}) async {
+  Future<void> _moveTileInDirection({
+    required int tileNum,
+    required Direction moveDirection,
+  }) async {
     assert(moveDirection != Direction.topLeft);
     assert(moveDirection != Direction.topRight);
     assert(moveDirection != Direction.bottomLeft);
@@ -251,8 +251,10 @@ class AutoSolver {
         );
   }
 
-  Future<void> _moveTileToTarget(
-      {required int tileNum, required Coordinate target}) async {
+  Future<void> _moveTileToTarget({
+    required int tileNum,
+    required Coordinate target,
+  }) async {
     Coordinate currentPosition = puzzleBoard.findCurrentTileCoordiante(tileNum);
     // while tile is not in correct position
     while (_calcEuclindianDistance(start: target, end: currentPosition) > 0) {
@@ -277,14 +279,16 @@ class AutoSolver {
     }
   }
 
-  double _calcEuclindianDistance(
-      {required Coordinate start, required Coordinate end}) {
+  double _calcEuclindianDistance({
+    required Coordinate start,
+    required Coordinate end,
+  }) {
     return sqrt(pow(start.col - end.col, 2) + pow(start.row - end.row, 2));
   }
 
   Future<void> _runIDAStar() async {
     IDAStarPuzzleSolver puzzleSolver = IDAStarPuzzleSolver(
-      initialBoardState: puzzleBoard.flattenPositionMatrix(),
+      initialBoardState: puzzleBoard.flattenCorrectPositionMatrix(),
       numRowsOrColumns: puzzleBoard.numRowsOrColumns,
       blankTileCoordinate: puzzleBoard.currentBlankTileCoordiante,
     );

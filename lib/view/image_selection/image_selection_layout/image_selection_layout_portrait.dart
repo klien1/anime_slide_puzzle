@@ -1,8 +1,8 @@
-import 'package:anime_slide_puzzle/components/background_image.dart';
-import 'package:anime_slide_puzzle/components/image_selection/image_selection_components/image_selection_bar.dart';
-import 'package:anime_slide_puzzle/models/anime_theme_list.dart';
+import 'package:anime_slide_puzzle/view/background_image.dart';
+import 'package:anime_slide_puzzle/view/image_selection/image_selection_components/image_selection_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
+import 'package:anime_slide_puzzle/repository/models/anime_theme_list.dart';
 
 class ImageSelectionLayoutPortrait extends StatelessWidget {
   const ImageSelectionLayoutPortrait({Key? key}) : super(key: key);

@@ -47,8 +47,10 @@ class CircleTransitionButton extends StatelessWidget {
                   ? screenWidth * 1.4
                   : screenHeight * 1.4;
 
-              var radiusTween = Tween(begin: beginRadius, end: endRadius);
-              var radiusTweenAnimation = animation.drive(radiusTween);
+              Tween<double> radiusTween =
+                  Tween(begin: beginRadius, end: endRadius);
+              Animation<double> radiusTweenAnimation =
+                  animation.drive(radiusTween);
 
               return ClipPath(
                 clipper: _CircleTransitionClipper(
@@ -90,7 +92,5 @@ class _CircleTransitionClipper extends CustomClipper<Path> {
   }
 
   @override
-  bool shouldReclip(covariant CustomClipper<Path> oldClipper) {
-    return true;
-  }
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => true;
 }
