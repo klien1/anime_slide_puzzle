@@ -1,0 +1,4 @@
+#Mon Aug 22 15:36:43 PDT 2022
+base.0=C\:\\Users\\Kevin\\StudioProjects\\anime_slide_puzzle\\build\\app\\intermediates\\dex\\profile\\mergeDexProfile\\classes.dex
+renamed.0=classes.dex
+path.0=classes.dex
